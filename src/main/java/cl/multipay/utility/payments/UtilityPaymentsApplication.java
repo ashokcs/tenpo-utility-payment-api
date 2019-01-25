@@ -1,14 +1,13 @@
-package cl.multipay.utilitypayments;
+package cl.multipay.utility.payments;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UtilityPaymentsApplication {
-
-	public static void main(String[] args) {
+public class UtilityPaymentsApplication
+{
+	public static void main(final String[] args)
+	{
 		SpringApplication.run(UtilityPaymentsApplication.class, args);
 	}
-
 }
-
