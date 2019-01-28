@@ -1,0 +1,29 @@
+pipeline:
+  test:
+    image: openjdk:8-alpine
+    environment:
+      - GRADLE_USER_HOME=~/.gradle
+    commands:
+      - ./gradlew check
+    when:
+      event:
+        - push
+        - pull_request
+  sonarqube:
+    image: openjdk:8-alpine
+    environment:
+      - GRADLE_USER_HOME=~/.gradle
+    commands:
+      - ./gradlew sonarqube
+    when:
+      event:
+        - push
+        - pull_request
+  slack:
+    image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
+    channel: multipay-ci
+    icon_emoji: ":package:"
+    when:
+      status: 
+        - success
+        - failure

@@ -7,12 +7,16 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7")
+		classpath("org.ajoberstar:gradle-jacoco:0.3.0")
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.sonarqube'
+apply plugin: 'jacoco'
 
 group = 'cl.multipay'
 version = '0.0.1-SNAPSHOT'
@@ -20,6 +24,17 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonar.tools.multicajadigital.cloud"
+        property "sonar.login", "6311608deb37b0d1bb04374dd2c2335bb5c7a3c8"
+        property "sonar.projectName", "multipay-utility-payments-service"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.inclusions", "src/main/java/cl/multipay/**/*"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
 }
 
 dependencies {
@@ -30,4 +45,5 @@ dependencies {
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	runtimeOnly('org.postgresql:postgresql')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testImplementation('com.h2database:h2:1.4.197')
 }

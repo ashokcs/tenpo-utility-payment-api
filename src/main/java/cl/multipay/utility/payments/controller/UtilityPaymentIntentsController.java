@@ -26,7 +26,7 @@ public class UtilityPaymentIntentsController
 
 	public UtilityPaymentIntentsController(final UtilityPaymentIntentService upis)
 	{
-		this.utilityPaymentIntentService = upis;
+		utilityPaymentIntentService = upis;
 	}
 
 	@GetMapping("/v1/utilities/payment_intents/{id}")
@@ -40,7 +40,7 @@ public class UtilityPaymentIntentsController
 	}
 
 	@PostMapping("/v1/utilities/payment_intents")
-	public ResponseEntity<?> get(@RequestBody @Valid final UtilityPaymentIntentRequest request)
+	public ResponseEntity<UtilityPaymentIntent> create(@RequestBody @Valid final UtilityPaymentIntentRequest request)
 	{
 		// create utility payment intent
 		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
