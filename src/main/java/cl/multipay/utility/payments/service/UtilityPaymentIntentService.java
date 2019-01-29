@@ -16,8 +16,8 @@ public class UtilityPaymentIntentService
 
 	public UtilityPaymentIntentService(final UtilityPaymentIntentRepository upir, final EntityManager em)
 	{
-		this.utilityPaymentIntentRepository = upir;
-		this.entityManager = em;
+		utilityPaymentIntentRepository = upir;
+		entityManager = em;
 	}
 
 	@Transactional
