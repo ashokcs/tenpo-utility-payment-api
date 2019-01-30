@@ -25,7 +25,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"id","oc","state","email","bills","created"})
 public class UtilityPaymentIntent
 {
-	public static final Long STATE_PENDING = 0l;
+	public static final Long STATE_PENDING = 0L;
+	public static final Long STATE_WAITING = 10L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -62,7 +62,7 @@ public class MulticajaPaymentPlatformService
 					createOrderResponse.setOrderId(createOrderJson.get("order_id").asLong());
 					createOrderResponse.setReferenceId(createOrderJson.get("reference_id").asText());
 					createOrderResponse.setStatus(createOrderJson.get("status").asText());
-					createOrderResponse.setRedirectUrl(createOrderJson.get("redirec_url").asText());
+					createOrderResponse.setRedirectUrl(createOrderJson.get("redirect_url").asText());
 					return Optional.ofNullable(createOrderResponse);
 				}
 			}
@@ -101,7 +101,7 @@ public class MulticajaPaymentPlatformService
 		request.set("urls", urls);
 
 		final ObjectNode webhooks = mapper.createObjectNode();
-		webhooks.put("webhook_confirm", "http://localhost/cancel2"); // TODO properties
+		webhooks.put("webhook_confirm", "http://localhost/confirm"); // TODO properties
 		request.set("webhook", webhooks);
 
 		return mapper.writeValueAsString(request);
