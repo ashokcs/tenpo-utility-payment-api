@@ -13,10 +13,10 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "utility_payment_methods")
-public class UtilityPaymentMethod
+@Table(name = "payments")
+public class Payment
 {
-	public static final Long STATE_PENDING = 0l;
+	public static final Long STATE_PENDING = 0L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,23 +26,28 @@ public class UtilityPaymentMethod
 
 	@Column(updatable = false)
 	@JsonIgnore
-	private Long intentId;
+	private String publicId;
 
 	@Column(updatable = false)
-	private String uuid;
+	@JsonIgnore
+	private Long billId;
 
-	private Long state;
+	@JsonIgnore
+	private Long status;
 
 	@Column(updatable = false)
+	@JsonIgnore
 	private Long orderId;
 
 	@Column(updatable = false)
 	private String redirectUrl;
 
 	@Column(insertable = false, updatable = false)
+	@JsonIgnore
 	private LocalDateTime created;
 
 	@Column(insertable = false)
+	@JsonIgnore
 	private LocalDateTime updated;
 
 	@PreUpdate
@@ -61,34 +66,34 @@ public class UtilityPaymentMethod
 		this.id = id;
 	}
 
-	public Long getIntentId()
+	public String getPublicId()
 	{
-		return intentId;
+		return publicId;
 	}
 
-	public void setIntentId(final Long intentId)
+	public void setPublicId(final String publicId)
 	{
-		this.intentId = intentId;
+		this.publicId = publicId;
 	}
 
-	public String getUuid()
+	public Long getBillId()
 	{
-		return uuid;
+		return billId;
 	}
 
-	public void setUuid(final String uuid)
+	public void setBillId(final Long billId)
 	{
-		this.uuid = uuid;
+		this.billId = billId;
 	}
 
-	public Long getState()
+	public Long getStatus()
 	{
-		return state;
+		return status;
 	}
 
-	public void setState(final Long state)
+	public void setStatus(final Long status)
 	{
-		this.state = state;
+		this.status = status;
 	}
 
 	public Long getOrderId()

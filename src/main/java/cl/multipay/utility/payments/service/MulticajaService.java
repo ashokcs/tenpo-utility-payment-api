@@ -20,27 +20,27 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cl.multipay.utility.payments.dto.MulticajaCreateOrderResponse;
-import cl.multipay.utility.payments.entity.UtilityPaymentIntent;
+import cl.multipay.utility.payments.entity.Bill;
 
 @Service
-public class MulticajaPaymentPlatformService
+public class MulticajaService
 {
-	private static final Logger logger = LoggerFactory.getLogger(MulticajaPaymentPlatformService.class);
+	private static final Logger logger = LoggerFactory.getLogger(MulticajaService.class);
 
 	private final CloseableHttpClient client;
 
-	public MulticajaPaymentPlatformService(final CloseableHttpClient client)
+	public MulticajaService(final CloseableHttpClient client)
 	{
 		this.client = client;
 	}
 
-	public Optional<MulticajaCreateOrderResponse> initPay(final UtilityPaymentIntent utilityPaymentIntent)
+	public Optional<MulticajaCreateOrderResponse> initPay(final Bill bill)
 	{
 		try {
 			// TODO properties
 			final String url = "https://api.staging.multicajadigital.cloud/payment-gateway/v1/orders";
 			final String apiKey = "mKaTZ4yBm3rVFapqNctziKCvXsjD6fDO";
-			final String json = createOrderJson(utilityPaymentIntent);
+			final String json = createOrderJson(bill);
 
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("apikey", apiKey);
@@ -72,23 +72,23 @@ public class MulticajaPaymentPlatformService
 		return Optional.empty();
 	}
 
-	private String createOrderJson(final UtilityPaymentIntent utilityPaymentIntent)
+	private String createOrderJson(final Bill bill)
 		throws JsonProcessingException
 	{
 		final ObjectMapper mapper = new ObjectMapper();
 		final ObjectNode request = mapper.createObjectNode();
-		request.put("reference_id", utilityPaymentIntent.getOc());
+		request.put("reference_id", bill.getPublicId());
 		request.put("description", "Pago en Multipay.cl"); // TODO properties
 
-		if (utilityPaymentIntent.getEmail() != null ) {
+		if (bill.getEmail() != null ) {
 			final ObjectNode user = mapper.createObjectNode();
-			user.put("email", utilityPaymentIntent.getEmail());
+			user.put("email", bill.getEmail());
 			request.set("user", user);
 		}
 
 		final ObjectNode amount = mapper.createObjectNode();
 		amount.put("currency", "CLP"); // TODO properties
-		amount.put("total", 1000); // TODO from db
+		amount.put("total", bill.getAmount());
 		request.set("amount", amount);
 
 		final ArrayNode methods = mapper.createArrayNode();

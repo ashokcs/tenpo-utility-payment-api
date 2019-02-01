@@ -7,16 +7,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
-@Table(name = "utility_payment_bills")
-public class UtilityPaymentBill
+@Table(name = "bills")
+@JsonPropertyOrder({"bill_id", "status", "utility_id", "identifier", "amount", "email"})
+public class Bill
 {
-	public static final Long STATE_PENDING = 0l;
+	public static final Long STATE_PENDING = 0L;
+	public static final Long STATE_WAITING = 10L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,16 +29,22 @@ public class UtilityPaymentBill
 	@JsonIgnore
 	private Long id;
 
-	private Long state;
+	@Column(updatable = false)
+	@JsonProperty("bill_id")
+	private String publicId;
+
+	private Long status;
 
 	@Column(updatable = false)
-	private String utility;
+	private Long utilityId;
 
 	@Column(updatable = false)
 	private String identifier;
 
 	@Column(updatable = false)
 	private Long amount;
+
+	private String email;
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
@@ -49,6 +60,14 @@ public class UtilityPaymentBill
 		updated = LocalDateTime.now();
 	}
 
+	@PrePersist
+	private void prePersist()
+	{
+		if ((email != null) && email.equals("")) {
+			email = null;
+		}
+	}
+
 	public Long getId()
 	{
 		return id;
@@ -59,14 +78,34 @@ public class UtilityPaymentBill
 		this.id = id;
 	}
 
-	public String getUtility()
+	public String getPublicId()
 	{
-		return utility;
+		return publicId;
 	}
 
-	public void setUtility(final String utility)
+	public void setPublicId(final String publicId)
 	{
-		this.utility = utility;
+		this.publicId = publicId;
+	}
+
+	public Long getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(final Long status)
+	{
+		this.status = status;
+	}
+
+	public Long getUtilityId()
+	{
+		return utilityId;
+	}
+
+	public void setUtilityId(final Long utilityId)
+	{
+		this.utilityId = utilityId;
 	}
 
 	public String getIdentifier()
@@ -89,6 +128,16 @@ public class UtilityPaymentBill
 		this.amount = amount;
 	}
 
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(final String email)
+	{
+		this.email = email;
+	}
+
 	public LocalDateTime getCreated()
 	{
 		return created;
@@ -107,15 +156,5 @@ public class UtilityPaymentBill
 	public void setUpdated(final LocalDateTime updated)
 	{
 		this.updated = updated;
-	}
-
-	public Long getState()
-	{
-		return state;
-	}
-
-	public void setState(final Long state)
-	{
-		this.state = state;
 	}
 }

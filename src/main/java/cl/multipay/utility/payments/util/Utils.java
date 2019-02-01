@@ -1,16 +1,16 @@
 package cl.multipay.utility.payments.util;
 
+import java.util.UUID;
+
 public class Utils
 {
-	public static final String UUID_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
-
 	private Utils()
 	{
 
 	}
 
-	public static boolean isUuidValid(final String uuid)
+	public static String uuid()
 	{
-		return (uuid != null) && uuid.matches(UUID_REGEX) ? true : false;
+		return UUID.randomUUID().toString().replaceAll("\\-", "");
 	}
 }
