@@ -1,6 +1,6 @@
 package cl.multipay.utility.payments.dto;
 
-public class MulticajaCreateOrderResponse
+public class MulticajaInitPayResponse
 {
 	private Long orderId;
 	private String status;

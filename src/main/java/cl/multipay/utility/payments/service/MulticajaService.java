@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cl.multipay.utility.payments.dto.MulticajaCreateOrderResponse;
+import cl.multipay.utility.payments.dto.MulticajaInitPayResponse;
 import cl.multipay.utility.payments.entity.Bill;
 
 @Service
@@ -34,7 +34,7 @@ public class MulticajaService
 		this.client = client;
 	}
 
-	public Optional<MulticajaCreateOrderResponse> initPay(final Bill bill)
+	public Optional<MulticajaInitPayResponse> initPay(final Bill bill)
 	{
 		try {
 			// TODO properties
@@ -52,18 +52,17 @@ public class MulticajaService
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info(">>> "+json);
-				logger.info("<<< ["+response.getStatusLine().toString()+"] "+body);
-
 				if (response.getStatusLine().getStatusCode() == 201) {
 					final ObjectMapper mapper = new ObjectMapper();
 					final JsonNode createOrderJson = mapper.readTree(body);
-					final MulticajaCreateOrderResponse createOrderResponse = new MulticajaCreateOrderResponse();
-					createOrderResponse.setOrderId(createOrderJson.get("order_id").asLong());
-					createOrderResponse.setReferenceId(createOrderJson.get("reference_id").asText());
-					createOrderResponse.setStatus(createOrderJson.get("status").asText());
-					createOrderResponse.setRedirectUrl(createOrderJson.get("redirect_url").asText());
-					return Optional.ofNullable(createOrderResponse);
+					final MulticajaInitPayResponse initPay = new MulticajaInitPayResponse();
+					initPay.setOrderId(createOrderJson.get("order_id").asLong());
+					initPay.setReferenceId(createOrderJson.get("reference_id").asText());
+					initPay.setStatus(createOrderJson.get("status").asText());
+					initPay.setRedirectUrl(createOrderJson.get("redirect_url").asText());
+					return Optional.ofNullable(initPay);
+				} else {
+					logger.error("[{}] [{}] : [{}] [{}]", url, json, response.getStatusLine().toString(), body);
 				}
 			}
 		} catch (final Exception e) {

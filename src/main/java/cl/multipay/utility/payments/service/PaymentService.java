@@ -1,5 +1,7 @@
 package cl.multipay.utility.payments.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,14 +21,13 @@ public class PaymentService
 		this.paymentRepository =  paymentRepository;
 	}
 
-	public boolean save(final Payment payment)
+	public Optional<Payment> save(final Payment payment)
 	{
 		try {
-			paymentRepository.save(payment);
-			return true;
+			return Optional.of(paymentRepository.save(payment));
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return false;
+		return Optional.empty();
 	}
 }

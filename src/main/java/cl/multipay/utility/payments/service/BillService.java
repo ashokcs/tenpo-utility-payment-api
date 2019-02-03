@@ -1,5 +1,7 @@
 package cl.multipay.utility.payments.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,19 +21,23 @@ public class BillService
 		this.billRepository = billRepository;
 	}
 
-	public boolean save(final Bill bill)
+	public Optional<Bill> save(final Bill bill)
 	{
 		try {
-			billRepository.save(bill);
-			return true;
+			return Optional.of(billRepository.save(bill));
 		} catch (final Throwable e) {
 			logger.error(e.getMessage(), e);
 		}
-		return false;
+		return Optional.empty();
 	}
 
-	public Bill findByPublicId(final String publicId)
+	public Optional<Bill> findByPublicId(final String publicId)
 	{
 		return billRepository.findByPublicId(publicId);
+	}
+
+	public Optional<Bill> findByPublicId(final String publicId, final Long status)
+	{
+		return billRepository.findByPublicIdAndStatus(publicId, status);
 	}
 }

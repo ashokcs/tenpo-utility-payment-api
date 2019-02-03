@@ -20,8 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"bill_id", "status", "utility_id", "identifier", "amount", "email"})
 public class Bill
 {
-	public static final Long STATE_PENDING = 0L;
-	public static final Long STATE_WAITING = 10L;
+	public static final Long STATUS_PENDING = 0L;
+	public static final Long STATUS_WAITING = 10L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

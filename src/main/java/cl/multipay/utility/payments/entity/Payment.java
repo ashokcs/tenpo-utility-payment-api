@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "payments")
 public class Payment
 {
-	public static final Long STATE_PENDING = 0L;
+	public static final Long STATUS_PENDING = 0L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
