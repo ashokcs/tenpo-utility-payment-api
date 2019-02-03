@@ -30,6 +30,29 @@ dbmate dump     # generate schema.sql
 dbmate wait     # pause until the database is available
 ```
 
+### Azure PostgreSQL Database
+**Default User**  
+Host: prepaid-postgresql-staging.postgres.database.azure.com  
+User: prepago@prepaid-postgresql-staging  
+Pass: GcpeWsJ3EWGBrwYY  
+```bash
+psql -h prepaid-postgresql-staging.postgres.database.azure.com -U prepago@prepaid-postgresql-staging -d postgres
+```
+**Create Multipay database and user**  
+```bash
+create user multipay with password 'multipay';
+grant multipay to prepago;
+create database multipay owner multipay;
+revoke multipay from prepago;
+```
+Host: prepaid-postgresql-staging.postgres.database.azure.com  
+User: multipay@prepaid-postgresql-staging  
+Pass: multipay  
+Database: multipay
+```bash
+psql -h prepaid-postgresql-staging.postgres.database.azure.com -U multipay@prepaid-postgresql-staging -d multipay
+```
+
 # Endpoints
 
 ## `POST /v1/bills`

@@ -41,6 +41,8 @@ public class BillsController
 		this.multicajaService = multicajaService;
 	}
 
+	// TODO database creation automation script
+
 	/**
 	 * Obtiene los detalles de una cuenta.
 	 *
