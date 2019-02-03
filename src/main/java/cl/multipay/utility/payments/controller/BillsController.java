@@ -50,7 +50,7 @@ public class BillsController
 	@GetMapping("/v1/bills/{id:^[0-9a-f]{32}$}")
 	public ResponseEntity<Bill> get(@PathVariable("id") final String billPublicId)
 	{
-		final Bill bill = billService.findByPublicId(billPublicId).orElseThrow(() -> new NotFoundException());
+		final Bill bill = billService.findByPublicId(billPublicId).orElseThrow(NotFoundException::new);
 		return ResponseEntity.ok(bill);
 	}
 
@@ -74,7 +74,7 @@ public class BillsController
 		bill.setUtilityId(request.getUtilityId());
 		bill.setIdentifier(request.getIdentifier());
 		bill.setAmount(amount);
-		billService.save(bill).orElseThrow(() -> new ServerErrorException());
+		billService.save(bill).orElseThrow(ServerErrorException::new);
 
 		// return bill
 		return ResponseEntity.status(HttpStatus.CREATED).body(bill);
@@ -91,11 +91,11 @@ public class BillsController
 	{
 		// get bill by id and status
 		final Bill bill = billService.findByPublicId(billPublicId, Bill.STATUS_PENDING)
-				.orElseThrow(() -> new NotFoundException());
+				.orElseThrow(NotFoundException::new);
 
 		// initialize remote payment
 		final MulticajaInitPayResponse multicajaInitPayResponse = multicajaService.initPay(bill)
-				.orElseThrow(()->new ServerErrorException());
+				.orElseThrow(ServerErrorException::new);
 
 		// save payment response
 		final Payment payment = new Payment();
@@ -104,11 +104,11 @@ public class BillsController
 		payment.setStatus(Payment.STATUS_PENDING);
 		payment.setOrderId(multicajaInitPayResponse.getOrderId());
 		payment.setRedirectUrl(multicajaInitPayResponse.getRedirectUrl());
-		paymentService.save(payment).orElseThrow(()->new ServerErrorException());
+		paymentService.save(payment).orElseThrow(ServerErrorException::new);
 
 		// update bill status // TODO fix no update state
 		bill.setStatus(Bill.STATUS_WAITING);
-		billService.save(bill).orElseThrow(()->new ServerErrorException());
+		billService.save(bill).orElseThrow(ServerErrorException::new);
 
 		// return redirect url
 		return ResponseEntity.ok(payment);
