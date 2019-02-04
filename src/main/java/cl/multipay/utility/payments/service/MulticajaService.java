@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cl.multipay.utility.payments.dto.MulticajaInitPayResponse;
 import cl.multipay.utility.payments.entity.Bill;
+import cl.multipay.utility.payments.util.Properties;
 
 @Service
 public class MulticajaService
@@ -28,18 +29,19 @@ public class MulticajaService
 	private static final Logger logger = LoggerFactory.getLogger(MulticajaService.class);
 
 	private final CloseableHttpClient client;
+	private final Properties properties;
 
-	public MulticajaService(final CloseableHttpClient client)
+	public MulticajaService(final CloseableHttpClient client, final Properties properties)
 	{
 		this.client = client;
+		this.properties = properties;
 	}
 
 	public Optional<MulticajaInitPayResponse> initPay(final Bill bill)
 	{
 		try {
-			// TODO properties
-			final String url = "https://api.staging.multicajadigital.cloud/payment-gateway/v1/orders";
-			final String apiKey = "mKaTZ4yBm3rVFapqNctziKCvXsjD6fDO";
+			final String url = properties.getMulticajaPaymentUrl();
+			final String apiKey = properties.getMulticajaPaymentApiKey();
 			final String json = createOrderJson(bill);
 
 			final HttpPost request = new HttpPost(url);
@@ -60,7 +62,7 @@ public class MulticajaService
 					initPay.setReferenceId(createOrderJson.get("reference_id").asText());
 					initPay.setStatus(createOrderJson.get("status").asText());
 					initPay.setRedirectUrl(createOrderJson.get("redirect_url").asText());
-					return Optional.ofNullable(initPay);
+					return Optional.of(initPay);
 				} else {
 					logger.error("[{}] [{}] : [{}] [{}]", url, json, response.getStatusLine().toString(), body);
 				}
@@ -77,7 +79,7 @@ public class MulticajaService
 		final ObjectMapper mapper = new ObjectMapper();
 		final ObjectNode request = mapper.createObjectNode();
 		request.put("reference_id", bill.getPublicId());
-		request.put("description", "Pago en Multipay.cl"); // TODO properties
+		request.put("description", properties.getMulticajaPaymentDescription());
 
 		if (bill.getEmail() != null ) {
 			final ObjectNode user = mapper.createObjectNode();
@@ -86,7 +88,7 @@ public class MulticajaService
 		}
 
 		final ObjectNode amount = mapper.createObjectNode();
-		amount.put("currency", "CLP"); // TODO properties
+		amount.put("currency", properties.getMulticajaPaymentCurrency());
 		amount.put("total", bill.getAmount());
 		request.set("amount", amount);
 
@@ -95,12 +97,12 @@ public class MulticajaService
 		request.set("methods", methods);
 
 		final ObjectNode urls = mapper.createObjectNode();
-		urls.put("return_url", "http://localhost/return"); // TODO properties
-		urls.put("cancel_url", "http://localhost/cancel"); // TODO properties
+		urls.put("return_url", properties.getMulticajaPaymentReturnUrl());
+		urls.put("cancel_url", properties.getMulticajaPaymentCancelUrl());
 		request.set("urls", urls);
 
 		final ObjectNode webhooks = mapper.createObjectNode();
-		webhooks.put("webhook_confirm", "http://localhost/confirm"); // TODO properties
+		webhooks.put("webhook_confirm", properties.getMulticajaPaymentConfirmUrl());
 		request.set("webhook", webhooks);
 
 		return mapper.writeValueAsString(request);
