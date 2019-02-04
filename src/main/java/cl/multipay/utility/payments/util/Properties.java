@@ -27,6 +27,18 @@ public class Properties
 	@Value("${multicaja.payment.confirm-url}")
 	private String multicajaPaymentConfirmUrl;
 
+	@Value("${multicaja.utilities.terminal}")
+	private String multicajaUtilitiesTerminal;
+
+	@Value("${multicaja.utilities.commerce}")
+	private String multicajaUtilitiesCommerce;
+
+	@Value("${multicaja.utilities.url}")
+	private String multicajaUtilitiesUrl;
+
+	@Value("${multicaja.utilities.bill.url}")
+	private String multicajaUtlitiesBillUrl;
+
 	@Value("${httpclient.proxy}")
 	private String httpClientProxy;
 
@@ -68,5 +80,25 @@ public class Properties
 	public String getHttpClientProxy()
 	{
 		return httpClientProxy;
+	}
+
+	public String getMulticajaUtilitiesUrl()
+	{
+		return multicajaUtilitiesUrl;
+	}
+
+	public String getMulticajaUtlitiesBillUrl()
+	{
+		return multicajaUtlitiesBillUrl;
+	}
+
+	public String getMulticajaUtilitiesTerminal()
+	{
+		return multicajaUtilitiesTerminal;
+	}
+
+	public String getMulticajaUtilitiesCommerce()
+	{
+		return multicajaUtilitiesCommerce;
 	}
 }

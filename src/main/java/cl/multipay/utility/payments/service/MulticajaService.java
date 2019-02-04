@@ -1,9 +1,13 @@
 package cl.multipay.utility.payments.service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -19,7 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cl.multipay.utility.payments.dto.Collector;
 import cl.multipay.utility.payments.dto.MulticajaInitPayResponse;
+import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.entity.Bill;
 import cl.multipay.utility.payments.util.Properties;
 
@@ -42,7 +48,7 @@ public class MulticajaService
 		try {
 			final String url = properties.getMulticajaPaymentUrl();
 			final String apiKey = properties.getMulticajaPaymentApiKey();
-			final String json = createOrderJson(bill);
+			final String json = initPayJson(bill);
 
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("apikey", apiKey);
@@ -73,7 +79,115 @@ public class MulticajaService
 		return Optional.empty();
 	}
 
-	private String createOrderJson(final Bill bill)
+	public Optional<List<Utility>> getUtilities()
+	{
+		try {
+			final String url = properties.getMulticajaUtilitiesUrl();
+			final HttpGet request = new HttpGet(url);
+			try (final CloseableHttpResponse response = client.execute(request)) {
+				final HttpEntity entity = response.getEntity();
+				final String body = EntityUtils.toString(entity);
+				if (response.getStatusLine().getStatusCode() == 200) {
+
+					final ObjectMapper mapper = new ObjectMapper();
+					final JsonNode utilitiesJsonNode = mapper.readTree(body);
+
+					final JsonNode data = utilitiesJsonNode.get("data");
+					final JsonNode utilities = data.get("convenios");
+					if (utilities.isArray()) {
+						final List<Utility> utilitiesList = new ArrayList<>();
+						for (final JsonNode utility : utilities) {
+
+							// utility name
+							final String utilityName = utility.get("firm").asText();
+							final Utility tmp = new Utility();
+							tmp.setUtility(utilityName);
+
+							// utility identifiers
+							final JsonNode utilityIdentifiers = utility.get("gloss");
+							final List<String> utilityIdentifiersList = new ArrayList<>();
+							for (final Iterator<String> keys = utilityIdentifiers.fieldNames(); keys.hasNext();){
+								final String key = keys.next();
+								utilityIdentifiersList.add(utilityIdentifiers.get(key).asText());
+							}
+							tmp.setIdentifiers(utilityIdentifiersList);
+
+							// utility collector
+							final JsonNode collectors = utility.get("collector");
+							for (final Iterator<String> keys = collectors.fieldNames(); keys.hasNext();){
+								final String key = keys.next();
+								final Collector collector = new Collector();
+								collector.setId(key);
+								collector.setName(collectors.get(key).asText());
+								tmp.setCollector(collector);
+								break;
+							}
+
+							// add to list
+							utilitiesList.add(tmp);
+						}
+						return Optional.of(utilitiesList);
+					}
+				} else {
+					logger.error("[{}] : [{}] [{}]", url, response.getStatusLine().toString(), body);
+				}
+			}
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<?> getBill(final String utility, final String collector)
+	{
+		try {
+			final String url = properties.getMulticajaUtlitiesBillUrl();
+
+			final ObjectMapper mapper = new ObjectMapper();
+			final ObjectNode jsonObject = mapper.createObjectNode();
+			jsonObject.put("terminal", properties.getMulticajaUtilitiesTerminal());
+			jsonObject.put("commerce_id", properties.getMulticajaUtilitiesCommerce());
+			jsonObject.put("firm", utility);
+			jsonObject.put("collector", collector);
+			jsonObject.put("payment_id", "1");
+			final String json = mapper.writeValueAsString(jsonObject);
+
+			final HttpPost request = new HttpPost(url); // TODO mock
+			request.setHeader("Content-Type", "application/json");
+			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+
+			try (final CloseableHttpResponse response = client.execute(request)) {
+				final HttpEntity entity = response.getEntity();
+				final String body = EntityUtils.toString(entity);
+				if (response.getStatusLine().getStatusCode() == 201) {
+
+					logger.error("[{}] : [{}] [{}]", url, response.getStatusLine().toString(), body);
+
+					final JsonNode billJsonNode = mapper.readTree(body);
+					final JsonNode dataJsonNode = billJsonNode.get("data");
+					final String authCode = dataJsonNode.get("codigo_mc").asText();
+					final JsonNode debtsJsonNode = dataJsonNode.get("debts");
+					for(final JsonNode bill : debtsJsonNode) {
+						final String dueDate = bill.get("fecha_vencimiento").asText();
+						final Long amount = bill.get("monto_total").asLong();
+
+						logger.info(authCode);
+						logger.info(dueDate);
+						logger.info(amount + "");
+
+						break;
+					}
+				} else {
+					logger.error("[{}] : [{}] [{}]", url, response.getStatusLine().toString(), body);
+				}
+			}
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	private String initPayJson(final Bill bill)
 		throws JsonProcessingException
 	{
 		final ObjectMapper mapper = new ObjectMapper();

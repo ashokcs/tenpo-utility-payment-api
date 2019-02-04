@@ -1,26 +1,30 @@
 package cl.multipay.utility.payments.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class BillRequest
 {
-	@NotNull
-	private Long utilityId;
+	@NotBlank
+	@Pattern(regexp = "^[a-zA-Z\\s\\-\\(\\)\\/_\\.]{3,100}$")
+	private String utility;
 
 	@NotBlank
-	@Pattern(regexp = "^[a-z0-9]{3,10}$")
+	@Pattern(regexp = "^[a-z0-9]{3,20}$")
 	private String identifier;
 
-	public Long getUtilityId()
+	@NotBlank
+	@Pattern(regexp = "^[0-9]{1}$")
+	private String collector;
+
+	public String getUtility()
 	{
-		return utilityId;
+		return utility;
 	}
 
-	public void setUtilityId(final Long utilityId)
+	public void setUtility(final String utility)
 	{
-		this.utilityId = utilityId;
+		this.utility = utility;
 	}
 
 	public String getIdentifier()
@@ -31,5 +35,15 @@ public class BillRequest
 	public void setIdentifier(final String identifier)
 	{
 		this.identifier = identifier;
+	}
+
+	public String getCollector()
+	{
+		return collector;
+	}
+
+	public void setCollector(final String collector)
+	{
+		this.collector = collector;
 	}
 }

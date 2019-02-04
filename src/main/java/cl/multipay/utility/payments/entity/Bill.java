@@ -36,7 +36,12 @@ public class Bill
 	private Long status;
 
 	@Column(updatable = false)
-	private Long utilityId;
+	private String utility;
+
+	@Column(updatable = false)
+	private String collector;
+
+	private String email;
 
 	@Column(updatable = false)
 	private String identifier;
@@ -44,7 +49,9 @@ public class Bill
 	@Column(updatable = false)
 	private Long amount;
 
-	private String email;
+	private String dueDate;
+
+	private String authCode;
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
@@ -98,14 +105,14 @@ public class Bill
 		this.status = status;
 	}
 
-	public Long getUtilityId()
+	public String getUtility()
 	{
-		return utilityId;
+		return utility;
 	}
 
-	public void setUtilityId(final Long utilityId)
+	public void setUtility(final String utility)
 	{
-		this.utilityId = utilityId;
+		this.utility = utility;
 	}
 
 	public String getIdentifier()
@@ -156,5 +163,35 @@ public class Bill
 	public void setUpdated(final LocalDateTime updated)
 	{
 		this.updated = updated;
+	}
+
+	public String getDueDate()
+	{
+		return dueDate;
+	}
+
+	public void setDueDate(final String dueDate)
+	{
+		this.dueDate = dueDate;
+	}
+
+	public String getAuthCode()
+	{
+		return authCode;
+	}
+
+	public void setAuthCode(final String authCode)
+	{
+		this.authCode = authCode;
+	}
+
+	public String getCollector()
+	{
+		return collector;
+	}
+
+	public void setCollector(final String collector)
+	{
+		this.collector = collector;
 	}
 }

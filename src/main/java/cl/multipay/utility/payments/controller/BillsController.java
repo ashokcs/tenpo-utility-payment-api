@@ -66,14 +66,14 @@ public class BillsController
 	public ResponseEntity<Bill> create(@RequestBody @Valid final BillRequest request)
 	{
 		// get utility bill
-		// ... TODO
+		multicajaService.getBill(request.getUtility(), request.getCollector());
 		final Long amount = (long) (new Random().nextInt((12000 - 1000) + 1) + 1000);
 
 		// create and save bill
 		final Bill bill = new Bill();
 		bill.setPublicId(Utils.uuid());
 		bill.setStatus(Bill.STATUS_PENDING);
-		bill.setUtilityId(request.getUtilityId());
+		bill.setUtility(request.getUtility());
 		bill.setIdentifier(request.getIdentifier());
 		bill.setAmount(amount);
 		billService.save(bill).orElseThrow(ServerErrorException::new);
