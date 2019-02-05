@@ -172,3 +172,8 @@ Response
 {
 }
 ```
+
+# TODOS
+- Subir api transbank a Azure
+- Quitar plataforma de pago
+- Implementar pagos con webpay
