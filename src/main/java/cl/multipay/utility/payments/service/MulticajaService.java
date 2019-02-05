@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cl.multipay.utility.payments.dto.Collector;
+import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.MulticajaInitPayResponse;
 import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.entity.Bill;
@@ -43,42 +44,6 @@ public class MulticajaService
 		this.properties = properties;
 	}
 
-	public Optional<MulticajaInitPayResponse> initPay(final Bill bill)
-	{
-		try {
-			final String url = properties.getMulticajaPaymentUrl();
-			final String apiKey = properties.getMulticajaPaymentApiKey();
-			final String json = initPayJson(bill);
-
-			final HttpPost request = new HttpPost(url);
-			request.setHeader("apikey", apiKey);
-			request.setHeader("Content-Type", "application/json");
-			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
-
-			try (final CloseableHttpResponse response = client.execute(request)) {
-
-				final HttpEntity entity = response.getEntity();
-				final String body = EntityUtils.toString(entity);
-
-				if (response.getStatusLine().getStatusCode() == 201) {
-					final ObjectMapper mapper = new ObjectMapper();
-					final JsonNode createOrderJson = mapper.readTree(body);
-					final MulticajaInitPayResponse initPay = new MulticajaInitPayResponse();
-					initPay.setOrderId(createOrderJson.get("order_id").asLong());
-					initPay.setReferenceId(createOrderJson.get("reference_id").asText());
-					initPay.setStatus(createOrderJson.get("status").asText());
-					initPay.setRedirectUrl(createOrderJson.get("redirect_url").asText());
-					return Optional.of(initPay);
-				} else {
-					logger.error("[{}] [{}] : [{}] [{}]", url, json, response.getStatusLine().toString(), body);
-				}
-			}
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
-
 	public Optional<List<Utility>> getUtilities()
 	{
 		try {
@@ -87,6 +52,10 @@ public class MulticajaService
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
+
+				logger.info("=> {}", url);
+				logger.info("<= {}: {}", url, response.getStatusLine());
+
 				if (response.getStatusLine().getStatusCode() == 200) {
 
 					final ObjectMapper mapper = new ObjectMapper();
@@ -129,7 +98,7 @@ public class MulticajaService
 						return Optional.of(utilitiesList);
 					}
 				} else {
-					logger.error("[{}] : [{}] [{}]", url, response.getStatusLine().toString(), body);
+					logger.error("<= {}: {}", url, body);
 				}
 			}
 		} catch (final Exception e) {
@@ -138,7 +107,7 @@ public class MulticajaService
 		return Optional.empty();
 	}
 
-	public Optional<?> getBill(final String utility, final String collector)
+	public Optional<MulticajaBill> getBill(final String utility, final String collector)
 	{
 		try {
 			final String url = properties.getMulticajaUtlitiesBillUrl();
@@ -152,33 +121,65 @@ public class MulticajaService
 			jsonObject.put("payment_id", "1");
 			final String json = mapper.writeValueAsString(jsonObject);
 
-			final HttpPost request = new HttpPost(url); // TODO mock
+			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
-				if (response.getStatusLine().getStatusCode() == 201) {
 
-					logger.error("[{}] : [{}] [{}]", url, response.getStatusLine().toString(), body);
+				logger.info("=> {} [{}]", url, json);
+				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
+				if (response.getStatusLine().getStatusCode() == 200) {
 					final JsonNode billJsonNode = mapper.readTree(body);
 					final JsonNode dataJsonNode = billJsonNode.get("data");
-					final String authCode = dataJsonNode.get("codigo_mc").asText();
 					final JsonNode debtsJsonNode = dataJsonNode.get("debts");
 					for(final JsonNode bill : debtsJsonNode) {
-						final String dueDate = bill.get("fecha_vencimiento").asText();
-						final Long amount = bill.get("monto_total").asLong();
-
-						logger.info(authCode);
-						logger.info(dueDate);
-						logger.info(amount + "");
-
-						break;
+						final MulticajaBill mcBill = new MulticajaBill();
+						mcBill.setTransactionId(dataJsonNode.get("codigo_mc").asText());
+						mcBill.setAmount(bill.get("monto_total").asLong());
+						mcBill.setDueDate(bill.get("fecha_vencimiento").asText());
+						return Optional.of(mcBill);
 					}
-				} else {
-					logger.error("[{}] : [{}] [{}]", url, response.getStatusLine().toString(), body);
+				}
+			}
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<MulticajaInitPayResponse> initPay(final Bill bill)
+	{
+		try {
+			final String url = properties.getMulticajaPaymentUrl();
+			final String apiKey = properties.getMulticajaPaymentApiKey();
+			final String json = initPayJson(bill);
+
+			final HttpPost request = new HttpPost(url);
+			request.setHeader("apikey", apiKey);
+			request.setHeader("Content-Type", "application/json");
+			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+
+			try (final CloseableHttpResponse response = client.execute(request)) {
+
+				final HttpEntity entity = response.getEntity();
+				final String body = EntityUtils.toString(entity);
+
+				logger.info("=> {} [{}]", url, json);
+				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
+
+				if (response.getStatusLine().getStatusCode() == 201) {
+					final ObjectMapper mapper = new ObjectMapper();
+					final JsonNode createOrderJson = mapper.readTree(body);
+					final MulticajaInitPayResponse initPay = new MulticajaInitPayResponse();
+					initPay.setOrderId(createOrderJson.get("order_id").asLong());
+					initPay.setReferenceId(createOrderJson.get("reference_id").asText());
+					initPay.setStatus(createOrderJson.get("status").asText());
+					initPay.setRedirectUrl(createOrderJson.get("redirect_url").asText());
+					return Optional.of(initPay);
 				}
 			}
 		} catch (final Exception e) {

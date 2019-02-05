@@ -1,7 +1,5 @@
 package cl.multipay.utility.payments.controller;
 
-import java.util.Random;
-
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -15,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.BillRequest;
+import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.MulticajaInitPayResponse;
 import cl.multipay.utility.payments.entity.Bill;
 import cl.multipay.utility.payments.entity.Payment;
+import cl.multipay.utility.payments.exception.ConfictException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.service.BillService;
@@ -65,17 +65,29 @@ public class BillsController
 	@PostMapping("/v1/bills")
 	public ResponseEntity<Bill> create(@RequestBody @Valid final BillRequest request)
 	{
-		// get utility bill
-		multicajaService.getBill(request.getUtility(), request.getCollector());
-		final Long amount = (long) (new Random().nextInt((12000 - 1000) + 1) + 1000);
+		// TODO validate identifier
 
-		// create and save bill
+		// get utility bill
+		final String utility = request.getUtility();
+		final String collector = request.getCollector();
+		final String identifier = request.getIdentifier();
+		final MulticajaBill billDetails = multicajaService.getBill(utility, collector).orElseThrow(ConfictException::new);
+
+		// get response
+		final Long amount = billDetails.getAmount();
+		final String transactionId = billDetails.getTransactionId();
+		final String dueDate = billDetails.getDueDate();
+
+		// create bill
 		final Bill bill = new Bill();
 		bill.setPublicId(Utils.uuid());
 		bill.setStatus(Bill.STATUS_PENDING);
-		bill.setUtility(request.getUtility());
-		bill.setIdentifier(request.getIdentifier());
+		bill.setUtility(utility);
+		bill.setCollector(collector);
+		bill.setIdentifier(identifier);
 		bill.setAmount(amount);
+		bill.setDueDate(dueDate);
+		bill.setTransactionId(transactionId);
 		billService.save(bill).orElseThrow(ServerErrorException::new);
 
 		// return bill

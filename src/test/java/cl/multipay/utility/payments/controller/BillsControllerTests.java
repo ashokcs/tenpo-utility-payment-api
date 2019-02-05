@@ -10,10 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.hamcrest.Matchers;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +31,6 @@ import cl.multipay.utility.payments.util.Utils;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BillsControllerTests
 {
 	@Autowired
@@ -83,7 +80,12 @@ public class BillsControllerTests
 	@Test
 	public void createBill_shouldReturnOk() throws Exception
 	{
-		final String json = "{\"utility_id\": 123,\"identifier\": \"123\"}";
+		final String responseEntity = "{\"response_code\":88,\"response_message\":\"APROBADA\",\"data\":{\"codigo_mc\":\"799378736\","
+				+ "\"authorization_code\":\"\",\"debts\":[{\"fecha_vencimiento\":\"2015-02-23\",\"monto_pago\":94295,\"monto_total\":94290"
+				+ ",\"monto_ajuste\":-5,\"convenio\":\"9129\",\"confirmacion\":\"SI\",\"ajuste\":\"-5\",\"cargo_servicio\":\"0\"}]}}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
+
+		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\",\"identifier\": \"123\"}";
 		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated())
@@ -187,9 +189,12 @@ public class BillsControllerTests
 		final Bill bill = new Bill();
 		bill.setPublicId(uuid);
 		bill.setStatus(Bill.STATUS_PENDING);
-		bill.setUtilityId(123L);
-		bill.setIdentifier("123");
-		bill.setAmount(1231L);
+		bill.setUtility("TEST");
+		bill.setCollector("2");
+		bill.setIdentifier("123123");
+		bill.setAmount(123123L);
+		bill.setDueDate("2019-06-06");
+		bill.setTransactionId("123123123");
 		bill.setEmail("asd@asd.cl");
 		billService.save(bill);
 		return uuid;

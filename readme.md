@@ -55,29 +55,70 @@ psql -h prepaid-postgresql-staging.postgres.database.azure.com -U multipay@prepa
 
 # Endpoints
 
+## `GET /v1/utilities`
+**Obtiene los convenios de pago de cuenta**
+
+Request
+```bash
+curl --request GET \
+--url http://localhost:7771/v1/utilities \
+--header 'Content-Type: application/json'
+```
+
+Response
+```json
+[
+  {
+    "utility": "AGUAS ANDINAS",
+    "collector": {
+      "id": "4",
+      "name": "SANTANDER"
+    },
+    "identifiers": [
+      "NRO CLIENTE",
+      "CON DIGITO VERIFICADOR"
+    ]
+  },
+  {
+    "utility": "ESSBIO",
+    "collector": {
+      "id": "4",
+      "name": "SANTANDER"
+    },
+    "identifiers": [
+      "NRO SERVICIO",
+      "SIN DIGITO VERIFICADOR"
+    ]
+  }
+]
+```
+
 ## `POST /v1/bills`
-**Crear pago de cuenta**
+**Crea un pago de cuenta**
 
 Request
 ```bash
 curl --request POST \
 --url http://localhost:7771/v1/bills \
 --header 'Content-Type: application/json' \
---data '{"utility_id": 123,"identifier": "2312312"}'
+--data '{"utility": "MUNDO_PACIFICO","collector": "3","identifier": "2312312"}'
 ```
 Response
 ```json
 {
-  "bill_id": "bbd12666fb0e4068a34cb4699afbface",
+  "bill_id": "9e9a9324f24147d9a454c4f163d52d9a",
   "status": 0,
-  "utility_id": 123,
   "identifier": "2312312",
-  "amount": 10335
+  "amount": 94290,
+  "utility": "MUNDO_PACIFICO",
+  "collector": "3",
+  "due_date": "2015-02-23",
+  "transaction_id": "799378736"
 }
 ```
 
 ## `GET /v1/bills/{id}`
-**Obtener los detalles de un pago de cuenta**
+**Obtiene los detalles de un pago de cuenta**
 
 Request
 ```bash
@@ -88,11 +129,14 @@ curl --request GET \
 Response
 ```json
 {
-  "bill_id": "bbd12666fb0e4068a34cb4699afbface",
+  "bill_id": "9e9a9324f24147d9a454c4f163d52d9a",
   "status": 0,
-  "utility_id": 123,
+  "utility": "MUNDO_PACIFICO",
+  "collector": "3",
   "identifier": "2312312",
-  "amount": 10335
+  "amount": 94290,
+  "due_date": "2015-02-23",
+  "transaction_id": "799378736"
 }
 ```
 
@@ -102,7 +146,7 @@ Response
 Request
 ```bash
 curl --request POST \
---url http://localhost:7771/v1/bills/bbd12666fb0e4068a34cb4699afbface/pay \
+--url http://localhost:7771/v1/bills/9e9a9324f24147d9a454c4f163d52d9a/pay \
 --header 'Content-Type: application/json' \
 --data '{"payment_id": 1, "email": "user@email.cl"}'
 ```

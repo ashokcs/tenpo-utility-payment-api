@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
 @Table(name = "bills")
-@JsonPropertyOrder({"bill_id", "status", "utility_id", "identifier", "amount", "email"})
+@JsonPropertyOrder({"bill_id", "status", "utility", "collector", "identifier", "amount", "due_date", "transaction_id", "email"})
 public class Bill
 {
 	public static final Long STATUS_PENDING = 0L;
@@ -51,7 +51,7 @@ public class Bill
 
 	private String dueDate;
 
-	private String authCode;
+	private String transactionId;
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
@@ -175,14 +175,14 @@ public class Bill
 		this.dueDate = dueDate;
 	}
 
-	public String getAuthCode()
+	public String getTransactionId()
 	{
-		return authCode;
+		return transactionId;
 	}
 
-	public void setAuthCode(final String authCode)
+	public void setTransactionId(final String transactionId)
 	{
-		this.authCode = authCode;
+		this.transactionId = transactionId;
 	}
 
 	public String getCollector()
