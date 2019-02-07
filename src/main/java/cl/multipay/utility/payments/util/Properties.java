@@ -6,26 +6,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class Properties
 {
-	@Value("${multicaja.payment.url}")
-	private String multicajaPaymentUrl;
+	@Value("${webpay.url}")
+	private String webpayUrl;
 
-	@Value("${multicaja.payment.api-key}")
-	private String multicajaPaymentApiKey;
+	@Value("${webpay.return-url}")
+	private String webpayReturnUrl;
 
-	@Value("${multicaja.payment.description}")
-	private String multicajaPaymentDescription;
+	@Value("${webpay.final-url}")
+	private String webpayFinalUrl;
 
-	@Value("${multicaja.payment.currency}")
-	private String multicajaPaymentCurrency;
+	@Value("${webpay.commerce.user}")
+	private String webpayCommerceUser;
 
-	@Value("${multicaja.payment.return-url}")
-	private String multicajaPaymentReturnUrl;
+	@Value("${webpay.commerce.pass}")
+	private String webpayCommercePass;
 
-	@Value("${multicaja.payment.cancel-url}")
-	private String multicajaPaymentCancelUrl;
+	@Value("${webpay.commerce.env}")
+	private String webpayCommerceEnv;
 
-	@Value("${multicaja.payment.confirm-url}")
-	private String multicajaPaymentConfirmUrl;
+	@Value("${webpay.redirect.error}")
+	private String webpayRedirectError;
 
 	@Value("${multicaja.utilities.terminal}")
 	private String multicajaUtilitiesTerminal;
@@ -42,39 +42,34 @@ public class Properties
 	@Value("${httpclient.proxy}")
 	private String httpClientProxy;
 
-	public String getMulticajaPaymentUrl()
+	public String getWebpayUrl()
 	{
-		return multicajaPaymentUrl;
+		return webpayUrl;
 	}
 
-	public String getMulticajaPaymentApiKey()
+	public String getWebpayReturnUrl()
 	{
-		return multicajaPaymentApiKey;
+		return webpayReturnUrl;
 	}
 
-	public String getMulticajaPaymentDescription()
+	public String getWebpayFinalUrl()
 	{
-		return multicajaPaymentDescription;
+		return webpayFinalUrl;
 	}
 
-	public String getMulticajaPaymentCurrency()
+	public String getWebpayCommerceUser()
 	{
-		return multicajaPaymentCurrency;
+		return webpayCommerceUser;
 	}
 
-	public String getMulticajaPaymentReturnUrl()
+	public String getWebpayCommercePass()
 	{
-		return multicajaPaymentReturnUrl;
+		return webpayCommercePass;
 	}
 
-	public String getMulticajaPaymentCancelUrl()
+	public String getWebpayCommerceEnv()
 	{
-		return multicajaPaymentCancelUrl;
-	}
-
-	public String getMulticajaPaymentConfirmUrl()
-	{
-		return multicajaPaymentConfirmUrl;
+		return webpayCommerceEnv;
 	}
 
 	public String getHttpClientProxy()
@@ -100,5 +95,10 @@ public class Properties
 	public String getMulticajaUtilitiesCommerce()
 	{
 		return multicajaUtilitiesCommerce;
+	}
+
+	public String getWebpayRedirectError()
+	{
+		return webpayRedirectError;
 	}
 }

@@ -4,6 +4,7 @@ CREATE TABLE public.bills (
   id                    bigserial       not null,
   public_id             varchar(32)     not null,
   status                integer         not null,
+  payment               integer         not null,
   utility               varchar(300)    not null,
   collector             varchar(100)    not null,
   email                 varchar(300)    null,
@@ -18,12 +19,13 @@ CREATE TABLE public.bills (
 );
 
 CREATE INDEX bills_i1 ON public.bills (status);
-CREATE INDEX bills_i2 ON public.bills (utility);
-CREATE INDEX bills_i3 ON public.bills (collector);
-CREATE INDEX bills_i4 ON public.bills (email);
-CREATE INDEX bills_i5 ON public.bills (identifier);
-CREATE INDEX bills_i6 ON public.bills (transaction_id);
-CREATE INDEX bills_i7 ON public.bills (created);
+CREATE INDEX bills_i2 ON public.bills (payment);
+CREATE INDEX bills_i3 ON public.bills (utility);
+CREATE INDEX bills_i4 ON public.bills (collector);
+CREATE INDEX bills_i5 ON public.bills (email);
+CREATE INDEX bills_i6 ON public.bills (identifier);
+CREATE INDEX bills_i7 ON public.bills (transaction_id);
+CREATE INDEX bills_i8 ON public.bills (created);
 
 -- migrate:down
 DROP TABLE public.bills;

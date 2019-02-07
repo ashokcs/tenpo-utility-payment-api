@@ -13,8 +13,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "payments")
-public class Payment
+@Table(name = "webpay_payments")
+public class WebpayPayment
 {
 	public static final Long STATUS_PENDING = 0L;
 
@@ -26,21 +26,26 @@ public class Payment
 
 	@Column(updatable = false)
 	@JsonIgnore
-	private String publicId;
-
-	@Column(updatable = false)
-	@JsonIgnore
 	private Long billId;
 
 	@JsonIgnore
 	private Long status;
 
 	@Column(updatable = false)
-	@JsonIgnore
-	private Long orderId;
+	private String token;
 
 	@Column(updatable = false)
-	private String redirectUrl;
+	private String url;
+
+	private Integer responseCode;
+
+	private String authCode;
+
+	private String card;
+
+	private String paymentType;
+
+	private Integer shares;
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
@@ -66,16 +71,6 @@ public class Payment
 		this.id = id;
 	}
 
-	public String getPublicId()
-	{
-		return publicId;
-	}
-
-	public void setPublicId(final String publicId)
-	{
-		this.publicId = publicId;
-	}
-
 	public Long getBillId()
 	{
 		return billId;
@@ -96,24 +91,74 @@ public class Payment
 		this.status = status;
 	}
 
-	public Long getOrderId()
+	public String getToken()
 	{
-		return orderId;
+		return token;
 	}
 
-	public void setOrderId(final Long orderId)
+	public void setToken(final String token)
 	{
-		this.orderId = orderId;
+		this.token = token;
 	}
 
-	public String getRedirectUrl()
+	public String getUrl()
 	{
-		return redirectUrl;
+		return url;
 	}
 
-	public void setRedirectUrl(final String redirectUrl)
+	public void setUrl(final String url)
 	{
-		this.redirectUrl = redirectUrl;
+		this.url = url;
+	}
+
+	public Integer getResponseCode()
+	{
+		return responseCode;
+	}
+
+	public void setResponseCode(final Integer responseCode)
+	{
+		this.responseCode = responseCode;
+	}
+
+	public String getAuthCode()
+	{
+		return authCode;
+	}
+
+	public void setAuthCode(final String authCode)
+	{
+		this.authCode = authCode;
+	}
+
+	public String getCard()
+	{
+		return card;
+	}
+
+	public void setCard(final String card)
+	{
+		this.card = card;
+	}
+
+	public String getPaymentType()
+	{
+		return paymentType;
+	}
+
+	public void setPaymentType(final String paymentType)
+	{
+		this.paymentType = paymentType;
+	}
+
+	public Integer getShares()
+	{
+		return shares;
+	}
+
+	public void setShares(final Integer shares)
+	{
+		this.shares = shares;
 	}
 
 	public LocalDateTime getCreated()

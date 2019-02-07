@@ -6,25 +6,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cl.multipay.utility.payments.entity.Payment;
-import cl.multipay.utility.payments.repository.PaymentRepository;
+import cl.multipay.utility.payments.entity.WebpayPayment;
+import cl.multipay.utility.payments.repository.WebpayPaymentRepository;
 
 @Service
 public class PaymentService
 {
 	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
-	private final PaymentRepository paymentRepository;
+	private final WebpayPaymentRepository webpayPaymentRepository;
 
-	public PaymentService(final PaymentRepository paymentRepository)
+	public PaymentService(final WebpayPaymentRepository webpayPaymentRepository)
 	{
-		this.paymentRepository =  paymentRepository;
+		this.webpayPaymentRepository =  webpayPaymentRepository;
 	}
 
-	public Optional<Payment> save(final Payment payment)
+	public Optional<WebpayPayment> save(final WebpayPayment payment)
 	{
 		try {
-			return Optional.of(paymentRepository.save(payment));
+			return Optional.of(webpayPaymentRepository.save(payment));
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}

@@ -17,11 +17,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
 @Table(name = "bills")
-@JsonPropertyOrder({"bill_id", "status", "utility", "collector", "identifier", "amount", "due_date", "transaction_id", "email"})
+@JsonPropertyOrder({"bill_id", "status", "payment", "utility", "collector", "identifier", "amount", "due_date", "transaction_id", "email"})
 public class Bill
 {
 	public static final Long STATUS_PENDING = 0L;
 	public static final Long STATUS_WAITING = 10L;
+
+	public static final Integer WEBPAY = 1;
+	public static final Integer TEF = 2;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +37,9 @@ public class Bill
 	private String publicId;
 
 	private Long status;
+
+	@Column(updatable = false)
+	private Integer payment;
 
 	@Column(updatable = false)
 	private String utility;
@@ -193,5 +199,15 @@ public class Bill
 	public void setCollector(final String collector)
 	{
 		this.collector = collector;
+	}
+
+	public Integer getPayment()
+	{
+		return payment;
+	}
+
+	public void setPayment(final Integer payment)
+	{
+		this.payment = payment;
 	}
 }
