@@ -140,14 +140,15 @@ public class BillsControllerTests
 	@Test
 	public void payBill_shouldReturnOk() throws Exception
 	{
-		final String responseEntity = "{\"order_id\":123,\"reference_id\":\"asd\",\"status\":\"pending\",\"redirect_url\":\"http:\\\\bla.com\"}";
+		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.CREATED));
 		final String uuid = createBillMock();
 		final String json = "{}";
 		mockMvc.perform(post("/v1/bills/{id}/pay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.redirect_url").isNotEmpty());
+			.andExpect(jsonPath("$.url").isNotEmpty())
+			.andExpect(jsonPath("$.token").isNotEmpty());
 	}
 
 	@Test
