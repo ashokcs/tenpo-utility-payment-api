@@ -16,7 +16,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "webpay_payments")
 public class WebpayPayment
 {
-	public static final Long STATUS_PENDING = 0L;
+	public static final String STATUS_PENDING = "pending";
+	public static final String STATUS_RESULT = "result";
+	public static final String STATUS_ACK = "ack";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +31,7 @@ public class WebpayPayment
 	private Long billId;
 
 	@JsonIgnore
-	private Long status;
+	private String status;
 
 	@Column(updatable = false)
 	private String token;
@@ -81,12 +83,12 @@ public class WebpayPayment
 		this.billId = billId;
 	}
 
-	public Long getStatus()
+	public String getStatus()
 	{
 		return status;
 	}
 
-	public void setStatus(final Long status)
+	public void setStatus(final String status)
 	{
 		this.status = status;
 	}

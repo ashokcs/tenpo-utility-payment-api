@@ -189,7 +189,7 @@ public class BillsControllerTests
 		final String uuid = Utils.uuid();
 		final Bill bill = new Bill();
 		bill.setPublicId(uuid);
-		bill.setStatus(Bill.STATUS_PENDING);
+		bill.setStatus(Bill.PENDING);
 		bill.setUtility("TEST");
 		bill.setCollector("2");
 		bill.setIdentifier("123123");

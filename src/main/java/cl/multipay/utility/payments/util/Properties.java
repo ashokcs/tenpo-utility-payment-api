@@ -6,8 +6,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class Properties
 {
-	@Value("${webpay.url}")
-	private String webpayUrl;
+	@Value("${webpay.init.url}")
+	private String webpayInitUrl;
+
+	@Value("${webpay.result.url}")
+	private String webpayResultUrl;
+
+	@Value("${webpay.result.ack}")
+	private String webpayAckUrl;
 
 	@Value("${webpay.return-url}")
 	private String webpayReturnUrl;
@@ -42,9 +48,9 @@ public class Properties
 	@Value("${httpclient.proxy}")
 	private String httpClientProxy;
 
-	public String getWebpayUrl()
+	public String getWebpayInitUrl()
 	{
-		return webpayUrl;
+		return webpayInitUrl;
 	}
 
 	public String getWebpayReturnUrl()
@@ -100,5 +106,15 @@ public class Properties
 	public String getWebpayRedirectError()
 	{
 		return webpayRedirectError;
+	}
+
+	public String getWebpayResultUrl()
+	{
+		return webpayResultUrl;
+	}
+
+	public String getWebpayAckUrl()
+	{
+		return webpayAckUrl;
 	}
 }

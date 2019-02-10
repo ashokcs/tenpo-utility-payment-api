@@ -30,4 +30,14 @@ public class PaymentService
 		}
 		return Optional.empty();
 	}
+
+	public Optional<WebpayPayment> getByTokenAndStatus(final String token, final String status)
+	{
+		try {
+			return webpayPaymentRepository.findByTokenAndStatus(token, status);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
 }

@@ -1,19 +1,21 @@
 
 -- migrate:up
+CREATE SEQUENCE public.bills_buy_order_seq MAXVALUE 999 CYCLE;
 CREATE TABLE public.bills (
   id                    bigserial       not null,
   public_id             varchar(32)     not null,
-  status                integer         not null,
-  payment               integer         not null,
+  buy_order             bigint          not null default (to_char(current_timestamp, 'YYYYMMDDHH24MISS')||lpad(nextval('public.bills_buy_order_seq')::VARCHAR, 3, '0'))::bigint,
+  status                varchar(100)    not null,
   utility               varchar(300)    not null,
   collector             varchar(100)    not null,
-  email                 varchar(300)    null,
   identifier            varchar(300)    not null,
   amount                numeric(12,2)   not null,
-  due_date              varchar(100)    null,
-  transaction_id        varchar(100)    null,
-  created               timestamp       not null DEFAULT now(),
-  updated               timestamp       not null DEFAULT now(),
+  due_date              varchar(100)    not null,
+  transaction_id        varchar(100)    not null,
+  payment               varchar(100)    null,
+  email                 varchar(300)    null,
+  created               timestamp       not null default now(),
+  updated               timestamp       not null default now(),
   CONSTRAINT bills_pk PRIMARY KEY (id),
   CONSTRAINT bills_u1 UNIQUE (public_id)
 );
@@ -29,3 +31,4 @@ CREATE INDEX bills_i8 ON public.bills (created);
 
 -- migrate:down
 DROP TABLE public.bills;
+DROP SEQUENCE public.bills_buy_order_seq;

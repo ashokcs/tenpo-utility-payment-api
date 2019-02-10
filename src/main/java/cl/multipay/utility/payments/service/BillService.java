@@ -36,8 +36,13 @@ public class BillService
 		return billRepository.findByPublicId(publicId);
 	}
 
-	public Optional<Bill> findByPublicId(final String publicId, final Long status)
+	public Optional<Bill> findByPublicId(final String publicId, final String status)
 	{
 		return billRepository.findByPublicIdAndStatus(publicId, status);
+	}
+
+	public Optional<Bill> findByIdAndStatus(final Long id, final String status)
+	{
+		return billRepository.findByIdAndStatus(id, status);
 	}
 }

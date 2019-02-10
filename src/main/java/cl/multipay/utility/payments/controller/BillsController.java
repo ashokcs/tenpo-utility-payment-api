@@ -83,8 +83,7 @@ public class BillsController
 		// create bill
 		final Bill bill = new Bill();
 		bill.setPublicId(Utils.uuid());
-		bill.setStatus(Bill.STATUS_PENDING);
-		bill.setPayment(Bill.WEBPAY);
+		bill.setStatus(Bill.PENDING);
 		bill.setUtility(utility);
 		bill.setCollector(collector);
 		bill.setIdentifier(identifier);
@@ -107,7 +106,7 @@ public class BillsController
 	public ResponseEntity<WebpayPayment> pay(@PathVariable("id") final String billPublicId)
 	{
 		// get bill by id and status
-		final Bill bill = billService.findByPublicId(billPublicId, Bill.STATUS_PENDING)
+		final Bill bill = billService.findByPublicId(billPublicId, Bill.PENDING)
 				.orElseThrow(NotFoundException::new);
 
 		// initialize remote payment
@@ -123,7 +122,8 @@ public class BillsController
 		paymentService.save(webpay).orElseThrow(ServerErrorException::new);
 
 		// update bill status
-		bill.setStatus(Bill.STATUS_WAITING);
+		bill.setStatus(Bill.WAITING);
+		bill.setPayment(Bill.WEBPAY);
 		billService.save(bill).orElseThrow(ServerErrorException::new);
 
 		// return redirect url

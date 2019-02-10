@@ -2,7 +2,7 @@
 CREATE TABLE public.webpay_payments (
   id                    bigserial       not null,
   bill_id               bigint          not null,
-  status                integer         not null,
+  status                varchar(100)    not null,
   token                 varchar(100)    not null,
   url                   varchar(300)    not null,
   response_code         integer         null,
