@@ -141,7 +141,7 @@ public class BillsControllerTests
 	public void payBill_shouldReturnOk() throws Exception
 	{
 		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
-		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.CREATED));
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 		final String uuid = createBillMock();
 		final String json = "{}";
 		mockMvc.perform(post("/v1/bills/{id}/pay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
