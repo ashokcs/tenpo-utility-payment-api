@@ -106,12 +106,12 @@ curl --request POST \
 Response
 ```json
 {
-  "bill_id": "9e9a9324f24147d9a454c4f163d52d9a",
-  "status": 0,
-  "identifier": "2312312",
-  "amount": 94290,
+  "bill_id": "efd57e7af34d4189bb705a0e231e0356",
+  "status": "pending",
   "utility": "MUNDO_PACIFICO",
   "collector": "3",
+  "identifier": "2312312",
+  "amount": 94290,
   "due_date": "2015-02-23",
   "transaction_id": "799378736"
 }
@@ -123,62 +123,48 @@ Response
 Request
 ```bash
 curl --request GET \
---url http://localhost:7771/v1/bills/bbd12666fb0e4068a34cb4699afbface \
+--url http://localhost:7771/v1/bills/efd57e7af34d4189bb705a0e231e0356 \
 --header 'Content-Type: application/json'
 ```
 Response
 ```json
 {
-  "bill_id": "9e9a9324f24147d9a454c4f163d52d9a",
-  "status": 0,
+  "bill_id": "efd57e7af34d4189bb705a0e231e0356",
+  "buy_order": "PC201902121743000003",
+  "status": "succeed",
   "utility": "MUNDO_PACIFICO",
   "collector": "3",
   "identifier": "2312312",
   "amount": 94290,
   "due_date": "2015-02-23",
-  "transaction_id": "799378736"
+  "transaction_id": "799378736",
+  "payment": "webpay",
+  "email": "carlos.izquierdo@multicaja.cl"
 }
 ```
 
-## `POST /v1/bills/{id}/pay`
-**Inicia el proceso para pagar un pago de cuenta**
+## `POST /v1/bills/{id}/webpay`
+**Inicia el proceso para pagar un pago de cuenta con webpay**
 
 Request
 ```bash
 curl --request POST \
---url http://localhost:7771/v1/bills/9e9a9324f24147d9a454c4f163d52d9a/pay \
+--url http://localhost:7771/v1/bills/efd57e7af34d4189bb705a0e231e0356/webpay \
 --header 'Content-Type: application/json' \
---data '{"payment_id": 1, "email": "user@email.cl"}'
+--data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```
 Response
 ```json
 {
-  "redirect_url": "https://payments.staging.multicajadigital.cloud/order/5",
-}
-```
-
-## `POST /v1/bills/{id}/payment/{paymentId}/confirm`
-**Confirma un pago de cuenta**
-
-Request
-```bash
-curl --request POST \
---url http://localhost:7771/v1/bills/bbd12666fb0e4068a34cb4699afbface/payment/229e36dcf7864baa8e5094b11d1b5955/confirm \
---header 'Content-Type: application/json' \
---data '{}'
-```
-Response
-```json
-{
+  "token": "e8863e2f2d9e4d83b09d978c18403d6a20f1a6febb40c22d8342b2ae173f1d5b",
+  "url": "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
 }
 ```
 
 # TODOS
 - Implementar migrations, secrets and consul
-- Subir api transbank a Azure
-- Quitar plataforma de pago
-- Implementar pagos con webpay
 - hacer bo
 - hacer reintentos
+- hacer pago tef
 - reportes conciliación
-- aplicar apm
+- hacer pipeline
