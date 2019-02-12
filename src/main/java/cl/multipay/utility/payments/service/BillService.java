@@ -41,9 +41,9 @@ public class BillService
 		return billRepository.findByPublicId(publicId);
 	}
 
-	public Optional<Bill> findByPublicId(final String publicId, final String status)
+	public Optional<Bill> getPendingByPublicId(final String publicId)
 	{
-		return billRepository.findByPublicIdAndStatus(publicId, status);
+		return billRepository.findByPublicIdAndStatus(publicId, Bill.PENDING);
 	}
 
 	public Optional<Bill> getWaitingById(final Long id)

@@ -143,8 +143,8 @@ public class BillsControllerTests
 		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 		final String uuid = createBillMock();
-		final String json = "{}";
-		mockMvc.perform(post("/v1/bills/{id}/pay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		final String json = "{\"email\":\"test@test.cl\"}";
+		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.url").isNotEmpty())
@@ -152,12 +152,24 @@ public class BillsControllerTests
 	}
 
 	@Test
+	public void payBill_shouldReturnBadRequest() throws Exception
+	{
+		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
+		final String uuid = createBillMock();
+		final String json = "{}";
+		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	public void payBill_shouldReturnServerError1() throws Exception
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.NOT_FOUND));
 		final String uuid = createBillMock();
-		final String json = "{}";
-		mockMvc.perform(post("/v1/bills/{id}/pay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		final String json = "{\"email\":\"test@test.cl\"}";
+		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
@@ -167,8 +179,8 @@ public class BillsControllerTests
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.INTERNAL_SERVER_ERROR));
 		final String uuid = createBillMock();
-		final String json = "{}";
-		mockMvc.perform(post("/v1/bills/{id}/pay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		final String json = "{\"email\":\"test@test.cl\"}";
+		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
@@ -178,8 +190,8 @@ public class BillsControllerTests
 	{
 		when(client.execute(any())).thenReturn(null);
 		final String uuid = createBillMock();
-		final String json = "{}";
-		mockMvc.perform(post("/v1/bills/{id}/pay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		final String json = "{\"email\":\"test@test.cl\"}";
+		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}

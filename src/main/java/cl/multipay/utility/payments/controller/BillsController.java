@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.multipay.utility.payments.dto.BillPayRequest;
 import cl.multipay.utility.payments.dto.BillRequest;
 import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.WebpayInitResponse;
@@ -97,23 +98,20 @@ public class BillsController
 	}
 
 	/**
-	 * Inicializa el pago de una cuenta.
+	 * Inicializa el pago de una cuenta mediante webpay.
 	 *
 	 * @param billPublicId Identificador público de la cuenta
 	 * @return Url de redirección para continuar el pago
 	 */
-	@PostMapping("/v1/bills/{id:^[0-9a-f]{32}$}/pay")
-	public ResponseEntity<WebpayPayment> pay(@PathVariable("id") final String billPublicId)
-	{
-		// TODO get payment
-		// TODO get email
-		// TODO return payment object
-
+	@PostMapping("/v1/bills/{id:^[0-9a-f]{32}$}/webpay")
+	public ResponseEntity<WebpayPayment> payWebpay(
+		@PathVariable("id") final String billPublicId,
+		@RequestBody @Valid final BillPayRequest billPayRequest
+	) {
 		// get bill by id and status
-		final Bill bill = billService.findByPublicId(billPublicId, Bill.PENDING)
-				.orElseThrow(NotFoundException::new);
+		final Bill bill = billService.getPendingByPublicId(billPublicId).orElseThrow(NotFoundException::new);
 
-		// initialize remote payment
+		// webpay init payment
 		final WebpayInitResponse webpayResponse = webpayService.init(bill)
 				.orElseThrow(ServerErrorException::new);
 
@@ -125,12 +123,18 @@ public class BillsController
 		webpay.setUrl(webpayResponse.getUrl());
 		paymentService.save(webpay).orElseThrow(ServerErrorException::new);
 
-		// update bill status
+		// update bill status and email
 		bill.setStatus(Bill.WAITING);
 		bill.setPayment(Bill.WEBPAY);
+		bill.setEmail(billPayRequest.getEmail());
 		billService.save(bill).orElseThrow(ServerErrorException::new);
 
 		// return redirect url
 		return ResponseEntity.ok(webpay);
 	}
+
+	// TODO TEF
+	// TODO Subir azure
+	// TODO migrations
+	// TODO buy order string PC
 }
