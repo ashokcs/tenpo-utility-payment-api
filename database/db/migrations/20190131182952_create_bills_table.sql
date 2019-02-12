@@ -17,7 +17,8 @@ CREATE TABLE public.bills (
   created               timestamp       not null default now(),
   updated               timestamp       not null default now(),
   CONSTRAINT bills_pk PRIMARY KEY (id),
-  CONSTRAINT bills_u1 UNIQUE (public_id)
+  CONSTRAINT bills_u1 UNIQUE (public_id),
+  CONSTRAINT bills_u2 UNIQUE (buy_order)
 );
 
 CREATE INDEX bills_i1 ON public.bills (status);

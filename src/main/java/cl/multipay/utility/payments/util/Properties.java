@@ -33,6 +33,12 @@ public class Properties
 	@Value("${webpay.redirect.error}")
 	private String webpayRedirectError;
 
+	@Value("${webpay.redirect.error-order}")
+	private String webpayRedirectErrorOrder;
+
+	@Value("${webpay.redirect.final}")
+	private String webpayRedirectFinal;
+
 	@Value("${multicaja.utilities.terminal}")
 	private String multicajaUtilitiesTerminal;
 
@@ -116,5 +122,15 @@ public class Properties
 	public String getWebpayAckUrl()
 	{
 		return webpayAckUrl;
+	}
+
+	public String getWebpayRedirectFinal()
+	{
+		return webpayRedirectFinal;
+	}
+
+	public String getWebpayRedirectErrorOrder()
+	{
+		return webpayRedirectErrorOrder;
 	}
 }

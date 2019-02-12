@@ -21,7 +21,7 @@ import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.service.BillService;
 import cl.multipay.utility.payments.service.MulticajaService;
-import cl.multipay.utility.payments.service.PaymentService;
+import cl.multipay.utility.payments.service.WebpayPaymentService;
 import cl.multipay.utility.payments.service.WebpayService;
 import cl.multipay.utility.payments.util.Utils;
 
@@ -30,12 +30,12 @@ import cl.multipay.utility.payments.util.Utils;
 public class BillsController
 {
 	private final BillService billService;
-	private final PaymentService paymentService;
+	private final WebpayPaymentService paymentService;
 	private final MulticajaService multicajaService;
 	private final WebpayService webpayService;
 
 	public BillsController(final BillService billService,
-		final PaymentService paymentService, final MulticajaService multicajaService,
+		final WebpayPaymentService paymentService, final MulticajaService multicajaService,
 		final WebpayService webpayService)
 	{
 		this.billService = billService;
@@ -116,7 +116,7 @@ public class BillsController
 		// save payment response
 		final WebpayPayment webpay = new WebpayPayment();
 		webpay.setBillId(bill.getId());
-		webpay.setStatus(WebpayPayment.STATUS_PENDING);
+		webpay.setStatus(WebpayPayment.PENDING);
 		webpay.setToken(webpayResponse.getToken());
 		webpay.setUrl(webpayResponse.getUrl());
 		paymentService.save(webpay).orElseThrow(ServerErrorException::new);

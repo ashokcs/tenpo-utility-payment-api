@@ -10,13 +10,13 @@ import cl.multipay.utility.payments.entity.WebpayPayment;
 import cl.multipay.utility.payments.repository.WebpayPaymentRepository;
 
 @Service
-public class PaymentService
+public class WebpayPaymentService
 {
-	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebpayPaymentService.class);
 
 	private final WebpayPaymentRepository webpayPaymentRepository;
 
-	public PaymentService(final WebpayPaymentRepository webpayPaymentRepository)
+	public WebpayPaymentService(final WebpayPaymentRepository webpayPaymentRepository)
 	{
 		this.webpayPaymentRepository =  webpayPaymentRepository;
 	}
@@ -31,10 +31,20 @@ public class PaymentService
 		return Optional.empty();
 	}
 
-	public Optional<WebpayPayment> getByTokenAndStatus(final String token, final String status)
+	public Optional<WebpayPayment> getPendingByToken(final String token)
 	{
 		try {
-			return webpayPaymentRepository.findByTokenAndStatus(token, status);
+			return webpayPaymentRepository.findByTokenAndStatus(token, WebpayPayment.PENDING);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<WebpayPayment> getAckByToken(final String token)
+	{
+		try {
+			return webpayPaymentRepository.findByTokenAndStatus(token, WebpayPayment.ACK);
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}

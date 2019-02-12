@@ -22,6 +22,8 @@ public class Bill
 {
 	public static final String PENDING = "pending";
 	public static final String WAITING = "waiting";
+	public static final String SUCCEED = "succeed";
+	public static final String FAILED = "failed";
 
 	public static final String WEBPAY = "webpay";
 	public static final String TEF = "tef";

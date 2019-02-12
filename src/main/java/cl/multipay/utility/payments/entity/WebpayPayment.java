@@ -16,9 +16,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "webpay_payments")
 public class WebpayPayment
 {
-	public static final String STATUS_PENDING = "pending";
-	public static final String STATUS_RESULT = "result";
-	public static final String STATUS_ACK = "ack";
+	public static final String PENDING = "pending";
+	public static final String RESULT = "result";
+	public static final String ACK = "ack";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

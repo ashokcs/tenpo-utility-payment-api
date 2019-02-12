@@ -31,6 +31,11 @@ public class BillService
 		return Optional.empty();
 	}
 
+	public Optional<Bill> findById(final Long id)
+	{
+		return billRepository.findById(id);
+	}
+
 	public Optional<Bill> findByPublicId(final String publicId)
 	{
 		return billRepository.findByPublicId(publicId);
@@ -41,8 +46,13 @@ public class BillService
 		return billRepository.findByPublicIdAndStatus(publicId, status);
 	}
 
-	public Optional<Bill> findByIdAndStatus(final Long id, final String status)
+	public Optional<Bill> getWaitingById(final Long id)
 	{
-		return billRepository.findByIdAndStatus(id, status);
+		return billRepository.findByIdAndStatus(id, Bill.WAITING);
+	}
+
+	public Optional<Bill> getSucceedById(final Long id)
+	{
+		return billRepository.findByIdAndStatus(id, Bill.SUCCEED);
 	}
 }
