@@ -30,7 +30,7 @@ sonarqube {
     properties {
         property "sonar.host.url", "https://sonar.tools.multicajadigital.cloud"
         property "sonar.login", "6311608deb37b0d1bb04374dd2c2335bb5c7a3c8"
-        property "sonar.projectName", "multipay-utility-payments-service"
+        property "sonar.projectName", "multipay-utility-payments-api"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.inclusions", "src/main/java/cl/multipay/**/*"
         property "sonar.sourceEncoding", "UTF-8"
