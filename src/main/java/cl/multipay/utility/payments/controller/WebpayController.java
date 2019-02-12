@@ -19,6 +19,7 @@ import cl.multipay.utility.payments.exception.HttpException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.service.BillService;
+import cl.multipay.utility.payments.service.EmailService;
 import cl.multipay.utility.payments.service.WebpayPaymentService;
 import cl.multipay.utility.payments.service.WebpayService;
 import cl.multipay.utility.payments.util.Properties;
@@ -28,18 +29,21 @@ public class WebpayController
 {
 	private static final Logger logger = LoggerFactory.getLogger(WebpayController.class);
 
-	private final Properties pr;
-	private final WebpayService ws;
-	private final WebpayPaymentService ps;
-	private final BillService bs;
+	private final Properties properties;
+	private final WebpayService webpayService;
+	private final WebpayPaymentService webpayPaymentService;
+	private final BillService billService;
+	private final EmailService emailService;
 
-	public WebpayController(final Properties properties, final WebpayService webpayService,
-		final WebpayPaymentService paymentService, final BillService billService)
+	public WebpayController(final Properties properties,
+		final WebpayService webpayService, final WebpayPaymentService paymentService,
+		final BillService billService, final EmailService emailService)
 	{
-		this.pr = properties;
-		this.ws = webpayService;
-		this.ps = paymentService;
-		this.bs = billService;
+		this.properties = properties;
+		this.webpayService = webpayService;
+		this.webpayPaymentService = paymentService;
+		this.billService = billService;
+		this.emailService = emailService;
 	}
 
 	@PostMapping("/v1/payments/webpay/return")
@@ -50,41 +54,41 @@ public class WebpayController
 		try {
 			// get bill and payment
 			final String token = getToken(tokenWs).orElseThrow(ServerErrorException::new);
-			final WebpayPayment webpayPayment = ps.getPendingByToken(token).orElseThrow(NotFoundException::new);
-			final Bill bill = bs.getWaitingById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
+			final WebpayPayment webpayPayment = webpayPaymentService.getPendingByToken(token).orElseThrow(NotFoundException::new);
+			final Bill bill = billService.getWaitingById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
 			buyOrder = bill.getBuyOrder().toString();
 
 			// webpay get result
-			final WebpayResultResponse webpayResultResponse = ws.result(webpayPayment).orElseThrow(ServerErrorException::new);
+			final WebpayResultResponse webpayResultResponse = webpayService.result(webpayPayment).orElseThrow(ServerErrorException::new);
 			webpayPayment.setResponseCode(webpayResultResponse.getDetailResponseCode());
 			webpayPayment.setAuthCode(webpayResultResponse.getDetailAuthorizationCode());
 			webpayPayment.setCard(webpayResultResponse.getCardNumber());
 			webpayPayment.setPaymentType(webpayResultResponse.getDetailPaymentTypeCode());
 			webpayPayment.setShares(webpayResultResponse.getDetailSharesNumber());
 			webpayPayment.setStatus(WebpayPayment.RESULT);
-			ps.save(webpayPayment).orElseThrow(ServerErrorException::new);
+			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
 
 			// webpay ack
-			ws.ack(webpayPayment).orElseThrow(ServerErrorException::new);
+			webpayService.ack(webpayPayment).orElseThrow(ServerErrorException::new);
 			webpayPayment.setStatus(WebpayPayment.ACK);
-			ps.save(webpayPayment).orElseThrow(ServerErrorException::new);
+			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
 
 			// if payment not approved
 			if (isWebpayPaymentApproved(webpayResultResponse) == false) {
 				bill.setStatus(Bill.FAILED);
-				bs.save(bill).orElseThrow(ServerErrorException::new);
+				billService.save(bill).orElseThrow(ServerErrorException::new);
 				return postRedirectEntity(webpayResultResponse.getUrlRedirection(), token);
 			}
 
 			// pay bill
-			// ...
+			// ... TODO
 
 			// update bill
 			bill.setStatus(Bill.SUCCEED);
-			bs.save(bill).orElseThrow(ServerErrorException::new);
+			billService.save(bill).orElseThrow(ServerErrorException::new);
 
 			// send receipt
-			// ...
+			emailService.utilityPaymentReceipt();
 
 			// redirect to webpay
 			return postRedirectEntity(webpayResultResponse.getUrlRedirection(), token);
@@ -97,9 +101,9 @@ public class WebpayController
 
 		// redirect to error page
 		if (buyOrder != null) {
-			return redirectEntity(pr.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString()));
+			return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString()));
 		}
-		return redirectEntity(pr.getWebpayRedirectError());
+		return redirectEntity(properties.getWebpayRedirectError());
 	}
 
 	@PostMapping("/v1/payments/webpay/final")
@@ -111,29 +115,29 @@ public class WebpayController
 		try {
 			// process token_ws (approved, denied)
 			if ((tokenWs != null) && tokenWs.matches("[0-9a-f]{64}")) {
-				final WebpayPayment webpayPayment = ps.getAckByToken(tokenWs).orElseThrow(NotFoundException::new);
-				final Bill bill = bs.findById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
+				final WebpayPayment webpayPayment = webpayPaymentService.getAckByToken(tokenWs).orElseThrow(NotFoundException::new);
+				final Bill bill = billService.findById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
 
 				if (Bill.SUCCEED.equals(bill.getStatus())) {
-					return redirectEntity(pr.getWebpayRedirectFinal().replaceAll("\\{id\\}", bill.getPublicId()));
+					return redirectEntity(properties.getWebpayRedirectFinal().replaceAll("\\{id\\}", bill.getPublicId()));
 				} else {
-					return redirectEntity(pr.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", bill.getBuyOrder().toString()));
+					return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", bill.getBuyOrder().toString()));
 				}
 			}
 
 			// process tbk_token (user cancellation)
 			if ((tbkToken != null) && tbkToken.matches("[0-9a-f]{64}")) {
-				return postRedirectEntity(pr.getWebpayReturnUrl(), tbkToken);
+				return postRedirectEntity(properties.getWebpayReturnUrl(), tbkToken);
 			}
 
 			// process tbk_orden_compra (timeout)
 			if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{17}")) {
-				return redirectEntity(pr.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", tbkOrdenCompra));
+				return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", tbkOrdenCompra));
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return redirectEntity(pr.getWebpayRedirectError());
+		return redirectEntity(properties.getWebpayRedirectError());
 	}
 
 	private Optional<String> getToken(final String token)

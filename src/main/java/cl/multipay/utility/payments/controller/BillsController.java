@@ -105,6 +105,10 @@ public class BillsController
 	@PostMapping("/v1/bills/{id:^[0-9a-f]{32}$}/pay")
 	public ResponseEntity<WebpayPayment> pay(@PathVariable("id") final String billPublicId)
 	{
+		// TODO get payment
+		// TODO get email
+		// TODO return payment object
+
 		// get bill by id and status
 		final Bill bill = billService.findByPublicId(billPublicId, Bill.PENDING)
 				.orElseThrow(NotFoundException::new);

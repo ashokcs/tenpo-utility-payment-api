@@ -42,9 +42,10 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-actuator')
 	implementation('org.springframework.boot:spring-boot-starter-jetty')
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	implementation('org.springframework.boot:spring-boot-starter-mail')
 	implementation('org.apache.httpcomponents:httpclient:4.5.7')
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	runtimeOnly('org.postgresql:postgresql')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
-	testImplementation('com.h2database:h2:1.4.197')
+	testImplementation('org.hsqldb:hsqldb:2.4.1')
 }

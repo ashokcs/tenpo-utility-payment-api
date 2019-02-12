@@ -38,7 +38,7 @@ public class Bill
 	@JsonProperty("bill_id")
 	private String publicId;
 
-	@Column(insertable = false, updatable = false)
+	@Column(insertable = false)  // TODO updateable false
 	private Long buyOrder; // TODO show when inserted
 
 	private String status;
@@ -220,5 +220,10 @@ public class Bill
 	public Long getBuyOrder()
 	{
 		return buyOrder;
+	}
+
+	public void setBuyOrder(final Long buyOrder)
+	{
+		this.buyOrder = buyOrder;
 	}
 }
