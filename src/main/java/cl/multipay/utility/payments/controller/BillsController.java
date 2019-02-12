@@ -136,5 +136,4 @@ public class BillsController
 	// TODO TEF
 	// TODO Subir azure
 	// TODO migrations
-	// TODO buy order string PC
 }

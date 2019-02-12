@@ -171,7 +171,7 @@ public class WebpayControllerTests
 		bill.setEmail("asd@asd.cl");
 		bill.setPayment(Bill.WEBPAY);
 		billService.save(bill);
-		bill.setBuyOrder(20190211211300001L);
+		bill.setBuyOrder("PC201902112113000001");
 		billService.save(bill);
 		return bill;
 	}
