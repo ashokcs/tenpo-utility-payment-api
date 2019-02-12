@@ -31,11 +31,8 @@ public class HttpClientConfig
 	}
 
 	@Bean
-	public CloseableHttpClient closeableHttpClient()
+	public CloseableHttpClient closeableHttpClient(final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager)
 	{
-		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        cm.setMaxTotal(100);
-
         final Builder configBuilder = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
                 .setExpectContinueEnabled(true)
@@ -58,8 +55,16 @@ public class HttpClientConfig
 		final HttpClientBuilder builder = HttpClients.custom();
 		builder.disableAutomaticRetries();
 		builder.disableConnectionState();
-		builder.setConnectionManager(cm);
+		builder.setConnectionManager(poolingHttpClientConnectionManager);
 		builder.setDefaultRequestConfig(defaultRequestConfig);
 		return builder.build();
+	}
+
+	@Bean
+	public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager()
+	{
+		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setMaxTotal(100);
+        return cm;
 	}
 }
