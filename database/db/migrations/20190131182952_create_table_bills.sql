@@ -4,7 +4,7 @@ CREATE SEQUENCE public.bills_buy_order_seq MAXVALUE 9999 CYCLE;
 CREATE TABLE public.bills (
   id                    bigserial       not null,
   public_id             varchar(32)     not null,
-  buy_order             varchar(20)     not null default ('PC'||to_char(current_timestamp, 'YYYYMMDDHH24MISS')||lpad(nextval('public.bills_buy_order_seq')::VARCHAR, 4, '0')),
+  buy_order             bigint          not null default ('1'||to_char(current_timestamp, 'YYYYMMDDHH24MISS')||lpad(nextval('public.bills_buy_order_seq')::VARCHAR, 4, '0'))::bigint,
   status                varchar(100)    not null,
   utility               varchar(300)    not null,
   collector             varchar(100)    not null,

@@ -17,6 +17,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class TransferenciaPayment
 {
 	public static final String PENDING = "PENDING";
+	public static final String PAID = "PAID";
+	public static final String CANCELED = "CANCELED";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +36,10 @@ public class TransferenciaPayment
 	@JsonIgnore
 	@Column(updatable = false)
 	private String publicId;
+
+	@JsonIgnore
+	@Column(updatable = false)
+	private String notifyId;
 
 	@Column(updatable = false)
 	@JsonIgnore
@@ -133,5 +139,15 @@ public class TransferenciaPayment
 	public void setUpdated(final LocalDateTime updated)
 	{
 		this.updated = updated;
+	}
+
+	public String getNotifyId()
+	{
+		return notifyId;
+	}
+
+	public void setNotifyId(final String notifyId)
+	{
+		this.notifyId = notifyId;
 	}
 }

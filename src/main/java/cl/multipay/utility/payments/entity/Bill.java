@@ -39,7 +39,7 @@ public class Bill
 	private String publicId;
 
 	@Column(insertable = false)  // TODO updateable false
-	private String buyOrder; // TODO show when inserted
+	private Long buyOrder; // TODO show when inserted
 
 	private String status;
 
@@ -217,12 +217,12 @@ public class Bill
 		this.payment = payment;
 	}
 
-	public String getBuyOrder()
+	public Long getBuyOrder()
 	{
 		return buyOrder;
 	}
 
-	public void setBuyOrder(final String buyOrder)
+	public void setBuyOrder(final Long buyOrder)
 	{
 		this.buyOrder = buyOrder;
 	}

@@ -43,12 +43,12 @@ public class BillsController
 	private final UtilityPaymentClient utilityPaymentClient;
 
 	public BillsController(final BillService billService,
-		final WebpayPaymentService paymentService, final UtilityPaymentClient utilityPaymentClient,
+		final WebpayPaymentService webpayPaymentService, final UtilityPaymentClient utilityPaymentClient,
 		final WebpayClient webpayClient, final TransferenciaClient transferenciaClient,
 		final TransferenciaPaymentService transferenciaPaymentService)
 	{
 		this.billService = billService;
-		this.webpayPaymentService = paymentService;
+		this.webpayPaymentService = webpayPaymentService;
 		this.utilityPaymentClient = utilityPaymentClient;
 		this.webpayClient = webpayClient;
 		this.transferenciaClient = transferenciaClient;
@@ -155,16 +155,20 @@ public class BillsController
 		@RequestBody @Valid final BillPayRequest billPayRequest
 	) {
 		// get bill by id and status
+		final String tefPublicId = Utils.uuid();
+		final String tefNotifyId = Utils.uuid();
 		final Bill bill = billService.getPendingByPublicId(billPublicId).orElseThrow(NotFoundException::new);
 
 		// transferencia create order
-		final TefCreateOrderResponse tefResponse = transferenciaClient.createOrder(bill).orElseThrow(ServerErrorException::new);
+		final TefCreateOrderResponse tefResponse = transferenciaClient.createOrder(bill, tefPublicId, tefNotifyId)
+				.orElseThrow(ServerErrorException::new);
 
 		// save payment response
 		final TransferenciaPayment transferenciaPayment = new TransferenciaPayment();
 		transferenciaPayment.setBillId(bill.getId());
 		transferenciaPayment.setStatus(TransferenciaPayment.PENDING);
-		transferenciaPayment.setPublicId(Utils.uuid());
+		transferenciaPayment.setPublicId(tefPublicId);
+		transferenciaPayment.setNotifyId(tefNotifyId);
 		transferenciaPayment.setMcOrderId(tefResponse.getMcOrderId());
 		transferenciaPayment.setUrl(tefResponse.getRedirectUrl());
 		transferenciaPaymentService.save(transferenciaPayment).orElseThrow(ServerErrorException::new);

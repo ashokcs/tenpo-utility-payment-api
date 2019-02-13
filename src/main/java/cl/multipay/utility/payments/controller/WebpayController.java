@@ -37,12 +37,12 @@ public class WebpayController
 	private final WebpayClient webpayClient;
 
 	public WebpayController(final Properties properties,
-		final WebpayClient webpayClient, final WebpayPaymentService paymentService,
+		final WebpayClient webpayClient, final WebpayPaymentService webpayPaymentService,
 		final BillService billService, final EmailService emailService)
 	{
 		this.properties = properties;
 		this.webpayClient = webpayClient;
-		this.webpayPaymentService = paymentService;
+		this.webpayPaymentService = webpayPaymentService;
 		this.billService = billService;
 		this.emailService = emailService;
 	}
@@ -50,14 +50,14 @@ public class WebpayController
 	@PostMapping("/v1/payments/webpay/return")
 	public ResponseEntity<?> webpayReturn(
 		@RequestParam(required = false, name = "token_ws") final String tokenWs,
-		@RequestParam(required = false, name = "buy_order") String buyOrder
+		@RequestParam(required = false, name = "buy_order") Long buyOrder
 	) {
 		try {
 			// get bill and payment
 			final String token = getToken(tokenWs).orElseThrow(ServerErrorException::new);
 			final WebpayPayment webpayPayment = webpayPaymentService.getPendingByToken(token).orElseThrow(NotFoundException::new);
 			final Bill bill = billService.getWaitingById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
-			buyOrder = bill.getBuyOrder().toString();
+			buyOrder = bill.getBuyOrder();
 
 			// webpay get result
 			final WebpayResultResponse webpayResultResponse = webpayClient.result(webpayPayment).orElseThrow(ServerErrorException::new);
@@ -101,10 +101,7 @@ public class WebpayController
 		}
 
 		// redirect to error page
-		if (buyOrder != null) {
-			return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString()));
-		}
-		return redirectEntity(properties.getWebpayRedirectError());
+		return redirectEntity(getRedirectErrorUrl(buyOrder));
 	}
 
 	@PostMapping("/v1/payments/webpay/final")
@@ -160,6 +157,14 @@ public class WebpayController
 	private ResponseEntity<?> redirectEntity(final String url)
 	{
 		return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, url).build();
+	}
+
+	private String getRedirectErrorUrl(final Long buyOrder)
+	{
+		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
+			return properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString());
+		}
+		return properties.getWebpayRedirectError();
 	}
 
 	private ResponseEntity<String> postRedirectEntity(final String url, final String token)

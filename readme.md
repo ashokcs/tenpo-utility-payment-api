@@ -62,9 +62,8 @@ psql -h prepaid-postgresql-staging.postgres.database.azure.com -U multipay@prepa
 
 # Transferencia
 ## Production
-- Create Order: https://www.multicaja.cl/bdpcows/CreateOrderWebService
-- Get Order Status: https://www.multicaja.cl/bdpgosws/GetOrderStatusWebService
-- Get Order Status: https://www.multicaja.cl/BDPGetOrderStatus/GetOrderStatusWebService
+Create Order: https://www.multicaja.cl/bdpcows/CreateOrderWebService   
+Get Order Status: https://www.multicaja.cl/BDPGetOrderStatus/GetOrderStatusWebService   
 ```
 commerce_id : 76828790
 branch_id   : 142809
@@ -72,8 +71,29 @@ username    : multicaja
 password    : fJLQRFm67QNnbo
 base64      : bXVsdGljYWphOmZKTFFSRm02N1FObmJv
 ```
-
 ## Development
+Create Order: https://10.170.1.11:9191/bdpcows/CreateOrderWebService   
+Get Order Status: https://10.170.1.11:9191/BDPGetOrderStatus/GetOrderStatusWebService   
+```
+commerce_id : 16086857
+branch_id   : 118890
+username    : EcommerceWebRole
+password    : EcommerceWebRole
+base64      : RWNvbW1lcmNlV2ViUm9sZTpFY29tbWVyY2VXZWJSb2xl
+User        : 10964112-K:1313
+```
+
+## Notify Request
+```
+HTTP request - http://localhost:7771/v1/payments/transferencia/notify/b968349f0e1d4ee7802b08d944027670/1cbc544079894abc895bf74a5862563e/]---
+Accept: text/xml, multipart/related
+Authorization: Basic aHlheXZ1NThhSzhTU0Z5SFZxZno6Ym55a0hHWjhyS1Jackp2UjZIOU0=
+Content-Type: text/xml; charset=utf-8
+SOAPAction: "http://www.example.cl/ecommerce/NotifyPaymentWeb/notifyPaymentRequest"
+User-Agent: Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown
+
+<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:notifyPayment xmlns:ns2="http://www.example.cl/ecommerce/"><mcOrderId>986916273366660</mcOrderId><ecOrderId>1201902131759160003</ecOrderId></ns2:notifyPayment></S:Body></S:Envelope>
+```
 
 # Endpoints
 
@@ -192,3 +212,4 @@ Response
 - hacer bo
 - api transbank poner api-key
 - api tef poner api-key
+- integrar tef multicaja

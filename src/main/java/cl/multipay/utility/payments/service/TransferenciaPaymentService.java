@@ -30,4 +30,24 @@ public class TransferenciaPaymentService
 		}
 		return Optional.empty();
 	}
+
+	public Optional<TransferenciaPayment> findByPublicId(final String publicId)
+	{
+		try {
+			return transferenciaPaymentRepository.findByPublicId(publicId);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<TransferenciaPayment> getPendingByPublicId(final String publicId)
+	{
+		try {
+			return transferenciaPaymentRepository.findByPublicIdAndStatus(publicId, TransferenciaPayment.PENDING);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
 }

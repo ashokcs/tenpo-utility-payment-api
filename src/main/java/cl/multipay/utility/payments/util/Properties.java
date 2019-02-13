@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class Properties
 {
-
 	/* Webpay */
 	@Value("${webpay.init.url}") private String webpayInitUrl;
 	@Value("${webpay.result.url}") private String webpayResultUrl;
@@ -21,22 +20,29 @@ public class Properties
 	@Value("${webpay.redirect.final}") private String webpayRedirectFinal;
 
 	/* Transferencia */
+	@Value("${transferencia.basic-auth}") private String transferenciaBasicAuth;
+	@Value("${transferencia.commerce-id}") private String transferenciaCommerceId;
+	@Value("${transferencia.branch-id}") private String transferenciaBranchId;
+	@Value("${transferencia.get-order-status.url}") private String transferenciaGetOrderStatusUrl;
 	@Value("${transferencia.create-order.url}") private String transferenciaCreateOrderUrl;
-	@Value("${transferencia.create-order.basic-auth}") private String transferenciaCreateOrderBasicAuth;
-	@Value("${transferencia.create-order.commerce-id}") private String transferenciaCreateOrderCommerceId;
-	@Value("${transferencia.create-order.branch-id}") private String transferenciaCreateOrderBranchId;
 	@Value("${transferencia.create-order.description}") private String transferenciaCreateOrderDescription;
 	@Value("${transferencia.create-order.request-duration}") private int transferenciaCreateOrderRequestDuration;
 	@Value("${transferencia.create-order.go-back-url}") private String transferenciaCreateOrderGoBackUrl;
 	@Value("${transferencia.create-order.notify-url}") private String transferenciaCreateOrderNotifyUrl;
+	@Value("${transferencia.redirect.error}") private String transferenciaRedirectError;
+	@Value("${transferencia.redirect.error-order}") private String transferenciaRedirectErrorOrder;
+	@Value("${transferencia.redirect.final}") private String transferenciaRedirectFinal;
 
 	/* Multicaja Utilities */
-
 	@Value("${multicaja.utilities.terminal}") private String multicajaUtilitiesTerminal;
 	@Value("${multicaja.utilities.commerce}") private String multicajaUtilitiesCommerce;
 	@Value("${multicaja.utilities.url}") private String multicajaUtilitiesUrl;
 	@Value("${multicaja.utilities.bill.url}") private String multicajaUtlitiesBillUrl;
+
+	/* Proxy */
 	@Value("${httpclient.proxy}") private String httpClientProxy;
+	@Value("${httpclient.proxy.exclude}") private String httpClientProxyExclude;
+	@Value("${httpclient.trust.all}") private boolean httpClientTrustAll;
 
 	public String getWebpayInitUrl()
 	{
@@ -123,19 +129,19 @@ public class Properties
 		return transferenciaCreateOrderUrl;
 	}
 
-	public String getTransferenciaCreateOrderBasicAuth()
+	public String getTransferenciaBasicAuth()
 	{
-		return transferenciaCreateOrderBasicAuth;
+		return transferenciaBasicAuth;
 	}
 
-	public String getTransferenciaCreateOrderCommerceId()
+	public String getTransferenciaCommerceId()
 	{
-		return transferenciaCreateOrderCommerceId;
+		return transferenciaCommerceId;
 	}
 
-	public String getTransferenciaCreateOrderBranchId()
+	public String getTransferenciaBranchId()
 	{
-		return transferenciaCreateOrderBranchId;
+		return transferenciaBranchId;
 	}
 
 	public String getTransferenciaCreateOrderDescription()
@@ -156,5 +162,35 @@ public class Properties
 	public String getTransferenciaCreateOrderNotifyUrl()
 	{
 		return transferenciaCreateOrderNotifyUrl;
+	}
+
+	public String getHttpClientProxyExclude()
+	{
+		return httpClientProxyExclude;
+	}
+
+	public boolean isHttpClientTrustAll()
+	{
+		return httpClientTrustAll;
+	}
+
+	public String getTransferenciaRedirectError()
+	{
+		return transferenciaRedirectError;
+	}
+
+	public String getTransferenciaRedirectErrorOrder()
+	{
+		return transferenciaRedirectErrorOrder;
+	}
+
+	public String getTransferenciaGetOrderStatusUrl()
+	{
+		return transferenciaGetOrderStatusUrl;
+	}
+
+	public String getTransferenciaRedirectFinal()
+	{
+		return transferenciaRedirectFinal;
 	}
 }
