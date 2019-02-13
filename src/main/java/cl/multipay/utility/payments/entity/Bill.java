@@ -20,13 +20,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"bill_id", "buy_order", "status", "utility", "collector", "identifier", "amount", "due_date", "transaction_id", "payment", "email"})
 public class Bill
 {
-	public static final String PENDING = "pending";
-	public static final String WAITING = "waiting";
-	public static final String SUCCEED = "succeed";
-	public static final String FAILED = "failed";
+	public static final String PENDING = "PENDING";
+	public static final String WAITING = "WAITING";
+	public static final String SUCCEED = "SUCCEED";
+	public static final String FAILED = "FAILED";
 
-	public static final String WEBPAY = "webpay";
-	public static final String TEF = "tef";
+	public static final String WEBPAY = "WEBPAY";
+	public static final String TRANSFERENCIA = "TRANSFERENCIA";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

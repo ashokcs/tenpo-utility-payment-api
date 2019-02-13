@@ -13,12 +13,10 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "webpay_payments")
-public class WebpayPayment
+@Table(name = "transferencia_payments")
+public class TransferenciaPayment
 {
 	public static final String PENDING = "PENDING";
-	public static final String RESULT = "RESULT";
-	public static final String ACK = "ACK";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,21 +31,15 @@ public class WebpayPayment
 	@JsonIgnore
 	private String status;
 
+	@JsonIgnore
 	@Column(updatable = false)
-	private String token;
+	private String publicId;
 
 	@Column(updatable = false)
+	@JsonIgnore
+	private String mcOrderId;
+
 	private String url;
-
-	private Integer responseCode;
-
-	private String authCode;
-
-	private String card;
-
-	private String paymentType;
-
-	private Integer shares;
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
@@ -93,14 +85,24 @@ public class WebpayPayment
 		this.status = status;
 	}
 
-	public String getToken()
+	public String getPublicId()
 	{
-		return token;
+		return publicId;
 	}
 
-	public void setToken(final String token)
+	public void setPublicId(final String publicId)
 	{
-		this.token = token;
+		this.publicId = publicId;
+	}
+
+	public String getMcOrderId()
+	{
+		return mcOrderId;
+	}
+
+	public void setMcOrderId(final String mcOrderId)
+	{
+		this.mcOrderId = mcOrderId;
 	}
 
 	public String getUrl()
@@ -111,56 +113,6 @@ public class WebpayPayment
 	public void setUrl(final String url)
 	{
 		this.url = url;
-	}
-
-	public Integer getResponseCode()
-	{
-		return responseCode;
-	}
-
-	public void setResponseCode(final Integer responseCode)
-	{
-		this.responseCode = responseCode;
-	}
-
-	public String getAuthCode()
-	{
-		return authCode;
-	}
-
-	public void setAuthCode(final String authCode)
-	{
-		this.authCode = authCode;
-	}
-
-	public String getCard()
-	{
-		return card;
-	}
-
-	public void setCard(final String card)
-	{
-		this.card = card;
-	}
-
-	public String getPaymentType()
-	{
-		return paymentType;
-	}
-
-	public void setPaymentType(final String paymentType)
-	{
-		this.paymentType = paymentType;
-	}
-
-	public Integer getShares()
-	{
-		return shares;
-	}
-
-	public void setShares(final Integer shares)
-	{
-		this.shares = shares;
 	}
 
 	public LocalDateTime getCreated()

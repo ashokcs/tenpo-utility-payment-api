@@ -1,4 +1,4 @@
-package cl.multipay.utility.payments.service;
+package cl.multipay.utility.payments.http;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -12,7 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,15 +24,15 @@ import cl.multipay.utility.payments.entity.Bill;
 import cl.multipay.utility.payments.entity.WebpayPayment;
 import cl.multipay.utility.payments.util.Properties;
 
-@Service
-public class WebpayService
+@Component
+public class WebpayClient
 {
-	private static final Logger logger = LoggerFactory.getLogger(WebpayService.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebpayClient.class);
 
 	private final CloseableHttpClient client;
 	private final Properties properties;
 
-	public WebpayService(final CloseableHttpClient client, final Properties properties)
+	public WebpayClient(final CloseableHttpClient client, final Properties properties)
 	{
 		this.client = client;
 		this.properties = properties;

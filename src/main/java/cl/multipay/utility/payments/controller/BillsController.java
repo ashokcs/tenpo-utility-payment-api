@@ -15,15 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.multipay.utility.payments.dto.BillPayRequest;
 import cl.multipay.utility.payments.dto.BillRequest;
 import cl.multipay.utility.payments.dto.MulticajaBill;
+import cl.multipay.utility.payments.dto.TefCreateOrderResponse;
 import cl.multipay.utility.payments.dto.WebpayInitResponse;
 import cl.multipay.utility.payments.entity.Bill;
+import cl.multipay.utility.payments.entity.TransferenciaPayment;
 import cl.multipay.utility.payments.entity.WebpayPayment;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
+import cl.multipay.utility.payments.http.TransferenciaClient;
+import cl.multipay.utility.payments.http.UtilityPaymentClient;
+import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.service.BillService;
-import cl.multipay.utility.payments.service.MulticajaService;
+import cl.multipay.utility.payments.service.TransferenciaPaymentService;
 import cl.multipay.utility.payments.service.WebpayPaymentService;
-import cl.multipay.utility.payments.service.WebpayService;
 import cl.multipay.utility.payments.util.Utils;
 
 @RestController
@@ -31,18 +35,24 @@ import cl.multipay.utility.payments.util.Utils;
 public class BillsController
 {
 	private final BillService billService;
-	private final WebpayPaymentService paymentService;
-	private final MulticajaService multicajaService;
-	private final WebpayService webpayService;
+	private final WebpayPaymentService webpayPaymentService;
+	private final TransferenciaPaymentService transferenciaPaymentService;
+
+	private final WebpayClient webpayClient;
+	private final TransferenciaClient transferenciaClient;
+	private final UtilityPaymentClient utilityPaymentClient;
 
 	public BillsController(final BillService billService,
-		final WebpayPaymentService paymentService, final MulticajaService multicajaService,
-		final WebpayService webpayService)
+		final WebpayPaymentService paymentService, final UtilityPaymentClient utilityPaymentClient,
+		final WebpayClient webpayClient, final TransferenciaClient transferenciaClient,
+		final TransferenciaPaymentService transferenciaPaymentService)
 	{
 		this.billService = billService;
-		this.paymentService = paymentService;
-		this.multicajaService = multicajaService;
-		this.webpayService = webpayService;
+		this.webpayPaymentService = paymentService;
+		this.utilityPaymentClient = utilityPaymentClient;
+		this.webpayClient = webpayClient;
+		this.transferenciaClient = transferenciaClient;
+		this.transferenciaPaymentService = transferenciaPaymentService;
 	}
 
 	/**
@@ -73,7 +83,7 @@ public class BillsController
 		final String utility = request.getUtility();
 		final String collector = request.getCollector();
 		final String identifier = request.getIdentifier();
-		final MulticajaBill billDetails = multicajaService.getBill(utility, collector)
+		final MulticajaBill billDetails = utilityPaymentClient.getBill(utility, collector)
 				.orElseThrow(ServerErrorException::new);
 
 		// get response
@@ -112,7 +122,7 @@ public class BillsController
 		final Bill bill = billService.getPendingByPublicId(billPublicId).orElseThrow(NotFoundException::new);
 
 		// webpay init payment
-		final WebpayInitResponse webpayResponse = webpayService.init(bill)
+		final WebpayInitResponse webpayResponse = webpayClient.init(bill)
 				.orElseThrow(ServerErrorException::new);
 
 		// save payment response
@@ -121,7 +131,7 @@ public class BillsController
 		webpay.setStatus(WebpayPayment.PENDING);
 		webpay.setToken(webpayResponse.getToken());
 		webpay.setUrl(webpayResponse.getUrl());
-		paymentService.save(webpay).orElseThrow(ServerErrorException::new);
+		webpayPaymentService.save(webpay).orElseThrow(ServerErrorException::new);
 
 		// update bill status and email
 		bill.setStatus(Bill.WAITING);
@@ -133,7 +143,44 @@ public class BillsController
 		return ResponseEntity.ok(webpay);
 	}
 
+	/**
+	 * Inicializa el pago de una cuenta mediante transferencia.
+	 *
+	 * @param billPublicId Identificador público de la cuenta
+	 * @return Url de redirección para continuar el pago
+	 */
+	@PostMapping("/v1/bills/{id:^[0-9a-f]{32}$}/transferencia")
+	public ResponseEntity<TransferenciaPayment> payTef(
+		@PathVariable("id") final String billPublicId,
+		@RequestBody @Valid final BillPayRequest billPayRequest
+	) {
+		// get bill by id and status
+		final Bill bill = billService.getPendingByPublicId(billPublicId).orElseThrow(NotFoundException::new);
+
+		// transferencia create order
+		final TefCreateOrderResponse tefResponse = transferenciaClient.createOrder(bill).orElseThrow(ServerErrorException::new);
+
+		// save payment response
+		final TransferenciaPayment transferenciaPayment = new TransferenciaPayment();
+		transferenciaPayment.setBillId(bill.getId());
+		transferenciaPayment.setStatus(TransferenciaPayment.PENDING);
+		transferenciaPayment.setPublicId(Utils.uuid());
+		transferenciaPayment.setMcOrderId(tefResponse.getMcOrderId());
+		transferenciaPayment.setUrl(tefResponse.getRedirectUrl());
+		transferenciaPaymentService.save(transferenciaPayment).orElseThrow(ServerErrorException::new);
+
+		// update bill status and email
+		bill.setStatus(Bill.WAITING);
+		bill.setPayment(Bill.TRANSFERENCIA);
+		bill.setEmail(billPayRequest.getEmail());
+		billService.save(bill).orElseThrow(ServerErrorException::new);
+
+		// return redirect url
+		return ResponseEntity.ok(transferenciaPayment);
+	}
+
 	// TODO TEF
+	// TODO test tef
 	// TODO Subir azure
 	// TODO migrations
 }

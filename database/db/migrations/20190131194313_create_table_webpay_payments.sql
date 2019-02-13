@@ -19,7 +19,7 @@ CREATE TABLE public.webpay_payments (
 );
 
 CREATE INDEX webpay_payments_i1 ON public.webpay_payments (status);
-CREATE INDEX webpay_payments_i3 ON public.webpay_payments (created);
+CREATE INDEX webpay_payments_i2 ON public.webpay_payments (created);
 
 -- migrate:down
 DROP TABLE public.webpay_payments;

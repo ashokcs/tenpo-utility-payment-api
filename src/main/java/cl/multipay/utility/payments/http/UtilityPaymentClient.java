@@ -1,4 +1,4 @@
-package cl.multipay.utility.payments.service;
+package cl.multipay.utility.payments.http;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,15 +26,15 @@ import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.util.Properties;
 
-@Service
-public class MulticajaService
+@Component
+public class UtilityPaymentClient
 {
-	private static final Logger logger = LoggerFactory.getLogger(MulticajaService.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilityPaymentClient.class);
 
 	private final CloseableHttpClient client;
 	private final Properties properties;
 
-	public MulticajaService(final CloseableHttpClient client, final Properties properties)
+	public UtilityPaymentClient(final CloseableHttpClient client, final Properties properties)
 	{
 		this.client = client;
 		this.properties = properties;

@@ -18,10 +18,10 @@ import cl.multipay.utility.payments.entity.WebpayPayment;
 import cl.multipay.utility.payments.exception.HttpException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
+import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.service.BillService;
 import cl.multipay.utility.payments.service.EmailService;
 import cl.multipay.utility.payments.service.WebpayPaymentService;
-import cl.multipay.utility.payments.service.WebpayService;
 import cl.multipay.utility.payments.util.Properties;
 
 @RestController
@@ -30,17 +30,18 @@ public class WebpayController
 	private static final Logger logger = LoggerFactory.getLogger(WebpayController.class);
 
 	private final Properties properties;
-	private final WebpayService webpayService;
 	private final WebpayPaymentService webpayPaymentService;
 	private final BillService billService;
 	private final EmailService emailService;
 
+	private final WebpayClient webpayClient;
+
 	public WebpayController(final Properties properties,
-		final WebpayService webpayService, final WebpayPaymentService paymentService,
+		final WebpayClient webpayClient, final WebpayPaymentService paymentService,
 		final BillService billService, final EmailService emailService)
 	{
 		this.properties = properties;
-		this.webpayService = webpayService;
+		this.webpayClient = webpayClient;
 		this.webpayPaymentService = paymentService;
 		this.billService = billService;
 		this.emailService = emailService;
@@ -59,7 +60,7 @@ public class WebpayController
 			buyOrder = bill.getBuyOrder().toString();
 
 			// webpay get result
-			final WebpayResultResponse webpayResultResponse = webpayService.result(webpayPayment).orElseThrow(ServerErrorException::new);
+			final WebpayResultResponse webpayResultResponse = webpayClient.result(webpayPayment).orElseThrow(ServerErrorException::new);
 			webpayPayment.setResponseCode(webpayResultResponse.getDetailResponseCode());
 			webpayPayment.setAuthCode(webpayResultResponse.getDetailAuthorizationCode());
 			webpayPayment.setCard(webpayResultResponse.getCardNumber());
@@ -69,7 +70,7 @@ public class WebpayController
 			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
 
 			// webpay ack
-			webpayService.ack(webpayPayment).orElseThrow(ServerErrorException::new);
+			webpayClient.ack(webpayPayment).orElseThrow(ServerErrorException::new);
 			webpayPayment.setStatus(WebpayPayment.ACK);
 			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
 

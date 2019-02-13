@@ -1,8 +1,8 @@
-# Multipay: Utility Payments Service
+## Multipay: Utility Payments API
 
-## Development
+# Development
 
-### Docker Compose
+### Docker Compose (for PostgreSQL)
 ```bash
 docker-compose -p multipay_utility up
 docker run -it --rm --link multipay_utility_postgres_1:postgres --net multipay_utility_default postgres:11-alpine psql -h postgres -U multipay
@@ -29,15 +29,17 @@ dbmate rollback # roll back the most recent migration
 dbmate dump     # generate schema.sql
 dbmate wait     # pause until the database is available
 ```
+# Azure
 
-### Azure PostgreSQL Database
+### PostgreSQL Database
 **Default User**  
-Host: prepaid-postgresql-staging.postgres.database.azure.com  
-User: prepago@prepaid-postgresql-staging  
-Pass: GcpeWsJ3EWGBrwYY  
+Host: postgres-db-staging.postgres.database.azure.com  
+User: staging@postgres-db-staging  
+Pass: ??????  
 ```bash
 psql -h prepaid-postgresql-staging.postgres.database.azure.com -U prepago@prepaid-postgresql-staging -d postgres
 ```
+
 **Create Multipay database and user**  
 ```bash
 create user multipay with password 'multipay';
@@ -45,12 +47,28 @@ grant multipay to prepago;
 create database multipay owner multipay;
 revoke multipay from prepago;
 ```
+
 Host: prepaid-postgresql-staging.postgres.database.azure.com  
 User: multipay@prepaid-postgresql-staging  
 Pass: multipay  
 Database: multipay
+
 ```bash
 psql -h prepaid-postgresql-staging.postgres.database.azure.com -U multipay@prepaid-postgresql-staging -d multipay
+```
+
+# Webpay
+...
+
+# Transferencia
+- Create Order: https://www.multicaja.cl/bdpcows/CreateOrderWebService
+- Get Order Status: https://www.multicaja.cl/bdpgosws/GetOrderStatusWebService
+```
+commerce_id : 76828790
+branch_id   : 142809
+username    : multicaja
+password    : fJLQRFm67QNnbo
+base64      : bXVsdGljYWphOmZKTFFSRm02N1FObmJv
 ```
 
 # Endpoints
@@ -162,9 +180,11 @@ Response
 ```
 
 # TODOS
-- Implementar migrations, secrets and consul
-- hacer bo
-- hacer reintentos
+- hacer pipeline, Implementar migrations, secrets and consul
 - hacer pago tef
+- hacer reintentos
 - reportes conciliación
-- hacer pipeline
+- implementar email
+- hacer bo
+- api transbank poner api-key
+- api tef poner api-key

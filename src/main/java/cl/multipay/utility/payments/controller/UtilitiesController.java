@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.exception.ServerErrorException;
-import cl.multipay.utility.payments.service.MulticajaService;
+import cl.multipay.utility.payments.http.UtilityPaymentClient;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class UtilitiesController
 {
-	private final MulticajaService multicajaService;
+	private final UtilityPaymentClient utilityPaymentClient;
 
-	public UtilitiesController(final MulticajaService multicajaService)
+	public UtilitiesController(final UtilityPaymentClient multicajaService)
 	{
-		this.multicajaService = multicajaService;
+		this.utilityPaymentClient = multicajaService;
 	}
 
 	@GetMapping("/v1/utilities")
 	public ResponseEntity<List<Utility>> get()
 	{
-		return ResponseEntity.ok(multicajaService.getUtilities().orElseThrow(ServerErrorException::new));
+		return ResponseEntity.ok(utilityPaymentClient.getUtilities().orElseThrow(ServerErrorException::new));
 	}
 }

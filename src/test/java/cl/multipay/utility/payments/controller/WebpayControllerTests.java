@@ -24,10 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
 import cl.multipay.utility.payments.entity.Bill;
 import cl.multipay.utility.payments.entity.WebpayPayment;
+import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.service.BillService;
 import cl.multipay.utility.payments.service.EmailService;
 import cl.multipay.utility.payments.service.WebpayPaymentService;
-import cl.multipay.utility.payments.service.WebpayService;
 import cl.multipay.utility.payments.util.Properties;
 import cl.multipay.utility.payments.util.Utils;
 
@@ -51,7 +51,7 @@ public class WebpayControllerTests
 	private WebpayPaymentService webpayPaymentService;
 
 	@MockBean
-	private WebpayService webpayService;
+	private WebpayClient webpayClient;
 
 	@MockBean
 	private EmailService emailService;
@@ -79,7 +79,7 @@ public class WebpayControllerTests
 	{
 		final Bill bill = createBillMock(Bill.WAITING);
 		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING);
-		when(webpayService.result(any())).thenReturn(Optional.empty());
+		when(webpayClient.result(any())).thenReturn(Optional.empty());
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", webpayPayment.getToken()))
 			.andDo(print())
 			.andExpect(status().isFound());
@@ -90,8 +90,8 @@ public class WebpayControllerTests
 	{
 		final Bill bill = createBillMock(Bill.WAITING);
 		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING);
-		when(webpayService.result(any())).thenReturn(createWebpayResultResponseMock(bill, 0));
-		when(webpayService.ack(any())).thenReturn(Optional.of(true));
+		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(bill, 0));
+		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", webpayPayment.getToken()))
 			.andDo(print())
 			.andExpect(status().isOk());
@@ -102,8 +102,8 @@ public class WebpayControllerTests
 	{
 		final Bill bill = createBillMock(Bill.WAITING);
 		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING);
-		when(webpayService.result(any())).thenReturn(createWebpayResultResponseMock(bill, -1));
-		when(webpayService.ack(any())).thenReturn(Optional.of(true));
+		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(bill, -1));
+		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", webpayPayment.getToken()))
 			.andDo(print())
 			.andExpect(status().isOk());
