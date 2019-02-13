@@ -61,8 +61,10 @@ psql -h prepaid-postgresql-staging.postgres.database.azure.com -U multipay@prepa
 ...
 
 # Transferencia
+## Production
 - Create Order: https://www.multicaja.cl/bdpcows/CreateOrderWebService
 - Get Order Status: https://www.multicaja.cl/bdpgosws/GetOrderStatusWebService
+- Get Order Status: https://www.multicaja.cl/BDPGetOrderStatus/GetOrderStatusWebService
 ```
 commerce_id : 76828790
 branch_id   : 142809
@@ -70,6 +72,8 @@ username    : multicaja
 password    : fJLQRFm67QNnbo
 base64      : bXVsdGljYWphOmZKTFFSRm02N1FObmJv
 ```
+
+## Development
 
 # Endpoints
 
