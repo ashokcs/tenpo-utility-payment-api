@@ -137,7 +137,7 @@ public class WebpayController
 			}
 
 			// process tbk_orden_compra (timeout)
-			if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{17}")) {
+			if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{19}")) {
 				return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", tbkOrdenCompra));
 			}
 		} catch (final Exception e) {

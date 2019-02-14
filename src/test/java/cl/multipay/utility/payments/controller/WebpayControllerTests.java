@@ -75,8 +75,11 @@ public class WebpayControllerTests
 	@Test
 	public void webpayReturn_shouldReturnFound_withValidParameters() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.WAITING);
-		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000001L;
+		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e1";
+		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING, token);
 		when(webpayClient.result(any())).thenReturn(Optional.empty());
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", webpayPayment.getToken()))
 			.andDo(print())
@@ -86,8 +89,11 @@ public class WebpayControllerTests
 	@Test
 	public void webpayReturn_shouldReturnOk_withValidParametersApproved() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.WAITING);
-		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000002L;
+		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e2";
+		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING, token);
 		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(bill, 0));
 		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", webpayPayment.getToken()))
@@ -98,8 +104,11 @@ public class WebpayControllerTests
 	@Test
 	public void webpayReturn_shouldReturnOk_withValidParametersDenied() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.WAITING);
-		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000003L;
+		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3";
+		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.PENDING, token);
 		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(bill, -1));
 		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", webpayPayment.getToken()))
@@ -118,8 +127,11 @@ public class WebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTokenWsSucced() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.SUCCEED);
-		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000004L;
+		final Bill bill = createBillMock(Bill.SUCCEED, uuid, buyOrder);
+		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e4";
+		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("token_ws", webpayPayment.getToken()))
 			.andDo(print())
 			.andExpect(status().isFound());
@@ -128,8 +140,11 @@ public class WebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTokenWsFailed() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.FAILED);
-		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000005L;
+		final Bill bill = createBillMock(Bill.FAILED, uuid, buyOrder);
+		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e454";
+		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("token_ws", webpayPayment.getToken()))
 			.andDo(print())
 			.andExpect(status().isFound());
@@ -138,8 +153,11 @@ public class WebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTbkToken() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.FAILED);
-		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000006L;
+		final Bill bill = createBillMock(Bill.FAILED, uuid, buyOrder);
+		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e456";
+		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("TBK_TOKEN", webpayPayment.getToken()))
 			.andDo(print())
 			.andExpect(status().isOk());
@@ -148,15 +166,17 @@ public class WebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTbkBuyOrder() throws Exception
 	{
-		final Bill bill = createBillMock(Bill.FAILED);
+		final String uuid = Utils.uuid();
+		final Long buyOrder = 1201902112113000007L;
+		final Bill bill = createBillMock(Bill.FAILED, uuid, buyOrder);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("TBK_ORDEN_COMPRA", bill.getBuyOrder().toString()))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
 
-	private Bill createBillMock(final String status)
+	private Bill createBillMock(final String status, final String uuid, final Long buyOrder)
 	{
-		final String uuid = Utils.uuid();
+		//final String uuid = Utils.uuid();
 		final Bill bill = new Bill();
 		bill.setPublicId(uuid);
 		bill.setStatus(status);
@@ -169,17 +189,19 @@ public class WebpayControllerTests
 		bill.setEmail("asd@asd.cl");
 		bill.setPayment(Bill.WEBPAY);
 		billService.save(bill);
-		bill.setBuyOrder(1201902112113000001L);
+		//bill.setBuyOrder(1201902112113000001L);
+		bill.setBuyOrder(buyOrder);
 		billService.save(bill);
 		return bill;
 	}
 
-	private WebpayPayment createWebpayPaymentMock(final Bill bill, final String status)
+	private WebpayPayment createWebpayPaymentMock(final Bill bill, final String status, final String token)
 	{
 		final WebpayPayment webpay = new WebpayPayment();
 		webpay.setBillId(bill.getId());
 		webpay.setStatus(status);
-		webpay.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
+		//webpay.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
+		webpay.setToken(token);
 		webpay.setUrl("https://webpay3gint.transbank.cl/webpayserver/initTransaction");
 		webpayPaymentService.save(webpay);
 		return webpay;
