@@ -2,6 +2,8 @@ package cl.multipay.utility.payments.controller;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -49,9 +51,11 @@ public class WebpayController
 
 	@PostMapping("/v1/payments/webpay/return")
 	public ResponseEntity<?> webpayReturn(
+		final HttpServletRequest request,
 		@RequestParam(required = false, name = "token_ws") final String tokenWs,
 		@RequestParam(required = false, name = "buy_order") Long buyOrder
 	) {
+		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
 		try {
 			// get bill and payment
 			final String token = getToken(tokenWs).orElseThrow(ServerErrorException::new);
@@ -69,27 +73,29 @@ public class WebpayController
 			webpayPayment.setStatus(WebpayPayment.RESULT);
 			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
 
-			// webpay ack
-			webpayClient.ack(webpayPayment).orElseThrow(ServerErrorException::new);
-			webpayPayment.setStatus(WebpayPayment.ACK);
-			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
+			// if payment approved
+			if (isWebpayPaymentApproved(webpayResultResponse) == true) {
+
+				// pay bill TODO
+				// if pay fail, throw exception
+
+				bill.setStatus(Bill.SUCCEED);
+				billService.save(bill);
+
+				// send receipt
+				emailService.utilityPaymentReceipt();
+			}
 
 			// if payment not approved
 			if (isWebpayPaymentApproved(webpayResultResponse) == false) {
 				bill.setStatus(Bill.FAILED);
 				billService.save(bill).orElseThrow(ServerErrorException::new);
-				return postRedirectEntity(webpayResultResponse.getUrlRedirection(), token);
 			}
 
-			// pay bill
-			// ... TODO
-
-			// update bill
-			bill.setStatus(Bill.SUCCEED);
-			billService.save(bill).orElseThrow(ServerErrorException::new);
-
-			// send receipt
-			emailService.utilityPaymentReceipt();
+			// webpay ack
+			webpayClient.ack(webpayPayment).orElseThrow(ServerErrorException::new);
+			webpayPayment.setStatus(WebpayPayment.ACK);
+			webpayPaymentService.save(webpayPayment);
 
 			// redirect to webpay
 			return postRedirectEntity(webpayResultResponse.getUrlRedirection(), token);
@@ -106,10 +112,12 @@ public class WebpayController
 
 	@PostMapping("/v1/payments/webpay/final")
 	public ResponseEntity<?> webpayFinal(
+		final HttpServletRequest request,
 		@RequestParam(required = false, name = "token_ws") final String tokenWs,
 		@RequestParam(required = false, name = "TBK_TOKEN") final String tbkToken,
 		@RequestParam(required = false, name = "TBK_ORDEN_COMPRA") final String tbkOrdenCompra
 	) {
+		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
 		try {
 			// process token_ws (approved, denied)
 			if ((tokenWs != null) && tokenWs.matches("[0-9a-f]{64}")) {
@@ -154,11 +162,6 @@ public class WebpayController
 		return false;
 	}
 
-	private ResponseEntity<?> redirectEntity(final String url)
-	{
-		return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, url).build();
-	}
-
 	private String getRedirectErrorUrl(final Long buyOrder)
 	{
 		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
@@ -167,8 +170,15 @@ public class WebpayController
 		return properties.getWebpayRedirectError();
 	}
 
+	private ResponseEntity<?> redirectEntity(final String url)
+	{
+		logger.info("<- " + url);
+		return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, url).build();
+	}
+
 	private ResponseEntity<String> postRedirectEntity(final String url, final String token)
 	{
+		logger.info("<- " + url + "?token_ws=" + token);
 		final String body = "<div style=\"background-color: #F7F7F7;position: fixed;top: 0;bottom: 0;left: 0;right: 0;z-index: 9999;\"></div>" +
 				"<form id=\"redirectionForm\" method=\"post\" action=\""+url+"\">" +
 				"  <input type=\"hidden\" name=\"token_ws\" value=\""+token+"\" />" +

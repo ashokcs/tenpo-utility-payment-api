@@ -90,7 +90,6 @@ Accept: text/xml, multipart/related
 Authorization: Basic aHlheXZ1NThhSzhTU0Z5SFZxZno6Ym55a0hHWjhyS1Jackp2UjZIOU0=
 Content-Type: text/xml; charset=utf-8
 SOAPAction: "http://www.example.cl/ecommerce/NotifyPaymentWeb/notifyPaymentRequest"
-User-Agent: Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown
 
 <?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:notifyPayment xmlns:ns2="http://www.example.cl/ecommerce/"><mcOrderId>986916273366660</mcOrderId><ecOrderId>1201902131759160003</ecOrderId></ns2:notifyPayment></S:Body></S:Envelope>
 ```
@@ -200,6 +199,23 @@ Response
 {
   "token": "e8863e2f2d9e4d83b09d978c18403d6a20f1a6febb40c22d8342b2ae173f1d5b",
   "url": "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
+}
+```
+
+## `POST /v1/bills/{id}/transferencia`
+**Inicia el proceso para pagar un pago de cuenta con transferencia**
+
+Request
+```bash
+curl --request POST \
+--url http://localhost:7771/v1/bills/efd57e7af34d4189bb705a0e231e0356/transferencia \
+--header 'Content-Type: application/json' \
+--data '{"email": "carlos.izquierdo@multicaja.cl"}'
+```
+Response
+```json
+{
+    "url": "https://10.170.1.11:9191/bdp/order.xhtml?id=394939009565861"
 }
 ```
 

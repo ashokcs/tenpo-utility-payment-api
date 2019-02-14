@@ -10,4 +10,5 @@ public interface TransferenciaPaymentRepository extends JpaRepository<Transferen
 {
 	Optional<TransferenciaPayment> findByPublicId(final String publicId);
 	Optional<TransferenciaPayment> findByPublicIdAndStatus(final String publicId, final String status);
+	Optional<TransferenciaPayment> findByPublicIdAndNotifyIdAndStatus(final String publicId, final String notifyId, final String status);
 }

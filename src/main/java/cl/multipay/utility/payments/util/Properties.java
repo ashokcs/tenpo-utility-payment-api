@@ -21,6 +21,7 @@ public class Properties
 
 	/* Transferencia */
 	@Value("${transferencia.basic-auth}") private String transferenciaBasicAuth;
+	@Value("${transferencia.notify-basic-auth}") private String transferenciaNotifyBasicAuth;
 	@Value("${transferencia.commerce-id}") private String transferenciaCommerceId;
 	@Value("${transferencia.branch-id}") private String transferenciaBranchId;
 	@Value("${transferencia.get-order-status.url}") private String transferenciaGetOrderStatusUrl;
@@ -192,5 +193,10 @@ public class Properties
 	public String getTransferenciaRedirectFinal()
 	{
 		return transferenciaRedirectFinal;
+	}
+
+	public String getTransferenciaNotifyBasicAuth()
+	{
+		return transferenciaNotifyBasicAuth;
 	}
 }
