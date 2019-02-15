@@ -89,20 +89,13 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: multipay-utility-payments-api-se
+  name: multipay-utility-payments-api-se-db
   namespace: multipay-utility-payments-api-ns
 spec:
   hosts:
-    - postgres-db-staging.postgres.database.azure.com
-    - api.tools.multicajadigital.cloud
+    - "postgres-db-staging.postgres.database.azure.com"
   location: MESH_EXTERNAL
   ports:
     - number: 5432
-      name: tcp-multipay-utility-payments-api-se
+      name: tcp-multipay-utility-payments-api-se-db
       protocol: TCP
-    - number: 80
-      name: http-multipay-utility-payments-api-se
-      protocol: HTTP
-    - number: 443
-      name: https-multipay-utility-payments-api-se
-      protocol: HTTPS
