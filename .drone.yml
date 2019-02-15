@@ -29,6 +29,16 @@ pipeline:
       event:
         - push
         - pull_request
+  docker:
+    registry: mccontainerregistry.azurecr.io
+    image: plugins/docker
+    repo: mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api
+    secrets: [ docker_username, docker_password ]
+    tags:
+      - ${DRONE_COMMIT_SHA}
+    when:
+      event: 
+        - push
   migrate:
     image: alpine:3.8
     commands:

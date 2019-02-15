@@ -31,11 +31,11 @@ dbmate wait     # pause until the database is available
 ```
 # Azure
 
-### Staging PostgreSQL Database
+### **Staging PostgreSQL Database**
 
 **Default User**  
-Host: postgres-db-staging.postgres.database.azure.com:5432
-User: staging@postgres-db-staging
+Host: postgres-db-staging.postgres.database.azure.com:5432  
+User: staging@postgres-db-staging  
 Pass: YDVxBXJSLNMjY8bf  
 ```bash
 psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging -d multipay
@@ -47,6 +47,12 @@ create user multipay with password 'multipay';
 grant multipay to prepago;
 create database multipay owner multipay;
 revoke multipay from prepago;
+```
+
+### **Container Registry**
+```
+Username: McContainerRegistry (docker_username)
+Password: hwtF4xp8V2dhxWPCGv=ODCTEWgJTgTVc (docker_password)
 ```
 
 # Webpay
