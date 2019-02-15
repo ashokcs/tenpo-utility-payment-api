@@ -2,6 +2,9 @@ package cl.multipay.utility.payments.service;
 
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,18 +17,23 @@ public class BillService
 {
 	private static final Logger logger = LoggerFactory.getLogger(BillService.class);
 
+	private final EntityManager entityManager;
 	private final BillRepository billRepository;
 
-	public BillService(final BillRepository billRepository)
+	public BillService(final BillRepository billRepository, final EntityManager entityManager)
 	{
 		this.billRepository = billRepository;
+		this.entityManager = entityManager;
 	}
 
+	@Transactional
 	public Optional<Bill> save(final Bill bill)
 	{
 		try {
-			return Optional.of(billRepository.save(bill));
-		} catch (final Throwable e) {
+			final Bill saved = billRepository.save(bill);
+			entityManager.refresh(saved);
+			return Optional.of(saved);
+		} catch (final Exception		 e) {
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();

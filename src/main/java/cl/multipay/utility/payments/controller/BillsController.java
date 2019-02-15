@@ -182,9 +182,6 @@ public class BillsController
 		// return redirect url
 		return ResponseEntity.ok(transferenciaPayment);
 	}
-
-	// TODO TEF
-	// TODO test tef
 	// TODO Subir azure
 	// TODO migrations
 }
