@@ -78,6 +78,17 @@ pipeline:
     when:
       event: 
         - push
+  staging:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    cluster: staging
+    template: deployment.yml
+    vars:
+      - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}
+      - DB_HOST_PORT=postgres-db-staging.postgres.database.azure.com:5432
+    when:
+      branch: master
+      event:
+        - push
   slack:
     image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
     channel: multipay-ci
