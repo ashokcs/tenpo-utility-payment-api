@@ -34,11 +34,11 @@ dbmate wait     # pause until the database is available
 ### Staging PostgreSQL Database
 
 **Default User**  
-Host: postgres-db-staging.postgres.database.azure.com  
-User: staging@postgres-db-staging  
-Pass: ??????  
+Host: postgres-db-staging.postgres.database.azure.com:5432
+User: staging@postgres-db-staging
+Pass: YDVxBXJSLNMjY8bf  
 ```bash
-psql -h prepaid-postgresql-staging.postgres.database.azure.com -U prepago@prepaid-postgresql-staging -d postgres
+psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging -d multipay
 ```
 
 **Create Multipay database and user**  
