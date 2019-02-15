@@ -37,6 +37,7 @@ pipeline:
       - ls -la
       - rm -f dbmate
       - rm -f .env
+      - chmod +x dbmate-linux-musl-amd64
       - ./dbmate-linux-musl-amd64 up
     when:
       event:
