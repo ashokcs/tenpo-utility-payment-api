@@ -48,15 +48,6 @@ create database multipay owner multipay;
 revoke multipay from prepago;
 ```
 
-Host: prepaid-postgresql-staging.postgres.database.azure.com  
-User: multipay@prepaid-postgresql-staging  
-Pass: multipay  
-Database: multipay
-
-```bash
-psql -h prepaid-postgresql-staging.postgres.database.azure.com -U multipay@prepaid-postgresql-staging -d multipay
-```
-
 # Webpay
 ...
 

@@ -9,6 +9,16 @@ pipeline:
       event:
         - push
         - pull_request
+  build:
+    image: openjdk:8-alpine
+    environment:
+      - GRADLE_USER_HOME=~/.gradle
+    commands:
+      - ./gradlew build
+    when:
+      event:
+        - push
+        - pull_request
   sonarqube:
     image: openjdk:8-alpine
     environment:
@@ -19,6 +29,15 @@ pipeline:
       event:
         - push
         - pull_request
+  migrate:
+    image: alpine:3.8
+    commands:
+      - cd database
+      - rm -f .env
+      - ./dbmate up
+    when:
+      event:
+        - push
   slack:
     image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
     channel: multipay-ci
