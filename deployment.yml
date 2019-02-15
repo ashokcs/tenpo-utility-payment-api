@@ -94,7 +94,7 @@ metadata:
 spec:
   hosts:
     - postgres-db-staging.postgres.database.azure.com
-    - https://api.tools.multicajadigital.cloud/apm
+    - api.tools.multicajadigital.cloud/apm
   location: MESH_EXTERNAL
   ports:
     - number: 5432
