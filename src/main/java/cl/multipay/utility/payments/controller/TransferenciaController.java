@@ -116,7 +116,6 @@ public class TransferenciaController
 	 * @param id
 	 * @return
 	 */
-	// TODO revisar flujo
 	@GetMapping("/v1/payments/transferencia/return/{id}")
 	public ResponseEntity<?> transferenciaReturn(final HttpServletRequest request, @PathVariable("id") final String id)
 	{
