@@ -37,7 +37,7 @@ pipeline:
       - chmod +x dbmate-linux-musl-amd64
       - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
       - tar xvf consul-template_0.19.5_linux_amd64.tgz
-      - ./consul-template -template ".env-staging:.env" -once
+      - ./consul-template -template ".env-staging.tmpl:.env" -once
       - cat .env
       #- ./dbmate-linux-musl-amd64 up
     secrets:
