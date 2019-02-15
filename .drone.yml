@@ -32,11 +32,12 @@ pipeline:
   migrate:
     image: alpine:3.8
     commands:
-      - apk add --no-cache bash
       - cd database
+      - wget https://github.com/amacneil/dbmate/releases/download/v1.4.1/dbmate-linux-musl-amd64
       - ls -la
+      - rm -f dbmate
       - rm -f .env
-      - ./dbmate up
+      - ./dbmate-linux-musl-amd64 up
     when:
       event:
         - push
