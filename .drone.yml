@@ -33,6 +33,7 @@ pipeline:
     image: alpine:3.8
     commands:
       - cd database
+      - ls -la
       - rm -f .env
       - ./dbmate up
     when:
