@@ -31,7 +31,8 @@ dbmate wait     # pause until the database is available
 ```
 # Azure
 
-### PostgreSQL Database
+### Staging PostgreSQL Database
+
 **Default User**  
 Host: postgres-db-staging.postgres.database.azure.com  
 User: staging@postgres-db-staging  
