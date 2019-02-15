@@ -38,7 +38,7 @@ Host: postgres-db-staging.postgres.database.azure.com:5432
 User: staging@postgres-db-staging  
 Pass: YDVxBXJSLNMjY8bf  
 ```bash
-psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging -d multipay
+psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging@postgres-db-staging -d multipay
 ```
 
 **Create Multipay database and user**  
