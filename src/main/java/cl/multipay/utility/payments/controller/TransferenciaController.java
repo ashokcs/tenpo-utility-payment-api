@@ -104,9 +104,8 @@ public class TransferenciaController
 				// return ok
 				return ResponseEntity.ok(notifyResponse());
 			}
-
 		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -148,7 +147,7 @@ public class TransferenciaController
 				billService.save(bill).orElseThrow(ServerErrorException::new);;
 			}
 		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage());
 		}
 
 		// redirect to error page
