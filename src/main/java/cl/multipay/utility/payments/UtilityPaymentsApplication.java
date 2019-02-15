@@ -11,13 +11,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class UtilityPaymentsApplication
 {
 
-	@Value("${spring.datasource.url}")
+	@Value("${spring.datasource.url:}")
 	private String dsUrl;
 
-	@Value("${spring.datasource.username}")
+	@Value("${spring.datasource.username:}")
 	private String dsUser;
 
-	@Value("${spring.datasource.password}")
+	@Value("${spring.datasource.password:}")
 	private String dsPass;
 
 	@Bean
