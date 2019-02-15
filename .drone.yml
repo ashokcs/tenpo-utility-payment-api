@@ -19,16 +19,16 @@ pipeline:
       event:
         - push
         - pull_request
-  sonarqube:
-    image: openjdk:8-alpine
-    environment:
-      - GRADLE_USER_HOME=~/.gradle
-    commands:
-      - ./gradlew sonarqube
-    when:
-      event:
-        - push
-        - pull_request
+  # sonarqube:
+  #   image: openjdk:8-alpine
+  #   environment:
+  #     - GRADLE_USER_HOME=~/.gradle
+  #   commands:
+  #     - ./gradlew sonarqube
+  #   when:
+  #     event:
+  #       - push
+  #       - pull_request
   migrate:
     image: alpine:3.8
     commands:
