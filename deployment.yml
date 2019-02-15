@@ -33,6 +33,8 @@ spec:
               value: ${DB_HOST}
             - name: DB_PORT
               value: "${DB_PORT}"
+            - name: DB_USER_HOST
+              value: ${DB_USER_HOST}
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
