@@ -32,6 +32,7 @@ pipeline:
   migrate:
     image: alpine:3.8
     commands:
+      - apk add --no-cache bash
       - cd database
       - ls -la
       - rm -f .env
