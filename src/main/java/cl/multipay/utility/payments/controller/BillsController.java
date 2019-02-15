@@ -184,4 +184,5 @@ public class BillsController
 	}
 	// TODO Subir azure
 	// TODO migrations
+	// TODO dejar host db parameter
 }

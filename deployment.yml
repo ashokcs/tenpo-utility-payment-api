@@ -85,3 +85,17 @@ spec:
           host: multipay-utility-payments-api-svc
           port:
             number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: multipay-utility-payments-api-db
+  namespace: multipay-utility-payments-api-ns
+spec:
+  hosts:
+  - "${DB_HOST}"
+  location: MESH_EXTERNAL
+  ports:
+  - number: ${DB_PORT}
+    name: tcp-multipay-utility-payments-api-db
+    protocol: TCP
