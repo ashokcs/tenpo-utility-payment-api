@@ -29,8 +29,10 @@ spec:
           ports:
             - containerPort: 80
           env:
-            - name: DB_HOST_PORT
-              value: ${DB_HOST_PORT}
+            - name: DB_HOST
+              value: ${DB_HOST}
+            - name: DB_PORT
+              value: ${DB_PORT}
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
