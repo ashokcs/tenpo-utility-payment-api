@@ -32,7 +32,7 @@ pipeline:
   docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
-    target: production
+    target: staging
     repo: mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api
     secrets: [ docker_username, docker_password ]
     tags:
@@ -63,7 +63,7 @@ pipeline:
     commands:
       - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
       - tar xvf consul-template_0.19.5_linux_amd64.tgz
-      - ./consul-template -template "secrets.yml.tmpl:secrets-staging.yml" -once
+      - ./consul-template -template "secrets-staging.yml.tmpl:secrets-staging.yml" -once
     secrets:
       - source: consul_http_addr
         target: CONSUL_HTTP_ADDR
