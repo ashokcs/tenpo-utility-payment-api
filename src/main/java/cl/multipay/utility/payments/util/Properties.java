@@ -36,6 +36,7 @@ public class Properties
 
 	/* Multicaja Utilities */
 	@Value("${multicaja.utilities.terminal}") private String multicajaUtilitiesTerminal;
+	@Value("${multicaja.utilities.channel}") private String multicajaUtilitiesChannel;
 	@Value("${multicaja.utilities.commerce}") private String multicajaUtilitiesCommerce;
 	@Value("${multicaja.utilities.url}") private String multicajaUtilitiesUrl;
 	@Value("${multicaja.utilities.bill.url}") private String multicajaUtlitiesBillUrl;
@@ -198,5 +199,10 @@ public class Properties
 	public String getTransferenciaNotifyBasicAuth()
 	{
 		return transferenciaNotifyBasicAuth;
+	}
+
+	public String getMulticajaUtilitiesChannel()
+	{
+		return multicajaUtilitiesChannel;
 	}
 }

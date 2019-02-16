@@ -189,4 +189,5 @@ public class BillsController
 	// TODO rename properties redirect to front
 	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
+	// TODO bo totalizadores
 }

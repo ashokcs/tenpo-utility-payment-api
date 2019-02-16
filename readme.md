@@ -92,6 +92,14 @@ SOAPAction: "http://www.example.cl/ecommerce/NotifyPaymentWeb/notifyPaymentReque
 <?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:notifyPayment xmlns:ns2="http://www.example.cl/ecommerce/"><mcOrderId>986916273366660</mcOrderId><ecOrderId>1201902131759160003</ecOrderId></ns2:notifyPayment></S:Body></S:Envelope>
 ```
 
+# Pago de cuentas
+```
+https://apidev.mcdesaqa.cl/bill_payment/agreements_data  
+https://apidev.mcdesaqa.cl/bill_payment/debt_data  
+
+API-KEY: SBBcjF38qNaOASyyPu596dBzdjITzii3 
+```
+
 # Endpoints
 
 ## `GET /v1/utilities`

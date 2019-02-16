@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -44,7 +43,17 @@ public class UtilityPaymentClient
 	{
 		try {
 			final String url = properties.getMulticajaUtilitiesUrl();
-			final HttpGet request = new HttpGet(url);
+
+			final ObjectMapper mapper = new ObjectMapper();
+			final ObjectNode jsonObject = mapper.createObjectNode();
+			jsonObject.put("terminal", properties.getMulticajaUtilitiesTerminal());
+			jsonObject.put("channel", properties.getMulticajaUtilitiesChannel());
+			final String json = mapper.writeValueAsString(jsonObject);
+
+			final HttpPost request = new HttpPost(url);
+			request.setHeader("Content-Type", "application/json");
+			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
@@ -54,9 +63,7 @@ public class UtilityPaymentClient
 
 				if (response.getStatusLine().getStatusCode() == 200) {
 
-					final ObjectMapper mapper = new ObjectMapper();
 					final JsonNode utilitiesJsonNode = mapper.readTree(body);
-
 					final JsonNode data = utilitiesJsonNode.get("data");
 					final JsonNode utilities = data.get("convenios");
 					if (utilities.isArray()) {
@@ -114,7 +121,7 @@ public class UtilityPaymentClient
 			jsonObject.put("commerce_id", properties.getMulticajaUtilitiesCommerce());
 			jsonObject.put("firm", utility);
 			jsonObject.put("collector", collector);
-			jsonObject.put("payment_id", "1");
+			jsonObject.put("payment_id", "1"); // TODO
 			final String json = mapper.writeValueAsString(jsonObject);
 
 			final HttpPost request = new HttpPost(url);
