@@ -101,7 +101,7 @@ public class BillsController
 		bill.setAmount(amount);
 		bill.setDueDate(dueDate);
 		bill.setTransactionId(transactionId);
-		billService.save(bill).orElseThrow(ServerErrorException::new);
+		billService.saveAndRefresh(bill).orElseThrow(ServerErrorException::new);
 
 		// return bill
 		return ResponseEntity.status(HttpStatus.CREATED).body(bill);

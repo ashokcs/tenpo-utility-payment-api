@@ -27,12 +27,22 @@ public class BillService
 	}
 
 	@Transactional
-	public Optional<Bill> save(final Bill bill)
+	public Optional<Bill> saveAndRefresh(final Bill bill)
 	{
 		try {
 			final Bill saved = billRepository.save(bill);
 			entityManager.refresh(saved);
 			return Optional.of(saved);
+		} catch (final Exception		 e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<Bill> save(final Bill bill)
+	{
+		try {
+			return Optional.of(billRepository.save(bill));
 		} catch (final Exception		 e) {
 			logger.error(e.getMessage(), e);
 		}
