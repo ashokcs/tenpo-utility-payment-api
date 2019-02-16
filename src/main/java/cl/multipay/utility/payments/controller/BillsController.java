@@ -184,5 +184,7 @@ public class BillsController
 	}
 	// TODO Subir azure
 	// TODO migrations
-	// TODO dejar host db parameter
+	// TODO dejar host db parameter en properties
+	// TODO docker file staging production env
+	// TODO rename properties redirect to front
 }
