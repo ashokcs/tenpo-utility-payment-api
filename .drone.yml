@@ -32,6 +32,7 @@ pipeline:
   docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
+    target: staging
     repo: mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api
     secrets: [ docker_username, docker_password ]
     tags:
