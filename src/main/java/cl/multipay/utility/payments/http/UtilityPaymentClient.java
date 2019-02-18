@@ -110,7 +110,7 @@ public class UtilityPaymentClient
 		return Optional.empty();
 	}
 
-	public Optional<MulticajaBill> getBill(final String utility, final String collector)
+	public Optional<MulticajaBill> getBill(final String utility, final String identifier, final String collector)
 	{
 		try {
 			final String url = properties.getMulticajaUtlitiesBillUrl();
@@ -121,7 +121,7 @@ public class UtilityPaymentClient
 			jsonObject.put("commerce_id", properties.getMulticajaUtilitiesCommerce());
 			jsonObject.put("firm", utility);
 			jsonObject.put("collector", collector);
-			jsonObject.put("payment_id", "1"); // TODO
+			jsonObject.put("payment_id", identifier);
 			final String json = mapper.writeValueAsString(jsonObject);
 
 			final HttpPost request = new HttpPost(url);
@@ -137,14 +137,18 @@ public class UtilityPaymentClient
 
 				if (response.getStatusLine().getStatusCode() == 200) {
 					final JsonNode billJsonNode = mapper.readTree(body);
-					final JsonNode dataJsonNode = billJsonNode.get("data");
-					final JsonNode debtsJsonNode = dataJsonNode.get("debts");
-					for(final JsonNode bill : debtsJsonNode) {
-						final MulticajaBill mcBill = new MulticajaBill();
-						mcBill.setTransactionId(dataJsonNode.get("codigo_mc").asText());
-						mcBill.setAmount(bill.get("monto_total").asLong());
-						mcBill.setDueDate(bill.get("fecha_vencimiento").asText());
-						return Optional.of(mcBill);
+					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
+					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
+					if (responseCode.equals(88) && responseMessage.equals("APROBADA")) {
+						final JsonNode dataJsonNode = billJsonNode.get("data");
+						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
+						for(final JsonNode bill : debtsJsonNode) {
+							final MulticajaBill mcBill = new MulticajaBill();
+							mcBill.setTransactionId(dataJsonNode.get("codigo_mc").asText());
+							mcBill.setAmount(bill.get("monto_total").asLong());
+							mcBill.setDueDate(bill.get("fecha_vencimiento").asText());
+							return Optional.of(mcBill);
+						}
 					}
 				}
 			}

@@ -83,7 +83,7 @@ public class BillsController
 		final String utility = request.getUtility();
 		final String collector = request.getCollector();
 		final String identifier = request.getIdentifier();
-		final MulticajaBill billDetails = utilityPaymentClient.getBill(utility, collector)
+		final MulticajaBill billDetails = utilityPaymentClient.getBill(utility, identifier, collector)
 				.orElseThrow(ServerErrorException::new);
 
 		// get response

@@ -6,11 +6,11 @@ import javax.validation.constraints.Pattern;
 public class BillRequest
 {
 	@NotBlank
-	@Pattern(regexp = "^[a-zA-Z\\s\\-\\(\\)\\/_\\.]{3,100}$")
+	@Pattern(regexp = "^[a-zA-Z\\s\\-\\(\\)\\/_\\.]{2,100}$")
 	private String utility;
 
 	@NotBlank
-	@Pattern(regexp = "^[a-z0-9]{3,20}$")
+	@Pattern(regexp = "^[A-Za-z0-9]{2,20}$")
 	private String identifier;
 
 	@NotBlank

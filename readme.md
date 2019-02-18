@@ -94,8 +94,8 @@ SOAPAction: "http://www.example.cl/ecommerce/NotifyPaymentWeb/notifyPaymentReque
 
 # Pago de cuentas
 ```
-https://apidev.mcdesaqa.cl/bill_payment/agreements_data  
-https://apidev.mcdesaqa.cl/bill_payment/debt_data  
+https://apidev.mcdesaqa.cl/bill_payment/agreements_data (https://pastebin.com/wGC0VpDn)  
+https://apidev.mcdesaqa.cl/bill_payment/debt_data (https://pastebin.com/SGN1kLCz)  
 
 API-KEY: SBBcjF38qNaOASyyPu596dBzdjITzii3 
 ```
