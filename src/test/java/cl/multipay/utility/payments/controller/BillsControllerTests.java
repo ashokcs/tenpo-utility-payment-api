@@ -78,7 +78,7 @@ public class BillsControllerTests
 	}
 
 	@Test
-	public void createBill_shouldReturnOk() throws Exception
+	public void createBill_shouldReturnCreated() throws Exception
 	{
 		final String responseEntity = "{\"response_code\":88,\"response_message\":\"APROBADA\",\"data\":{\"codigo_mc\":\"799378736\","
 				+ "\"authorization_code\":\"\",\"debts\":[{\"fecha_vencimiento\":\"2015-02-23\",\"monto_pago\":94295,\"monto_total\":94290"
@@ -90,6 +90,19 @@ public class BillsControllerTests
 			.andDo(print())
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.bill_id").isNotEmpty());
+	}
+
+	@Test
+	public void createBill_shouldReturnNoContent() throws Exception
+	{
+		final String responseEntity = "{\"response_code\":99,\"response_message\":"
+				+ "\"No se encontro Deuda para este Numero de Documento\",\"data\":{\"codigo_mc\":\"799385026\"}}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
+
+		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\",\"identifier\": \"123\"}";
+		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isNoContent());
 	}
 
 	@Test

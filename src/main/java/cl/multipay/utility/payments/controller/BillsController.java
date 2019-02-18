@@ -1,5 +1,7 @@
 package cl.multipay.utility.payments.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -83,13 +85,18 @@ public class BillsController
 		final String utility = request.getUtility();
 		final String collector = request.getCollector();
 		final String identifier = request.getIdentifier();
-		final MulticajaBill billDetails = utilityPaymentClient.getBill(utility, identifier, collector)
-				.orElseThrow(ServerErrorException::new);
+		final Optional<MulticajaBill> billDetailsOptional = utilityPaymentClient.getBill(utility, identifier, collector);
+
+		// if not present return 204 no content
+		if (!billDetailsOptional.isPresent()) {
+			return ResponseEntity.noContent().build();
+		}
 
 		// get response
-		final Long amount = billDetails.getAmount();
-		final String transactionId = billDetails.getTransactionId();
-		final String dueDate = billDetails.getDueDate();
+		final MulticajaBill multicajaBill = billDetailsOptional.get();
+		final Long amount = multicajaBill.getAmount();
+		final String transactionId = multicajaBill.getTransactionId();
+		final String dueDate = multicajaBill.getDueDate();
 
 		// create bill
 		final Bill bill = new Bill();
