@@ -66,11 +66,9 @@ public class Bill
 	private String email;
 
 	@Column(insertable = false, updatable = false)
-	@JsonIgnore
 	private LocalDateTime created;
 
 	@Column(insertable = false)
-	@JsonIgnore
 	private LocalDateTime updated;
 
 	@PreUpdate

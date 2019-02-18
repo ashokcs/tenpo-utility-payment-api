@@ -190,8 +190,9 @@ public class BillsController
 		return ResponseEntity.ok(transferenciaPayment);
 	}
 	// TODO Subir azure
-	// TODO html correo comprobante
 	// TODO migrations
+
+	// TODO html correo comprobante
 	// TODO dejar host db parameter en properties
 	// TODO docker file staging production env
 	// TODO rename properties redirect to front
