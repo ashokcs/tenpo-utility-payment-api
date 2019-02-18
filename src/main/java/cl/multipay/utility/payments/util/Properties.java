@@ -35,6 +35,7 @@ public class Properties
 	@Value("${transferencia.redirect.final}") private String transferenciaRedirectFinal;
 
 	/* Multicaja Utilities */
+	@Value("${multicaja.utilities.apikey}") private String multicajaUtilitiesApiKey;
 	@Value("${multicaja.utilities.terminal}") private String multicajaUtilitiesTerminal;
 	@Value("${multicaja.utilities.channel}") private String multicajaUtilitiesChannel;
 	@Value("${multicaja.utilities.commerce}") private String multicajaUtilitiesCommerce;
@@ -204,5 +205,10 @@ public class Properties
 	public String getMulticajaUtilitiesChannel()
 	{
 		return multicajaUtilitiesChannel;
+	}
+
+	public String getMulticajaUtilitiesApiKey()
+	{
+		return multicajaUtilitiesApiKey;
 	}
 }

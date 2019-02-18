@@ -52,6 +52,7 @@ public class UtilityPaymentClient
 
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
+			request.setHeader("apikey", properties.getMulticajaUtilitiesApiKey());
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			try (final CloseableHttpResponse response = client.execute(request)) {
@@ -126,6 +127,7 @@ public class UtilityPaymentClient
 
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
+			request.setHeader("apikey", properties.getMulticajaUtilitiesApiKey());
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			try (final CloseableHttpResponse response = client.execute(request)) {
