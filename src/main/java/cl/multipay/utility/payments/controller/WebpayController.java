@@ -84,7 +84,7 @@ public class WebpayController
 				// pay bill TODO
 				// if pay fail, throw exception
 
-				bill.setStatus(Bill.SUCCEED);
+				bill.setStatus(Bill.SUCCEEDED);
 				billService.save(bill);
 
 				// send receipt
@@ -132,7 +132,7 @@ public class WebpayController
 				final WebpayPayment webpayPayment = webpayPaymentService.getAckByToken(tokenWs).orElseThrow(NotFoundException::new);
 				final Bill bill = billService.findById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
 
-				if (Bill.SUCCEED.equals(bill.getStatus())) {
+				if (Bill.SUCCEEDED.equals(bill.getStatus())) {
 					return redirectEntity(properties.getWebpayRedirectFinal().replaceAll("\\{id\\}", bill.getPublicId()));
 				} else {
 					return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", bill.getBuyOrder().toString()));

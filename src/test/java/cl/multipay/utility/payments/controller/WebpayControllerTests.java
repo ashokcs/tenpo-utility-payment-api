@@ -129,7 +129,7 @@ public class WebpayControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000004L;
-		final Bill bill = createBillMock(Bill.SUCCEED, uuid, buyOrder);
+		final Bill bill = createBillMock(Bill.SUCCEEDED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e4";
 		final WebpayPayment webpayPayment = createWebpayPaymentMock(bill, WebpayPayment.ACK, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("token_ws", webpayPayment.getToken()))

@@ -99,7 +99,7 @@ public class TransferenciaController
 
 				// update status
 				transferenciaPayment.setStatus(TransferenciaPayment.PAID);
-				bill.setStatus(Bill.SUCCEED);
+				bill.setStatus(Bill.SUCCEEDED);
 				transferenciaPaymentService.save(transferenciaPayment);
 				billService.save(bill);
 

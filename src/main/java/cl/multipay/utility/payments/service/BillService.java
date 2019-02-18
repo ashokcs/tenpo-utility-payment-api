@@ -71,6 +71,6 @@ public class BillService
 
 	public Optional<Bill> getSucceedById(final Long id)
 	{
-		return billRepository.findByIdAndStatus(id, Bill.SUCCEED);
+		return billRepository.findByIdAndStatus(id, Bill.SUCCEEDED);
 	}
 }

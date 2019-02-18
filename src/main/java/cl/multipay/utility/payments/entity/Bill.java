@@ -22,7 +22,7 @@ public class Bill
 {
 	public static final String PENDING = "PENDING";
 	public static final String WAITING = "WAITING";
-	public static final String SUCCEED = "SUCCEED";
+	public static final String SUCCEEDED = "SUCCEEDED";
 	public static final String FAILED = "FAILED";
 
 	public static final String WEBPAY = "WEBPAY";
