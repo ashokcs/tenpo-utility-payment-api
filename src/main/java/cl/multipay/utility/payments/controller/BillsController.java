@@ -193,4 +193,5 @@ public class BillsController
 	// TODO bo totalizadores
 	// TODO bo totalizadores task correccion
 	// TODO check time on azure db, gmt?
+	// TODO service entry sendgrid
 }
