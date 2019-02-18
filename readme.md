@@ -5,13 +5,13 @@
 ### Docker Compose (for PostgreSQL)
 ```bash
 docker-compose -p multipay_utility up
-docker run -it --rm --link multipay_utility_postgres_1:postgres --net multipay_utility_default postgres:11-alpine psql -h postgres -U multipay
+docker run -it --rm --link multipay_utility_postgres_1:postgres --net multipay_utility_default postgres:9-alpine psql -h postgres -U multipay
 ```
 
 ### Run migrations
 ```bash
 cd database
-./dbmate up
+./dbmate migrate
 ```
 
 ### Spring Run & build
