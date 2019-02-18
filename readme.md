@@ -164,6 +164,11 @@ Response
 }
 ```
 
+Response - Without debt  
+```
+204 No Content
+```
+
 ## `GET /v1/bills/{id}`
 **Obtiene los detalles de un pago de cuenta**
 

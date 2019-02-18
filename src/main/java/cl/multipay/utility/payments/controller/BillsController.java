@@ -201,4 +201,5 @@ public class BillsController
 	// TODO bo totalizadores task correccion
 	// TODO check time on azure db, gmt?
 	// TODO service entry sendgrid
+	// TODO create tabla padre
 }
