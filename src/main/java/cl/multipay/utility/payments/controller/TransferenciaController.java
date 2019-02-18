@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
 import cl.multipay.utility.payments.entity.Bill;
 import cl.multipay.utility.payments.entity.TransferenciaPayment;
+import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.exception.UnauthorizedException;
@@ -41,16 +43,19 @@ public class TransferenciaController
 	private final EmailService emailService;
 
 	private final TransferenciaClient transferenciaClient;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public TransferenciaController(final Properties properties,
 		final BillService billService, final TransferenciaPaymentService transferenciaPaymentService,
-		final TransferenciaClient transferenciaClient, final EmailService emailService)
+		final TransferenciaClient transferenciaClient, final EmailService emailService,
+		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
 		this.billService = billService;
 		this.transferenciaPaymentService = transferenciaPaymentService;
 		this.transferenciaClient = transferenciaClient;
 		this.emailService = emailService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	/**
@@ -100,6 +105,9 @@ public class TransferenciaController
 
 				// send receipt
 				emailService.utilityPaymentReceipt();
+
+				// add totaliser data
+				applicationEventPublisher.publishEvent(new TotaliserEvent(bill.getAmount()));
 
 				// return ok
 				return ResponseEntity.ok(notifyResponse());

@@ -183,6 +183,7 @@ public class BillsController
 		return ResponseEntity.ok(transferenciaPayment);
 	}
 	// TODO Subir azure
+	// TODO html correo comprobante
 	// TODO migrations
 	// TODO dejar host db parameter en properties
 	// TODO docker file staging production env
@@ -190,4 +191,6 @@ public class BillsController
 	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
 	// TODO bo totalizadores
+	// TODO bo totalizadores task correccion
+	// TODO check time on azure db, gmt?
 }

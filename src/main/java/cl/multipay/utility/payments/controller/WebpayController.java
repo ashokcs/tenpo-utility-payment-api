@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
 import cl.multipay.utility.payments.entity.Bill;
 import cl.multipay.utility.payments.entity.WebpayPayment;
+import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.HttpException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
@@ -37,16 +39,19 @@ public class WebpayController
 	private final EmailService emailService;
 
 	private final WebpayClient webpayClient;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public WebpayController(final Properties properties,
 		final WebpayClient webpayClient, final WebpayPaymentService webpayPaymentService,
-		final BillService billService, final EmailService emailService)
+		final BillService billService, final EmailService emailService,
+		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
 		this.webpayClient = webpayClient;
 		this.webpayPaymentService = webpayPaymentService;
 		this.billService = billService;
 		this.emailService = emailService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	@PostMapping("/v1/payments/webpay/return")
@@ -84,6 +89,9 @@ public class WebpayController
 
 				// send receipt
 				emailService.utilityPaymentReceipt();
+
+				// add totaliser data
+				applicationEventPublisher.publishEvent(new TotaliserEvent(bill.getAmount()));
 			}
 
 			// if payment not approved
@@ -93,7 +101,7 @@ public class WebpayController
 			}
 
 			// webpay ack
-			webpayClient.ack(webpayPayment).orElseThrow(ServerErrorException::new);
+			webpayClient.ack(webpayPayment).orElseThrow(ServerErrorException::new); // TODO handle if ack fail, nullify?
 			webpayPayment.setStatus(WebpayPayment.ACK);
 			webpayPaymentService.save(webpayPayment);
 
