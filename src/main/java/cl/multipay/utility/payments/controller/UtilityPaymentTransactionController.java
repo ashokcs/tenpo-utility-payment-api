@@ -18,6 +18,7 @@ import cl.multipay.utility.payments.dto.EftCreateOrderResponse;
 import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionPay;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionRequest;
+import cl.multipay.utility.payments.dto.UtilityPaymentTransactionResponse;
 import cl.multipay.utility.payments.dto.WebpayInitResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
@@ -68,10 +69,13 @@ public class UtilityPaymentTransactionController
 	 * @return Los datos de la cuenta
 	 */
 	@GetMapping("/v1/transactions/{id:^[0-9a-f]{32}$}")
-	public ResponseEntity<UtilityPaymentTransaction> get(@PathVariable("id") final String publicId)
+	public ResponseEntity<UtilityPaymentTransactionResponse> get(@PathVariable("id") final String publicId)
 	{
-		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.findByPublicId(publicId).orElseThrow(NotFoundException::new);
-		return ResponseEntity.ok(upt);
+		final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findByPublicId(publicId)
+				.orElseThrow(NotFoundException::new);
+		final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.findByTransactionId(utilityPaymentTransaction.getId())
+				.orElseThrow(NotFoundException::new);
+		return ResponseEntity.ok(new UtilityPaymentTransactionResponse(utilityPaymentTransaction, utilityPaymentBill));
 	}
 
 	/**
@@ -81,7 +85,7 @@ public class UtilityPaymentTransactionController
 	 * @return Los datos de la cuenta
 	 */
 	@PostMapping("/v1/transactions")
-	public ResponseEntity<UtilityPaymentTransaction> create(@RequestBody @Valid final UtilityPaymentTransactionRequest request)
+	public ResponseEntity<UtilityPaymentTransactionResponse> create(@RequestBody @Valid final UtilityPaymentTransactionRequest request)
 	{
 		// TODO validate identifier
 
@@ -111,7 +115,6 @@ public class UtilityPaymentTransactionController
 			.orElseThrow(ServerErrorException::new);
 
 		// create utility payment bill
-		// TODO save with relationship
 		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
 		utilityPaymentBill.setStatus(UtilityPaymentBill.PENDING);
 		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
@@ -125,7 +128,8 @@ public class UtilityPaymentTransactionController
 			.orElseThrow(ServerErrorException::new);
 
 		// return utility payment transaction
-		return ResponseEntity.status(HttpStatus.CREATED).body(utilityPaymentTransaction); // TODO incluir detalles
+		final UtilityPaymentTransactionResponse result = new UtilityPaymentTransactionResponse(utilityPaymentTransaction, utilityPaymentBill);
+		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
 
 	/**
@@ -214,6 +218,8 @@ public class UtilityPaymentTransactionController
 	// TODO docker file staging production env
 
 	// TODO modificar api readme new version
+	// TODO modificar body response
+	// TODO subir bo
 	// TODO probar eft dev mc
 	// TODO html correo comprobante
 	// TODO dejar host db parameter en properties

@@ -48,4 +48,14 @@ public class UtilityPaymentBillService
 		}
 		return Optional.empty();
 	}
+
+	public Optional<UtilityPaymentBill> findByTransactionId(final Long transactionId)
+	{
+		try {
+			return utilityPaymentBillRepository.findByTransactionId(transactionId);
+		} catch (final Exception		 e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
 }

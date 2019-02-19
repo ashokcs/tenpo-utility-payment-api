@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "utility_payment_bills")
 public class UtilityPaymentBill
@@ -21,10 +23,13 @@ public class UtilityPaymentBill
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable = false)
+	@JsonIgnore
 	private Long id;
 
+	@JsonIgnore
 	private String status;
 
+	@JsonIgnore
 	@Column(updatable = false)
 	private Long transactionId;
 
@@ -46,9 +51,11 @@ public class UtilityPaymentBill
 	@Column(updatable = false)
 	private String dueDate;
 
+	@JsonIgnore
 	@Column(insertable = false, updatable = false)
 	private ZonedDateTime created;
 
+	@JsonIgnore
 	@Column(insertable = false)
 	private ZonedDateTime updated;
 
