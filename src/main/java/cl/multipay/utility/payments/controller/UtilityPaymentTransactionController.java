@@ -216,11 +216,11 @@ public class UtilityPaymentTransactionController
 	// TODO check time on azure db, gmt?
 	// TODO bo totalizadores
 	// TODO docker file staging production env
+	// TODO modificar body response
+	// TODO probar eft dev mc
 
 	// TODO modificar api readme new version
-	// TODO modificar body response
 	// TODO subir bo
-	// TODO probar eft dev mc
 	// TODO html correo comprobante
 	// TODO dejar host db parameter en properties
 	// TODO rename properties redirect to front
