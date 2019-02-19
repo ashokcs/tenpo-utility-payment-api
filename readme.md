@@ -106,13 +106,13 @@ API-KEY: SBBcjF38qNaOASyyPu596dBzdjITzii3
 
 # Endpoints
 
-## `GET /v1/utilities`
+## `GET /utility-payments/v1/utilities`
 **Obtiene los convenios de pago de cuenta**
 
 Request
 ```bash
 curl --request GET \
---url http://localhost:7771/v1/utilities \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/utilities \
 --header 'Content-Type: application/json'
 ```
 
@@ -144,15 +144,15 @@ Response
 ]
 ```
 
-## `POST /v1/bills`
+## `POST /utility-payments/v1/transactions`
 **Crea un pago de cuenta**
 
 Request
 ```bash
 curl --request POST \
---url http://localhost:7771/v1/bills \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions \
 --header 'Content-Type: application/json' \
---data '{"utility": "MUNDO_PACIFICO","collector": "3","identifier": "2312312"}'
+--data '{"utility": "COSTANERA NORTE","collector": "1","identifier": "57910526"}'
 ```
 Response
 ```json
@@ -173,20 +173,20 @@ Response - Without debt
 204 No Content
 ```
 
-## `GET /v1/bills/{id}`
+## `GET /utility-payments/v1/transactions/{id}`
 **Obtiene los detalles de un pago de cuenta**
 
 Request
 ```bash
 curl --request GET \
---url http://localhost:7771/v1/bills/efd57e7af34d4189bb705a0e231e0356 \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/150bb2fc0dae4c4a945256fd1dcbfaf7 \
 --header 'Content-Type: application/json'
 ```
 Response
 ```json
 {
   "bill_id": "efd57e7af34d4189bb705a0e231e0356",
-  "buy_order": "PC201902121743000003",
+  "buy_order": 201902121743000003,
   "status": "succeed",
   "utility": "MUNDO_PACIFICO",
   "collector": "3",
@@ -199,13 +199,13 @@ Response
 }
 ```
 
-## `POST /v1/bills/{id}/webpay`
+## `POST /utility-payments/v1/transactions/{id}/webpay`
 **Inicia el proceso para pagar un pago de cuenta con webpay**
 
 Request
 ```bash
 curl --request POST \
---url http://localhost:7771/v1/bills/efd57e7af34d4189bb705a0e231e0356/webpay \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/150bb2fc0dae4c4a945256fd1dcbfaf7/webpay \
 --header 'Content-Type: application/json' \
 --data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```
@@ -217,20 +217,20 @@ Response
 }
 ```
 
-## `POST /v1/bills/{id}/transferencia`
+## `POST /utility-payments/v1/transactions/{id}/eft`
 **Inicia el proceso para pagar un pago de cuenta con transferencia**
 
 Request
 ```bash
 curl --request POST \
---url http://localhost:7771/v1/bills/efd57e7af34d4189bb705a0e231e0356/transferencia \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/a232968c2f76475d8b021309e459948d/eft \
 --header 'Content-Type: application/json' \
 --data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```
 Response
 ```json
 {
-    "url": "https://10.170.1.11:9191/bdp/order.xhtml?id=394939009565861"
+  "url": "https://10.170.1.11:9191/bdp/order.xhtml?id=394939009565861"
 }
 ```
 

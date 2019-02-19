@@ -213,7 +213,7 @@ public class UtilityPaymentTransactionController
 	// TODO bo totalizadores
 	// TODO docker file staging production env
 
-	// TODO modificar swagger new version
+	// TODO modificar api readme new version
 	// TODO probar eft dev mc
 	// TODO html correo comprobante
 	// TODO dejar host db parameter en properties
