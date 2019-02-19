@@ -3,7 +3,7 @@ package cl.multipay.utility.payments.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-public class BillRequest
+public class UtilityPaymentTransactionRequest
 {
 	@NotBlank
 	@Pattern(regexp = "^[a-zA-Z\\s\\-\\(\\)\\/_\\.]{2,100}$")

@@ -79,7 +79,7 @@ spec:
   http:
     - match:
       - uri:
-          prefix: /api
+          prefix: /utility-payments
       route:
       - destination:
           host: multipay-utility-payments-api-svc

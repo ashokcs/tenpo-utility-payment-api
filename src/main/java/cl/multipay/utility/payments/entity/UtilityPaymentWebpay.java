@@ -1,6 +1,6 @@
 package cl.multipay.utility.payments.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,12 +13,12 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "webpay_payments")
-public class WebpayPayment
+@Table(name = "utility_payment_webpay")
+public class UtilityPaymentWebpay
 {
 	public static final String PENDING = "PENDING";
-	public static final String RESULT = "RESULT";
-	public static final String ACK = "ACK";
+	public static final String RESULTED = "RESULTED";
+	public static final String ACKNOWLEDGED = "ACKNOWLEDGED";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +26,12 @@ public class WebpayPayment
 	@JsonIgnore
 	private Long id;
 
-	@Column(updatable = false)
-	@JsonIgnore
-	private Long billId;
-
 	@JsonIgnore
 	private String status;
+
+	@Column(updatable = false)
+	@JsonIgnore
+	private Long transactionId;
 
 	@Column(updatable = false)
 	private String token;
@@ -51,16 +51,16 @@ public class WebpayPayment
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
-	private LocalDateTime created;
+	private ZonedDateTime created;
 
 	@Column(insertable = false)
 	@JsonIgnore
-	private LocalDateTime updated;
+	private ZonedDateTime updated;
 
 	@PreUpdate
 	private void preUpdate()
 	{
-		updated = LocalDateTime.now();
+		updated = ZonedDateTime.now();
 	}
 
 	public Long getId()
@@ -71,16 +71,6 @@ public class WebpayPayment
 	public void setId(final Long id)
 	{
 		this.id = id;
-	}
-
-	public Long getBillId()
-	{
-		return billId;
-	}
-
-	public void setBillId(final Long billId)
-	{
-		this.billId = billId;
 	}
 
 	public String getStatus()
@@ -163,23 +153,33 @@ public class WebpayPayment
 		this.shares = shares;
 	}
 
-	public LocalDateTime getCreated()
+	public ZonedDateTime getCreated()
 	{
 		return created;
 	}
 
-	public void setCreated(final LocalDateTime created)
+	public void setCreated(final ZonedDateTime created)
 	{
 		this.created = created;
 	}
 
-	public LocalDateTime getUpdated()
+	public ZonedDateTime getUpdated()
 	{
 		return updated;
 	}
 
-	public void setUpdated(final LocalDateTime updated)
+	public void setUpdated(final ZonedDateTime updated)
 	{
 		this.updated = updated;
+	}
+
+	public Long getTransactionId()
+	{
+		return transactionId;
+	}
+
+	public void setTransactionId(final Long transactionId)
+	{
+		this.transactionId = transactionId;
 	}
 }

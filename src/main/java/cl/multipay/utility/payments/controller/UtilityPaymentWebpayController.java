@@ -16,41 +16,47 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
-import cl.multipay.utility.payments.entity.Bill;
-import cl.multipay.utility.payments.entity.WebpayPayment;
+import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.HttpException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.http.WebpayClient;
-import cl.multipay.utility.payments.service.BillService;
 import cl.multipay.utility.payments.service.EmailService;
-import cl.multipay.utility.payments.service.WebpayPaymentService;
+import cl.multipay.utility.payments.service.UtilityPaymentBillService;
+import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
+import cl.multipay.utility.payments.service.UtilityPaymentWebpayService;
 import cl.multipay.utility.payments.util.Properties;
 
 @RestController
-public class WebpayController
+public class UtilityPaymentWebpayController
 {
-	private static final Logger logger = LoggerFactory.getLogger(WebpayController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilityPaymentWebpayController.class);
 
 	private final Properties properties;
-	private final WebpayPaymentService webpayPaymentService;
-	private final BillService billService;
+	private final UtilityPaymentTransactionService utilityPaymentTransactionService;
+	private final UtilityPaymentBillService utilityPaymentBillService;
+	private final UtilityPaymentWebpayService utilityPaymentWebpayService;
 	private final EmailService emailService;
 
 	private final WebpayClient webpayClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public WebpayController(final Properties properties,
-		final WebpayClient webpayClient, final WebpayPaymentService webpayPaymentService,
-		final BillService billService, final EmailService emailService,
+	public UtilityPaymentWebpayController(final Properties properties,
+		final UtilityPaymentTransactionService utilityPaymentTransactionService,
+		final UtilityPaymentBillService utilityPaymentBillService,
+		final UtilityPaymentWebpayService utilityPaymentWebpayService,
+		final EmailService emailService,
+		final WebpayClient webpayClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
-		this.webpayClient = webpayClient;
-		this.webpayPaymentService = webpayPaymentService;
-		this.billService = billService;
+		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
+		this.utilityPaymentBillService = utilityPaymentBillService;
+		this.utilityPaymentWebpayService = utilityPaymentWebpayService;
 		this.emailService = emailService;
+		this.webpayClient = webpayClient;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
@@ -58,25 +64,27 @@ public class WebpayController
 	public ResponseEntity<?> webpayReturn(
 		final HttpServletRequest request,
 		@RequestParam(required = false, name = "token_ws") final String tokenWs,
-		@RequestParam(required = false, name = "buy_order") Long buyOrder
+		@RequestParam(required = false, name = "buy_order") Long utilityPaymentBuyOrder
 	) {
 		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
 		try {
-			// get bill and payment
+			// get utility payment transaction and webpay
 			final String token = getToken(tokenWs).orElseThrow(ServerErrorException::new);
-			final WebpayPayment webpayPayment = webpayPaymentService.getPendingByToken(token).orElseThrow(NotFoundException::new);
-			final Bill bill = billService.getWaitingById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
-			buyOrder = bill.getBuyOrder();
+			final UtilityPaymentWebpay utilityPaymentWebpay = utilityPaymentWebpayService.getPendingByToken(token)
+					.orElseThrow(NotFoundException::new);
+			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentWebpay.getTransactionId())
+					.orElseThrow(NotFoundException::new);
+			utilityPaymentBuyOrder = utilityPaymentTransaction.getBuyOrder();
 
 			// webpay get result
-			final WebpayResultResponse webpayResultResponse = webpayClient.result(webpayPayment).orElseThrow(ServerErrorException::new);
-			webpayPayment.setResponseCode(webpayResultResponse.getDetailResponseCode());
-			webpayPayment.setAuthCode(webpayResultResponse.getDetailAuthorizationCode());
-			webpayPayment.setCard(webpayResultResponse.getCardNumber());
-			webpayPayment.setPaymentType(webpayResultResponse.getDetailPaymentTypeCode());
-			webpayPayment.setShares(webpayResultResponse.getDetailSharesNumber());
-			webpayPayment.setStatus(WebpayPayment.RESULT);
-			webpayPaymentService.save(webpayPayment).orElseThrow(ServerErrorException::new);
+			final WebpayResultResponse webpayResultResponse = webpayClient.result(utilityPaymentWebpay).orElseThrow(ServerErrorException::new);
+			utilityPaymentWebpay.setResponseCode(webpayResultResponse.getDetailResponseCode());
+			utilityPaymentWebpay.setAuthCode(webpayResultResponse.getDetailAuthorizationCode());
+			utilityPaymentWebpay.setCard(webpayResultResponse.getCardNumber());
+			utilityPaymentWebpay.setPaymentType(webpayResultResponse.getDetailPaymentTypeCode());
+			utilityPaymentWebpay.setShares(webpayResultResponse.getDetailSharesNumber());
+			utilityPaymentWebpay.setStatus(UtilityPaymentWebpay.RESULTED);
+			utilityPaymentWebpayService.save(utilityPaymentWebpay).orElseThrow(ServerErrorException::new);
 
 			// if payment approved
 			if (isWebpayPaymentApproved(webpayResultResponse) == true) {
@@ -84,26 +92,26 @@ public class WebpayController
 				// pay bill TODO
 				// if pay fail, throw exception
 
-				bill.setStatus(Bill.SUCCEEDED);
-				billService.save(bill);
+				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
+				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 				// send receipt
 				emailService.utilityPaymentReceipt();
 
 				// add totaliser data
-				applicationEventPublisher.publishEvent(new TotaliserEvent(bill.getAmount()));
+				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
 			}
 
 			// if payment not approved
 			if (isWebpayPaymentApproved(webpayResultResponse) == false) {
-				bill.setStatus(Bill.FAILED);
-				billService.save(bill).orElseThrow(ServerErrorException::new);
+				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.FAILED);
+				utilityPaymentTransactionService.save(utilityPaymentTransaction).orElseThrow(ServerErrorException::new);
 			}
 
 			// webpay ack
-			webpayClient.ack(webpayPayment).orElseThrow(ServerErrorException::new); // TODO handle if ack fail, nullify?
-			webpayPayment.setStatus(WebpayPayment.ACK);
-			webpayPaymentService.save(webpayPayment);
+			webpayClient.ack(utilityPaymentWebpay).orElseThrow(ServerErrorException::new); // TODO handle if ack fail, nullify?
+			utilityPaymentWebpay.setStatus(UtilityPaymentWebpay.ACKNOWLEDGED);
+			utilityPaymentWebpayService.save(utilityPaymentWebpay);
 
 			// redirect to webpay
 			return postRedirectEntity(webpayResultResponse.getUrlRedirection(), token);
@@ -115,7 +123,7 @@ public class WebpayController
 		}
 
 		// redirect to error page
-		return redirectEntity(getRedirectErrorUrl(buyOrder));
+		return redirectEntity(getRedirectErrorUrl(utilityPaymentBuyOrder));
 	}
 
 	@PostMapping("/v1/payments/webpay/final")
@@ -129,13 +137,15 @@ public class WebpayController
 		try {
 			// process token_ws (approved, denied)
 			if ((tokenWs != null) && tokenWs.matches("[0-9a-f]{64}")) {
-				final WebpayPayment webpayPayment = webpayPaymentService.getAckByToken(tokenWs).orElseThrow(NotFoundException::new);
-				final Bill bill = billService.findById(webpayPayment.getBillId()).orElseThrow(NotFoundException::new);
+				final UtilityPaymentWebpay utilityPaymentWebpay = utilityPaymentWebpayService.getAckByToken(tokenWs)
+						.orElseThrow(NotFoundException::new);
+				final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentWebpay.getTransactionId())
+						.orElseThrow(NotFoundException::new);
 
-				if (Bill.SUCCEEDED.equals(bill.getStatus())) {
-					return redirectEntity(properties.getWebpayRedirectFinal().replaceAll("\\{id\\}", bill.getPublicId()));
+				if (UtilityPaymentTransaction.SUCCEEDED.equals(utilityPaymentTransaction.getStatus())) {
+					return redirectEntity(properties.getWebpayRedirectFinal().replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 				} else {
-					return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", bill.getBuyOrder().toString()));
+					return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", utilityPaymentTransaction.getBuyOrder().toString()));
 				}
 			}
 

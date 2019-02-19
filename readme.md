@@ -68,6 +68,10 @@ branch_id   : 142809
 username    : multicaja
 password    : fJLQRFm67QNnbo
 base64      : bXVsdGljYWphOmZKTFFSRm02N1FObmJv
+
+notify_user : xNXxrkMmMxqD77GCn2Fw
+notify_pass : dd73MTANpLMCLMkRaMxN
+notify_auth : eE5YeHJrTW1NeHFENzdHQ24yRnc6ZGQ3M01UQU5wTE1DTE1rUmFNeE4=
 ```
 ## Development
 Create Order: https://10.170.1.11:9191/bdpcows/CreateOrderWebService   
@@ -92,7 +96,7 @@ SOAPAction: "http://www.example.cl/ecommerce/NotifyPaymentWeb/notifyPaymentReque
 <?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:notifyPayment xmlns:ns2="http://www.example.cl/ecommerce/"><mcOrderId>986916273366660</mcOrderId><ecOrderId>1201902131759160003</ecOrderId></ns2:notifyPayment></S:Body></S:Envelope>
 ```
 
-# Pago de cuentas
+# Multicaja Utility Payment
 ```
 https://apidev.mcdesaqa.cl/bill_payment/agreements_data (https://pastebin.com/wGC0VpDn)  
 https://apidev.mcdesaqa.cl/bill_payment/debt_data (https://pastebin.com/SGN1kLCz)  

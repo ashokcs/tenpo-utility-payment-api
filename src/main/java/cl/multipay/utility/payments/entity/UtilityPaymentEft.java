@@ -1,6 +1,6 @@
 package cl.multipay.utility.payments.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +13,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "transferencia_payments")
-public class TransferenciaPayment
+@Table(name = "utility_payment_eft")
+public class UtilityPaymentEft
 {
 	public static final String PENDING = "PENDING";
 	public static final String PAID = "PAID";
@@ -26,12 +26,12 @@ public class TransferenciaPayment
 	@JsonIgnore
 	private Long id;
 
-	@Column(updatable = false)
-	@JsonIgnore
-	private Long billId;
-
 	@JsonIgnore
 	private String status;
+
+	@Column(updatable = false)
+	@JsonIgnore
+	private Long transactionId;
 
 	@JsonIgnore
 	@Column(updatable = false)
@@ -43,22 +43,23 @@ public class TransferenciaPayment
 
 	@Column(updatable = false)
 	@JsonIgnore
-	private String mcOrderId;
+	private String orderId;
 
+	@Column(updatable = false)
 	private String url;
 
 	@Column(insertable = false, updatable = false)
 	@JsonIgnore
-	private LocalDateTime created;
+	private ZonedDateTime created;
 
 	@Column(insertable = false)
 	@JsonIgnore
-	private LocalDateTime updated;
+	private ZonedDateTime updated;
 
 	@PreUpdate
 	private void preUpdate()
 	{
-		updated = LocalDateTime.now();
+		updated = ZonedDateTime.now();
 	}
 
 	public Long getId()
@@ -69,16 +70,6 @@ public class TransferenciaPayment
 	public void setId(final Long id)
 	{
 		this.id = id;
-	}
-
-	public Long getBillId()
-	{
-		return billId;
-	}
-
-	public void setBillId(final Long billId)
-	{
-		this.billId = billId;
 	}
 
 	public String getStatus()
@@ -101,16 +92,6 @@ public class TransferenciaPayment
 		this.publicId = publicId;
 	}
 
-	public String getMcOrderId()
-	{
-		return mcOrderId;
-	}
-
-	public void setMcOrderId(final String mcOrderId)
-	{
-		this.mcOrderId = mcOrderId;
-	}
-
 	public String getUrl()
 	{
 		return url;
@@ -121,26 +102,6 @@ public class TransferenciaPayment
 		this.url = url;
 	}
 
-	public LocalDateTime getCreated()
-	{
-		return created;
-	}
-
-	public void setCreated(final LocalDateTime created)
-	{
-		this.created = created;
-	}
-
-	public LocalDateTime getUpdated()
-	{
-		return updated;
-	}
-
-	public void setUpdated(final LocalDateTime updated)
-	{
-		this.updated = updated;
-	}
-
 	public String getNotifyId()
 	{
 		return notifyId;
@@ -149,5 +110,45 @@ public class TransferenciaPayment
 	public void setNotifyId(final String notifyId)
 	{
 		this.notifyId = notifyId;
+	}
+
+	public Long getTransactionId()
+	{
+		return transactionId;
+	}
+
+	public void setTransactionId(final Long transactionId)
+	{
+		this.transactionId = transactionId;
+	}
+
+	public String getOrderId()
+	{
+		return orderId;
+	}
+
+	public void setOrderId(final String orderId)
+	{
+		this.orderId = orderId;
+	}
+
+	public ZonedDateTime getCreated()
+	{
+		return created;
+	}
+
+	public void setCreated(final ZonedDateTime created)
+	{
+		this.created = created;
+	}
+
+	public ZonedDateTime getUpdated()
+	{
+		return updated;
+	}
+
+	public void setUpdated(final ZonedDateTime updated)
+	{
+		this.updated = updated;
 	}
 }

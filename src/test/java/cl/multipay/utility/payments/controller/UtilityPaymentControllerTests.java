@@ -25,7 +25,7 @@ import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class UtilitiesControllerTests
+public class UtilityPaymentControllerTests
 {
 	@Autowired
 	private MockMvc mockMvc;

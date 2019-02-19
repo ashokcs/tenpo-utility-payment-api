@@ -2,18 +2,18 @@ package cl.multipay.utility.payments.dto;
 
 public class MulticajaBill
 {
-	private String transactionId;
+	private String mcCode;
 	private String dueDate;
 	private Long amount;
 
-	public String getTransactionId()
+	public String getMcCode()
 	{
-		return transactionId;
+		return mcCode;
 	}
 
-	public void setTransactionId(final String transactionId)
+	public void setMcCode(final String mcCode)
 	{
-		this.transactionId = transactionId;
+		this.mcCode = mcCode;
 	}
 
 	public String getDueDate()

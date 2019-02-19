@@ -17,14 +17,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
-import cl.multipay.utility.payments.entity.WebpayPayment;
+import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class WebpayServiceTests
+public class UtilityPaymentWebpayServiceTests
 {
 	@MockBean
 	private CloseableHttpClient client;
@@ -35,11 +35,11 @@ public class WebpayServiceTests
 	@Test
 	public void result_shouldReturnEmpty() throws Exception
 	{
-		final WebpayPayment payment = new WebpayPayment();
-		payment.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
+		final UtilityPaymentWebpay utilityPaymentWebpay = new UtilityPaymentWebpay();
+		utilityPaymentWebpay.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
 		final String responseEntity = "{}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.INTERNAL_SERVER_ERROR));
-		final Optional<WebpayResultResponse> result = webpayClient.result(payment);
+		final Optional<WebpayResultResponse> result = webpayClient.result(utilityPaymentWebpay);
 		Assert.notNull(result, "resut must not be null");
 		Assert.isTrue(!result.isPresent(), "result.isPresent() must be false");
 	}
@@ -47,11 +47,11 @@ public class WebpayServiceTests
 	@Test
 	public void result_shouldReturnNotEmpty() throws Exception
 	{
-		final WebpayPayment payment = new WebpayPayment();
-		payment.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
+		final UtilityPaymentWebpay utilityPaymentWebpay = new UtilityPaymentWebpay();
+		utilityPaymentWebpay.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
 		final String responseEntity = "{\"accountingDate\": \"0211\",\"buyOrder\": \"20190211144611003\",\"cardDetail\": {\"cardNumber\": \"3123\",\"cardExpirationDate\": null},\"detailOutput\": [{\"sharesAmount\": null,\"sharesNumber\": 0,\"amount\": 94290,\"commerceCode\": \"597020000540\",\"buyOrder\": \"20190211144611003\",\"authorizationCode\": \"000000\",\"paymentTypeCode\": \"VD\",\"responseCode\": -1}],\"sessionId\": \"fe166a72ee594a40bf232c1deee78c79\",\"transactionDate\": \"2019-02-11T14:46:47\",\"urlRedirection\": \"http://localhost:7771/v1/payments/webpay/final\",\"vci\": \"TSN\"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
-		final Optional<WebpayResultResponse> result = webpayClient.result(payment);
+		final Optional<WebpayResultResponse> result = webpayClient.result(utilityPaymentWebpay);
 		Assert.notNull(result, "resut must not be null");
 		Assert.isTrue(result.isPresent(), "result.isPresent() must be true");
 	}
@@ -59,11 +59,11 @@ public class WebpayServiceTests
 	@Test
 	public void ack_shouldReturnOk() throws Exception
 	{
-		final WebpayPayment payment = new WebpayPayment();
-		payment.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
+		final UtilityPaymentWebpay utilityPaymentWebpay = new UtilityPaymentWebpay();
+		utilityPaymentWebpay.setToken("ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3");
 		final String responseEntity = "{\"status\":true}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
-		final Optional<Boolean> result = webpayClient.ack(payment);
+		final Optional<Boolean> result = webpayClient.ack(utilityPaymentWebpay);
 		Assert.notNull(result, "resut must not be null");
 		Assert.isTrue(result.isPresent(), "result.isPresent() must be true");
 		Assert.isTrue(result.get(), "result must be true");

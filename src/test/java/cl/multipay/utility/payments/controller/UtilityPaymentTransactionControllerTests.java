@@ -22,22 +22,27 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cl.multipay.utility.payments.entity.Bill;
+import cl.multipay.utility.payments.entity.UtilityPaymentBill;
+import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.multipay.utility.payments.service.BillService;
+import cl.multipay.utility.payments.service.UtilityPaymentBillService;
+import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.util.Utils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class BillsControllerTests
+public class UtilityPaymentTransactionControllerTests
 {
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
-	private BillService billService;
+	private UtilityPaymentTransactionService utilityPaymentTransactionService;
+
+	@Autowired
+	private UtilityPaymentBillService utilityPaymentBillService;
 
 	@MockBean
 	private CloseableHttpClient client;
@@ -45,7 +50,7 @@ public class BillsControllerTests
 	@Test
 	public void getBill_shouldReturnUnsupportedMediaType() throws Exception
 	{
-		mockMvc.perform(get("/v1/bills/6c2bba7b4aff418bb576eb180a2b1ea5").contentType(MediaType.APPLICATION_XML))
+		mockMvc.perform(get("/v1/transactions/6c2bba7b4aff418bb576eb180a2b1ea5").contentType(MediaType.APPLICATION_XML))
 			.andDo(print())
 			.andExpect(status().isUnsupportedMediaType());
 	}
@@ -53,7 +58,7 @@ public class BillsControllerTests
 	@Test
 	public void getBill_shouldReturnNotFound() throws Exception
 	{
-		mockMvc.perform(get("/v1/bills/6c2bba7b4aff418bb576eb180a2b1ea5").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/v1/transactions/6c2bba7b4aff418bb576eb180a2b1ea5").contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isNotFound());
 	}
@@ -61,18 +66,18 @@ public class BillsControllerTests
 	@Test
 	public void getBill_shouldReturnOk() throws Exception
 	{
-		final String uuid = createBillMock();
-		mockMvc.perform(get("/v1/bills/{id}", uuid).contentType(MediaType.APPLICATION_JSON))
+		final String uuid = createUtilityPaymentTransactionMock();
+		mockMvc.perform(get("/v1/transactions/{id}", uuid).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.bill_id", Matchers.equalTo(uuid)));
+			.andExpect(jsonPath("$.id", Matchers.equalTo(uuid)));
 	}
 
 	@Test
 	public void getBill_shouldMethodNotAllowed() throws Exception
 	{
-		final String uuid = createBillMock();
-		mockMvc.perform(post("/v1/bills/{id}", uuid).contentType(MediaType.APPLICATION_JSON))
+		final String uuid = createUtilityPaymentTransactionMock();
+		mockMvc.perform(post("/v1/transactions/{id}", uuid).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isMethodNotAllowed());
 	}
@@ -86,10 +91,10 @@ public class BillsControllerTests
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
 		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\",\"identifier\": \"123\"}";
-		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated())
-			.andExpect(jsonPath("$.bill_id").isNotEmpty());
+			.andExpect(jsonPath("$.id").isNotEmpty());
 	}
 
 	@Test
@@ -100,7 +105,7 @@ public class BillsControllerTests
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
 		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\",\"identifier\": \"123\"}";
-		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isNoContent());
 	}
@@ -109,7 +114,7 @@ public class BillsControllerTests
 	public void createBill_shouldReturnBadRequest1() throws Exception
 	{
 		final String json = "{,,}";
-		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
@@ -118,7 +123,7 @@ public class BillsControllerTests
 	public void createBill_shouldReturnBadRequest2() throws Exception
 	{
 		final String json = "{\"utility_id\": \"as\",\"identifier\": \"123\"}";
-		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
@@ -127,7 +132,7 @@ public class BillsControllerTests
 	public void createBill_shouldReturnBadRequest3() throws Exception
 	{
 		final String json = "{\"utility\": \"as\",\"identifier\": \"123\"}";
-		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
@@ -136,7 +141,7 @@ public class BillsControllerTests
 	public void createBill_shouldReturnUnsupportedMediaType() throws Exception
 	{
 		final String json = "{\"utility\": \"as\",\"identifier\": \"123\"}";
-		mockMvc.perform(post("/v1/bills").content(json).contentType(MediaType.APPLICATION_XML))
+		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_XML))
 			.andDo(print())
 			.andExpect(status().isUnsupportedMediaType());
 	}
@@ -145,7 +150,7 @@ public class BillsControllerTests
 	public void createBill_shouldReturnMethodNotAllowed() throws Exception
 	{
 		final String json = "{\"utility\": \"as\",\"identifier\": \"123\"}";
-		mockMvc.perform(get("/v1/bills").content(json).contentType(MediaType.APPLICATION_XML))
+		mockMvc.perform(get("/v1/transactions").content(json).contentType(MediaType.APPLICATION_XML))
 			.andDo(print())
 			.andExpect(status().isMethodNotAllowed());
 	}
@@ -155,9 +160,9 @@ public class BillsControllerTests
 	{
 		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{\"email\":\"test@test.cl\"}";
-		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.url").isNotEmpty())
@@ -169,9 +174,9 @@ public class BillsControllerTests
 	{
 		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{}";
-		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
@@ -180,9 +185,9 @@ public class BillsControllerTests
 	public void payBill_shouldReturnServerError1() throws Exception
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.NOT_FOUND));
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{\"email\":\"test@test.cl\"}";
-		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
@@ -191,9 +196,9 @@ public class BillsControllerTests
 	public void payBill_shouldReturnServerError2() throws Exception
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.INTERNAL_SERVER_ERROR));
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{\"email\":\"test@test.cl\"}";
-		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
@@ -202,9 +207,9 @@ public class BillsControllerTests
 	public void payBill_shouldReturnServerError3() throws Exception
 	{
 		when(client.execute(any())).thenReturn(null);
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{\"email\":\"test@test.cl\"}";
-		mockMvc.perform(post("/v1/bills/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/webpay", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
@@ -214,9 +219,9 @@ public class BillsControllerTests
 	{
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><ns2:createOrderResponse xmlns:ns2=\"http://createorder.ws.boton.multicaja.cl/\"><ns2:createOrderResult><ns2:mcOrderId>454439120367170</ns2:mcOrderId><ns2:redirectUrl>https://www.multicaja.cl/bdp/order.xhtml?id=454439120367170</ns2:redirectUrl></ns2:createOrderResult></ns2:createOrderResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{\"email\":\"test@test.cl\"}";
-		mockMvc.perform(post("/v1/bills/{id}/transferencia", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/eft", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.url").isNotEmpty());
@@ -226,27 +231,35 @@ public class BillsControllerTests
 	public void payBillTef_shouldReturnServerError() throws Exception
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("", HttpStatus.UNSUPPORTED_MEDIA_TYPE));
-		final String uuid = createBillMock();
+		final String uuid = createUtilityPaymentTransactionMock();
 		final String json = "{\"email\":\"test@test.cl\"}";
-		mockMvc.perform(post("/v1/bills/{id}/transferencia", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/transactions/{id}/eft", uuid).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
 
-	private String createBillMock()
+	private String createUtilityPaymentTransactionMock()
 	{
 		final String uuid = Utils.uuid();
-		final Bill bill = new Bill();
-		bill.setPublicId(uuid);
-		bill.setStatus(Bill.PENDING);
-		bill.setUtility("TEST");
-		bill.setCollector("2");
-		bill.setIdentifier("123123");
-		bill.setAmount(123123L);
-		bill.setDueDate("2019-06-06");
-		bill.setTransactionId("123123123");
-		bill.setEmail("asd@asd.cl");
-		billService.save(bill);
+		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
+		utilityPaymentTransaction.setPublicId(uuid);
+		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.PENDING);
+		utilityPaymentTransaction.setAmount(1000L);
+		utilityPaymentTransaction.setEmail("asd@asd.cl");
+		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction);
+
+		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
+		utilityPaymentBill.setStatus(UtilityPaymentBill.PENDING);
+		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentBill.setUtility("TEST");
+		utilityPaymentBill.setCollector("2");
+		utilityPaymentBill.setIdentifier("123123");
+		utilityPaymentBill.setMcCode("12312312321");
+		utilityPaymentBill.setAmount(123123L);
+		utilityPaymentBill.setDueDate("2019-06-06");
+		utilityPaymentBill.setMcCode("123123123");
+		utilityPaymentBillService.save(utilityPaymentBill);
+
 		return uuid;
 	}
 }

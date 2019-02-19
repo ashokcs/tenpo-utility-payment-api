@@ -14,11 +14,11 @@ import cl.multipay.utility.payments.http.UtilityPaymentClient;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-public class UtilitiesController
+public class UtilityPaymentController
 {
 	private final UtilityPaymentClient utilityPaymentClient;
 
-	public UtilitiesController(final UtilityPaymentClient multicajaService)
+	public UtilityPaymentController(final UtilityPaymentClient multicajaService)
 	{
 		this.utilityPaymentClient = multicajaService;
 	}

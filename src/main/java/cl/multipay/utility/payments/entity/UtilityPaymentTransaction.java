@@ -16,9 +16,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
-@Table(name = "bills")
-@JsonPropertyOrder({"bill_id", "buy_order", "status", "utility", "collector", "identifier", "amount", "due_date", "transaction_id", "payment", "email"})
-public class Bill
+@Table(name = "utility_payment_transactions")
+@JsonPropertyOrder({"id", "status", "buy_order", "amount", "payment_method", "email"})
+public class UtilityPaymentTransaction
 {
 	public static final String PENDING = "PENDING";
 	public static final String WAITING = "WAITING";
@@ -26,7 +26,7 @@ public class Bill
 	public static final String FAILED = "FAILED";
 
 	public static final String WEBPAY = "WEBPAY";
-	public static final String TRANSFERENCIA = "TRANSFERENCIA";
+	public static final String EFT = "EFT";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,34 +34,19 @@ public class Bill
 	@JsonIgnore
 	private Long id;
 
-	@Column(updatable = false)
-	@JsonProperty("bill_id")
-	private String publicId;
-
-	@Column(insertable = false)  // TODO updateable false
-	private Long buyOrder; // TODO show when inserted
-
 	private String status;
 
 	@Column(updatable = false)
-	private String utility;
+	@JsonProperty("id")
+	private String publicId;
 
-	@Column(updatable = false)
-	private String collector;
-
-	@Column(updatable = false)
-	private String identifier;
+	@Column(insertable = false)
+	private Long buyOrder;
 
 	@Column(updatable = false)
 	private Long amount;
 
-	@Column(updatable = false)
-	private String dueDate;
-
-	@Column(updatable = false)
-	private String transactionId;
-
-	private String payment;
+	private String paymentMethod;
 
 	private String email;
 
@@ -115,26 +100,6 @@ public class Bill
 		this.status = status;
 	}
 
-	public String getUtility()
-	{
-		return utility;
-	}
-
-	public void setUtility(final String utility)
-	{
-		this.utility = utility;
-	}
-
-	public String getIdentifier()
-	{
-		return identifier;
-	}
-
-	public void setIdentifier(final String identifier)
-	{
-		this.identifier = identifier;
-	}
-
 	public Long getAmount()
 	{
 		return amount;
@@ -175,46 +140,6 @@ public class Bill
 		this.updated = updated;
 	}
 
-	public String getDueDate()
-	{
-		return dueDate;
-	}
-
-	public void setDueDate(final String dueDate)
-	{
-		this.dueDate = dueDate;
-	}
-
-	public String getTransactionId()
-	{
-		return transactionId;
-	}
-
-	public void setTransactionId(final String transactionId)
-	{
-		this.transactionId = transactionId;
-	}
-
-	public String getCollector()
-	{
-		return collector;
-	}
-
-	public void setCollector(final String collector)
-	{
-		this.collector = collector;
-	}
-
-	public String getPayment()
-	{
-		return payment;
-	}
-
-	public void setPayment(final String payment)
-	{
-		this.payment = payment;
-	}
-
 	public Long getBuyOrder()
 	{
 		return buyOrder;
@@ -223,5 +148,15 @@ public class Bill
 	public void setBuyOrder(final Long buyOrder)
 	{
 		this.buyOrder = buyOrder;
+	}
+
+	public String getPaymentMethod()
+	{
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(final String paymentMethod)
+	{
+		this.paymentMethod = paymentMethod;
 	}
 }

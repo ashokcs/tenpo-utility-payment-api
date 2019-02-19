@@ -15,38 +15,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cl.multipay.utility.payments.dto.TefCreateOrderResponse;
+import cl.multipay.utility.payments.dto.EftCreateOrderResponse;
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
-import cl.multipay.utility.payments.entity.Bill;
-import cl.multipay.utility.payments.entity.TransferenciaPayment;
+import cl.multipay.utility.payments.entity.UtilityPaymentEft;
+import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.util.Properties;
 
 @Service
-public class TransferenciaClient
+public class EftClient
 {
-	private static final Logger logger = LoggerFactory.getLogger(TransferenciaClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(EftClient.class);
 
 	private final CloseableHttpClient client;
 	private final Properties properties;
 
-	public TransferenciaClient(final CloseableHttpClient client, final Properties properties)
+	public EftClient(final CloseableHttpClient client, final Properties properties)
 	{
 		this.client = client;
 		this.properties = properties;
 	}
 
-	public Optional<TefCreateOrderResponse> createOrder(final Bill bill, final String tefPublicId, final String tefNotifyId)
+	public Optional<EftCreateOrderResponse> createOrder(final UtilityPaymentTransaction utilityPaymentTransaction,
+		final String tefPublicId, final String tefNotifyId)
 	{
 		try {
-			final String url = properties.getTransferenciaCreateOrderUrl();
-			final String authBase64 = properties.getTransferenciaBasicAuth();
-			final String commerceId = properties.getTransferenciaCommerceId();
-			final String branchId = properties.getTransferenciaBranchId();
-			final String description = properties.getTransferenciaCreateOrderDescription();
-			final int requestDuration = properties.getTransferenciaCreateOrderRequestDuration();
-			final String goBackUrl = properties.getTransferenciaCreateOrderGoBackUrl().replaceAll("\\{id\\}", tefPublicId);
-			final String notifyUrl = properties.getTransferenciaCreateOrderNotifyUrl().replaceAll("\\{id\\}", tefPublicId).replaceAll("\\{notify\\}", tefNotifyId);
-			final String xml = createOrderXmlBody(bill, commerceId, branchId, description, requestDuration, goBackUrl, notifyUrl);
+			final String url = properties.getEftCreateOrderUrl();
+			final String authBase64 = properties.getEftBasicAuth();
+			final String commerceId = properties.getEftCommerceId();
+			final String branchId = properties.getEftBranchId();
+			final String description = properties.getEftCreateOrderDescription();
+			final int requestDuration = properties.getEftCreateOrderRequestDuration();
+			final String goBackUrl = properties.getEftCreateOrderGoBackUrl().replaceAll("\\{id\\}", tefPublicId);
+			final String notifyUrl = properties.getEftCreateOrderNotifyUrl().replaceAll("\\{id\\}", tefPublicId).replaceAll("\\{notify\\}", tefNotifyId);
+			final String xml = createOrderXmlBody(utilityPaymentTransaction, commerceId, branchId, description, requestDuration, goBackUrl, notifyUrl);
 
 			final HttpPost post = new HttpPost(url);
 			post.setHeader("Authorization", "Basic " + authBase64);
@@ -66,7 +67,7 @@ public class TransferenciaClient
 					final Matcher redirectUrlMatcher = redirectUrlPattern.matcher(body);
 
 					if (mcOrderIdMatcher.find() && redirectUrlMatcher.find()) {
-						final TefCreateOrderResponse tefCreateOrderResponse = new TefCreateOrderResponse();
+						final EftCreateOrderResponse tefCreateOrderResponse = new EftCreateOrderResponse();
 						tefCreateOrderResponse.setMcOrderId(mcOrderIdMatcher.group(1));
 						tefCreateOrderResponse.setRedirectUrl(redirectUrlMatcher.group(1));
 						return Optional.of(tefCreateOrderResponse);
@@ -80,14 +81,14 @@ public class TransferenciaClient
 		return Optional.empty();
 	}
 
-	public Optional<TefGetOrderStatusResponse> getOrderStatus(final TransferenciaPayment transferenciaPayment)
+	public Optional<TefGetOrderStatusResponse> getOrderStatus(final UtilityPaymentEft utilityPaymentEft)
 	{
 		try {
-			final String url = properties.getTransferenciaGetOrderStatusUrl();
-			final String authBase64 = properties.getTransferenciaBasicAuth();
-			final String commerceId = properties.getTransferenciaCommerceId();
-			final String branchId = properties.getTransferenciaBranchId();
-			final String mcOrderId = transferenciaPayment.getMcOrderId();
+			final String url = properties.getEftGetOrderStatusUrl();
+			final String authBase64 = properties.getEftBasicAuth();
+			final String commerceId = properties.getEftCommerceId();
+			final String branchId = properties.getEftBranchId();
+			final String mcOrderId = utilityPaymentEft.getOrderId();
 			final String xml = getOrderStatusXml(commerceId, branchId, mcOrderId);
 
 			final HttpPost post = new HttpPost(url);
@@ -124,7 +125,7 @@ public class TransferenciaClient
 		return Optional.empty();
 	}
 
-	private String createOrderXmlBody(final Bill bill, final String commerceId,
+	private String createOrderXmlBody(final UtilityPaymentTransaction utilityPaymentTransaction, final String commerceId,
 		final String branchId, final String description, final int requestDuration,
 		final String goBackUrl, final String notifyUrl)
 	{
@@ -133,10 +134,10 @@ public class TransferenciaClient
 			      "<soapenv:Header/>" +
 			      "<soapenv:Body>" +
 			         "<cre:createOrder>" +
-			            "<cre:ecOrderId>"+bill.getBuyOrder()+"</cre:ecOrderId>" +
+			            "<cre:ecOrderId>"+utilityPaymentTransaction.getBuyOrder()+"</cre:ecOrderId>" +
 			            "<cre:commerceId>"+commerceId+"</cre:commerceId>" +
 			            "<cre:branchId>"+branchId+"</cre:branchId>" +
-			            "<cre:totalAmount>"+bill.getAmount()+"</cre:totalAmount>" +
+			            "<cre:totalAmount>"+utilityPaymentTransaction.getAmount()+"</cre:totalAmount>" +
 			            "<cre:generalDescription>"+description+"</cre:generalDescription>" +
 			            "<cre:requestDuration>"+requestDuration+"</cre:requestDuration>" +
 			            "<cre:goBackUrl>"+goBackUrl+"</cre:goBackUrl>" +

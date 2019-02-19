@@ -146,7 +146,7 @@ public class UtilityPaymentClient
 						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
 						for(final JsonNode bill : debtsJsonNode) {
 							final MulticajaBill mcBill = new MulticajaBill();
-							mcBill.setTransactionId(dataJsonNode.get("codigo_mc").asText());
+							mcBill.setMcCode(dataJsonNode.get("codigo_mc").asText());
 							mcBill.setAmount(bill.get("monto_total").asLong());
 							mcBill.setDueDate(bill.get("fecha_vencimiento").asText());
 							return Optional.of(mcBill);

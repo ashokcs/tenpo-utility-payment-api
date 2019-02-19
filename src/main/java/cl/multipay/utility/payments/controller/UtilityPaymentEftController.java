@@ -19,42 +19,48 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
-import cl.multipay.utility.payments.entity.Bill;
-import cl.multipay.utility.payments.entity.TransferenciaPayment;
+import cl.multipay.utility.payments.entity.UtilityPaymentEft;
+import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.exception.UnauthorizedException;
-import cl.multipay.utility.payments.http.TransferenciaClient;
-import cl.multipay.utility.payments.service.BillService;
+import cl.multipay.utility.payments.http.EftClient;
 import cl.multipay.utility.payments.service.EmailService;
-import cl.multipay.utility.payments.service.TransferenciaPaymentService;
+import cl.multipay.utility.payments.service.UtilityPaymentBillService;
+import cl.multipay.utility.payments.service.UtilityPaymentEftService;
+import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.util.Properties;
 
 @RestController
-public class TransferenciaController
+public class UtilityPaymentEftController
 {
-	private static final Logger logger = LoggerFactory.getLogger(TransferenciaController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilityPaymentEftController.class);
 
 	private final Properties properties;
 
-	private final BillService billService;
-	private final TransferenciaPaymentService transferenciaPaymentService;
+	private final UtilityPaymentTransactionService utilityPaymentTransactionService;
+	private final UtilityPaymentBillService utilityPaymentBillService;
+	private final UtilityPaymentEftService utilityPaymentEftService;
 	private final EmailService emailService;
 
-	private final TransferenciaClient transferenciaClient;
+	private final EftClient eftClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public TransferenciaController(final Properties properties,
-		final BillService billService, final TransferenciaPaymentService transferenciaPaymentService,
-		final TransferenciaClient transferenciaClient, final EmailService emailService,
+	public UtilityPaymentEftController(final Properties properties,
+		final UtilityPaymentTransactionService utilityPaymentTransactionService,
+		final UtilityPaymentBillService utilityPaymentBillService,
+		final UtilityPaymentEftService utilityPaymentEftService,
+		final EftClient eftClient, final EmailService emailService,
+		final EftClient transferenciaClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
-		this.billService = billService;
-		this.transferenciaPaymentService = transferenciaPaymentService;
-		this.transferenciaClient = transferenciaClient;
+		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
+		this.utilityPaymentBillService = utilityPaymentBillService;
+		this.utilityPaymentEftService = utilityPaymentEftService;
 		this.emailService = emailService;
+		this.eftClient = eftClient;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
@@ -65,8 +71,8 @@ public class TransferenciaController
 	 * @param notifyId
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST , path = "/v1/payments/transferencia/notify/{id}/{notifyId}",
-		produces = MediaType.TEXT_XML_VALUE, consumes = MediaType.TEXT_XML_VALUE)
+	@RequestMapping(method = RequestMethod.POST , path = "/v1/payments/eft/notify/{id}/{notifyId}",
+		produces = MediaType.TEXT_XML_VALUE, consumes = MediaType.TEXT_XML_VALUE) // TODO url
 	public ResponseEntity<String> transferenciaNotify(
 		final HttpServletRequest request,
 		@PathVariable("id") final String id,
@@ -75,20 +81,21 @@ public class TransferenciaController
 	{
 		logger.info("-> " + request.getRequestURL());
 		try {
-			// get ids
-			final String tefId = getPublicId(id).orElseThrow(ServerErrorException::new);
-			final String tefNotifyId = getPublicId(notifyId).orElseThrow(ServerErrorException::new);
+			// get and check ids
+			final String tefId = getId(id).orElseThrow(ServerErrorException::new);
+			final String tefNotifyId = getId(notifyId).orElseThrow(ServerErrorException::new);
 
 			// check credentials
 			validCredentials(auth).orElseThrow(UnauthorizedException::new);
 
-			// get payment and bill
-			final TransferenciaPayment transferenciaPayment = transferenciaPaymentService.getPendingByPublicIdAndNotifyId(tefId, tefNotifyId)
+			// get utility payment eft and utility payment transaction
+			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingByPublicIdAndNotifyId(tefId, tefNotifyId)
 					.orElseThrow(NotFoundException::new);
-			final Bill bill = billService.getWaitingById(transferenciaPayment.getBillId()).orElseThrow(NotFoundException::new);
+			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentEft.getTransactionId())
+					.orElseThrow(NotFoundException::new);
 
-			// get remote status
-			final TefGetOrderStatusResponse tefGetOrderStatusResponse = transferenciaClient.getOrderStatus(transferenciaPayment)
+			// get eft remote status
+			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)
 					.orElseThrow(ServerErrorException::new);
 
 			switch (tefGetOrderStatusResponse.getOrderStatus()) {
@@ -98,16 +105,16 @@ public class TransferenciaController
 				// if pay fail refund
 
 				// update status
-				transferenciaPayment.setStatus(TransferenciaPayment.PAID);
-				bill.setStatus(Bill.SUCCEEDED);
-				transferenciaPaymentService.save(transferenciaPayment);
-				billService.save(bill);
+				utilityPaymentEft.setStatus(UtilityPaymentEft.PAID);
+				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
+				utilityPaymentEftService.save(utilityPaymentEft);
+				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 				// send receipt
 				emailService.utilityPaymentReceipt();
 
 				// add totaliser data
-				applicationEventPublisher.publishEvent(new TotaliserEvent(bill.getAmount()));
+				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
 
 				// return ok
 				return ResponseEntity.ok(notifyResponse());
@@ -124,41 +131,41 @@ public class TransferenciaController
 	 * @param id
 	 * @return
 	 */
-	@GetMapping("/v1/payments/transferencia/return/{id}")
+	@GetMapping("/v1/payments/eft/return/{id}")
 	public ResponseEntity<?> transferenciaReturn(final HttpServletRequest request, @PathVariable("id") final String id)
 	{
 		logger.info("-> " + request.getRequestURL());
-		Long buyOrder = null;
+		Long utilityPaymentTransactionBuyOrder = null;
 		try {
-			// get bill and payment
-			final String tefId = getPublicId(id).orElseThrow(ServerErrorException::new);
-			final TransferenciaPayment transferenciaPayment = transferenciaPaymentService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
-			final Bill bill = billService.findById(transferenciaPayment.getBillId()).orElseThrow(NotFoundException::new);
-			buyOrder = bill.getBuyOrder();
+			// get utility payment transaction and eft
+			final String tefId = getId(id).orElseThrow(ServerErrorException::new);
+			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
+			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
+			utilityPaymentTransactionBuyOrder = utilityPaymentTransaction.getBuyOrder();
 
-			// get remote status
-			final TefGetOrderStatusResponse tefGetOrderStatusResponse = transferenciaClient.getOrderStatus(transferenciaPayment)
+			// get eft remote status
+			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)
 					.orElseThrow(ServerErrorException::new);
 
 			switch (tefGetOrderStatusResponse.getOrderStatus()) {
 
 			// pending, paid, notified_mc, notified_ecom, notified_con
 			case 100: case 101: case 106: case 107: case 109:
-				return redirectEntity(properties.getTransferenciaRedirectFinal().replaceAll("\\{id\\}", bill.getPublicId()));
+				return redirectEntity(properties.getEftRedirectFinal().replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 
 			// nullified, canceled_user, expired, canceled_ecom
 			case 103: case 105: case 110: case 111:
-				transferenciaPayment.setStatus(TransferenciaPayment.CANCELED);
-				bill.setStatus(Bill.FAILED);
-				transferenciaPaymentService.save(transferenciaPayment).orElseThrow(ServerErrorException::new);;
-				billService.save(bill).orElseThrow(ServerErrorException::new);;
+				utilityPaymentEft.setStatus(UtilityPaymentEft.CANCELED);
+				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.FAILED);
+				utilityPaymentEftService.save(utilityPaymentEft).orElseThrow(ServerErrorException::new);;
+				utilityPaymentTransactionService.save(utilityPaymentTransaction).orElseThrow(ServerErrorException::new);;
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage());
 		}
 
 		// redirect to error page
-		return redirectEntity(getRedirectErrorUrl(buyOrder));
+		return redirectEntity(getRedirectErrorUrl(utilityPaymentTransactionBuyOrder));
 	}
 
 	private ResponseEntity<?> redirectEntity(final String url)
@@ -167,7 +174,7 @@ public class TransferenciaController
 		return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, url).build();
 	}
 
-	private Optional<String> getPublicId(final String id)
+	private Optional<String> getId(final String id)
 	{
 		if ((id != null) && id.matches("[0-9a-f]{32}")) {
 			return Optional.ofNullable(id);
@@ -178,9 +185,9 @@ public class TransferenciaController
 	private String getRedirectErrorUrl(final Long buyOrder)
 	{
 		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.getTransferenciaRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString());
+			return properties.getEftRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString());
 		}
-		return properties.getTransferenciaRedirectError();
+		return properties.getEftRedirectError();
 	}
 
 	private String notifyResponse()
@@ -196,7 +203,7 @@ public class TransferenciaController
 	private Optional<Boolean> validCredentials(final String authHeader)
 	{
 		if (authHeader != null) {
-			if (authHeader.equals("Basic " + properties.getTransferenciaNotifyBasicAuth())) {
+			if (authHeader.equals("Basic " + properties.getEftNotifyBasicAuth())) {
 				return Optional.of(true);
 			}
 		}

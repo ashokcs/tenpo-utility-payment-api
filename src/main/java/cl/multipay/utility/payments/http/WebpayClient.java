@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cl.multipay.utility.payments.dto.WebpayInitResponse;
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
-import cl.multipay.utility.payments.entity.Bill;
-import cl.multipay.utility.payments.entity.WebpayPayment;
+import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 import cl.multipay.utility.payments.util.Properties;
 
 @Component
@@ -38,14 +38,14 @@ public class WebpayClient
 		this.properties = properties;
 	}
 
-	public Optional<WebpayInitResponse> init(final Bill bill)
+	public Optional<WebpayInitResponse> init(final UtilityPaymentTransaction utilityPaymentTransaction)
 	{
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode request = mapper.createObjectNode();
-			request.put("amount", bill.getAmount());
-			request.put("sessionId", bill.getPublicId());
-			request.put("buyOrder", bill.getBuyOrder());
+			request.put("amount", utilityPaymentTransaction.getAmount());
+			request.put("sessionId", utilityPaymentTransaction.getPublicId());
+			request.put("buyOrder", utilityPaymentTransaction.getBuyOrder());
 			request.put("returnUrl", properties.getWebpayReturnUrl());
 			request.put("finalUrl", properties.getWebpayFinalUrl());
 			final ObjectNode config = mapper.createObjectNode();
@@ -81,12 +81,12 @@ public class WebpayClient
 		return Optional.empty();
 	}
 
-	public Optional<WebpayResultResponse> result(final WebpayPayment payment)
+	public Optional<WebpayResultResponse> result(final UtilityPaymentWebpay utilityPaymentWebpay)
 	{
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode request = mapper.createObjectNode();
-			request.put("token", payment.getToken());
+			request.put("token", utilityPaymentWebpay.getToken());
 			final ObjectNode config = mapper.createObjectNode();
 			config.put("commerceUserName", properties.getWebpayCommerceUser());
 			config.put("commercePassword", properties.getWebpayCommercePass());
@@ -141,12 +141,12 @@ public class WebpayClient
 		return Optional.empty();
 	}
 
-	public Optional<Boolean> ack(final WebpayPayment payment)
+	public Optional<Boolean> ack(final UtilityPaymentWebpay utilityPaymentWebpay)
 	{
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode request = mapper.createObjectNode();
-			request.put("token", payment.getToken());
+			request.put("token", utilityPaymentWebpay.getToken());
 			final ObjectNode config = mapper.createObjectNode();
 			config.put("commerceUserName", properties.getWebpayCommerceUser());
 			config.put("commercePassword", properties.getWebpayCommercePass());

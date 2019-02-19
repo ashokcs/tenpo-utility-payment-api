@@ -43,7 +43,6 @@ public class TotaliserListener
 	public void onMessage(final TotaliserEvent event)
 	{
 		try {
-			logger.info("start");
 			final Integer year = Calendar.getInstance().get(Calendar.YEAR);
 			final Integer month = Calendar.getInstance().get(Calendar.MONTH) + 1;
 			final Integer day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -95,7 +94,6 @@ public class TotaliserListener
 				totaliserDay.setAmount(event.getAmount());
 				totaliserDayRepository.save(totaliserDay);
 			}
-			logger.info("finnish");
 		} catch (final Exception e) {
 			 logger.error(e.getMessage());
 		}

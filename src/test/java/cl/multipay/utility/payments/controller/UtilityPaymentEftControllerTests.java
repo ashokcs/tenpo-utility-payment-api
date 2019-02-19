@@ -20,12 +20,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cl.multipay.utility.payments.entity.Bill;
-import cl.multipay.utility.payments.entity.TransferenciaPayment;
+import cl.multipay.utility.payments.entity.UtilityPaymentBill;
+import cl.multipay.utility.payments.entity.UtilityPaymentEft;
+import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.multipay.utility.payments.service.BillService;
 import cl.multipay.utility.payments.service.EmailService;
-import cl.multipay.utility.payments.service.TransferenciaPaymentService;
+import cl.multipay.utility.payments.service.UtilityPaymentBillService;
+import cl.multipay.utility.payments.service.UtilityPaymentEftService;
+import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.util.Properties;
 import cl.multipay.utility.payments.util.Utils;
 
@@ -34,16 +36,19 @@ import cl.multipay.utility.payments.util.Utils;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SuppressWarnings("unused")
-public class TransferenciaControllerTests
+public class UtilityPaymentEftControllerTests
 {
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
-	private TransferenciaPaymentService transferenciaPaymentService;
+	private UtilityPaymentEftService utilityPaymentEftService;
 
 	@Autowired
-	private BillService billService;
+	private UtilityPaymentTransactionService utilityPaymentTransactionService;
+
+	@Autowired
+	private UtilityPaymentBillService utilityPaymentBillService;
 
 	@Autowired
 	private Properties properties;
@@ -57,7 +62,7 @@ public class TransferenciaControllerTests
 	@Test
 	public void tefReturn_shouldReturnServerError_withInvalidParameters1() throws Exception
 	{
-		mockMvc.perform(get("/v1/payments/transferencia/return/asdasd"))
+		mockMvc.perform(get("/v1/payments/eft/return/asdasd"))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -65,7 +70,7 @@ public class TransferenciaControllerTests
 	@Test
 	public void tefReturn_shouldReturnServerError_withInvalidParameters2() throws Exception
 	{
-		mockMvc.perform(get("/v1/payments/transferencia/return/738b0aa174544c4a92e511b904ed32a4"))
+		mockMvc.perform(get("/v1/payments/eft/return/738b0aa174544c4a92e511b904ed32a4"))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -75,16 +80,16 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a1";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d1";
 		final String mcOrderId = "526415205094961";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>105</orderStatus><description>CANCELLED</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		mockMvc.perform(get("/v1/payments/transferencia/return/{id}", tefPublicId))
+		mockMvc.perform(get("/v1/payments/eft/return/{id}", tefPublicId))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -94,16 +99,16 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a2";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d2";
 		final String mcOrderId = "526415205094962";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		mockMvc.perform(get("/v1/payments/transferencia/return/{id}", tefPublicId))
+		mockMvc.perform(get("/v1/payments/eft/return/{id}", tefPublicId))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -113,16 +118,16 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a3";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d3";
 		final String mcOrderId = "526415205094963";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		mockMvc.perform(get("/v1/payments/transferencia/return/{id}", tefPublicId))
+		mockMvc.perform(get("/v1/payments/eft/return/{id}", tefPublicId))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -132,16 +137,16 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.PENDING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a3";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d3";
 		final String mcOrderId = "526415205094963";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		mockMvc.perform(get("/v1/payments/transferencia/return/{id}", tefPublicId))
+		mockMvc.perform(get("/v1/payments/eft/return/{id}", tefPublicId))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -149,7 +154,7 @@ public class TransferenciaControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withInvalidVerb() throws Exception
 	{
-		mockMvc.perform(get("/v1/payments/transferencia/notify/{id}/{notifyId}", "asd", "asd"))
+		mockMvc.perform(get("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd"))
 			.andDo(print())
 			.andExpect(status().isMethodNotAllowed());
 	}
@@ -157,7 +162,7 @@ public class TransferenciaControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withNoContentType() throws Exception
 	{
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", "asd", "asd"))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd"))
 			.andDo(print())
 			.andExpect(status().isUnsupportedMediaType());
 	}
@@ -165,7 +170,7 @@ public class TransferenciaControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withNoAuthHeader() throws Exception
 	{
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", "asd", "asd").contentType(MediaType.TEXT_XML))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd").contentType(MediaType.TEXT_XML))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
@@ -175,13 +180,13 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.PENDING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a4";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d4";
 		final String mcOrderId = "526415205094964";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", "asd", "asd")
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd")
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -192,13 +197,13 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.PENDING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a4";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d4";
 		final String mcOrderId = "526415205094964";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", tefPublicId, "asd")
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, "asd")
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -209,13 +214,13 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.PENDING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a4";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d4";
 		final String mcOrderId = "526415205094964";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -226,14 +231,14 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.PENDING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a4";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d4";
 		final String mcOrderId = "526415205094964";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
-				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.getTransferenciaNotifyBasicAuth()))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
+				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.getEftNotifyBasicAuth()))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
@@ -243,17 +248,17 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a5";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d5";
 		final String mcOrderId = "526415205094965";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
-				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.getTransferenciaNotifyBasicAuth()))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
+				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.getEftNotifyBasicAuth()))
 			.andDo(print())
 			.andExpect(status().isOk());
 	}
@@ -263,51 +268,58 @@ public class TransferenciaControllerTests
 	{
 		final String uuid = Utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final Bill bill = createBillMock(Bill.WAITING, uuid, buyOrder);
+		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a6";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d6";
 		final String mcOrderId = "526415205094966";
-		final TransferenciaPayment payment = createTransferenciaPaymentMock(bill, tefPublicId, tefNotifyId, mcOrderId);
+		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>100/orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		mockMvc.perform(post("/v1/payments/transferencia/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
-				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.getTransferenciaNotifyBasicAuth()))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
+				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.getEftNotifyBasicAuth()))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
 	}
 
-	private Bill createBillMock(final String status, final String uuid, final Long buyOrder)
+	private UtilityPaymentTransaction createUtilityPaymentTransactionlMock(final String status, final String uuid, final Long buyOrder)
 	{
-		final Bill bill = new Bill();
-		bill.setPublicId(uuid);
-		bill.setStatus(status);
-		bill.setUtility("TEST");
-		bill.setCollector("2");
-		bill.setIdentifier("123123");
-		bill.setAmount(123123L);
-		bill.setDueDate("2019-06-06");
-		bill.setTransactionId("123123123");
-		bill.setEmail("asd@asd.cl");
-		bill.setPayment(Bill.WEBPAY);
-		billService.save(bill);
-		bill.setBuyOrder(buyOrder);
-		billService.save(bill);
-		return bill;
+		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
+		utilityPaymentTransaction.setPublicId(uuid);
+		utilityPaymentTransaction.setStatus(status);
+		utilityPaymentTransaction.setAmount(1000L);
+		utilityPaymentTransaction.setEmail("asd@asd.cl");
+		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction);
+		utilityPaymentTransaction.setBuyOrder(buyOrder);
+		utilityPaymentTransactionService.save(utilityPaymentTransaction);
+
+		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
+		utilityPaymentBill.setStatus(UtilityPaymentBill.PENDING);
+		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentBill.setUtility("TEST");
+		utilityPaymentBill.setCollector("2");
+		utilityPaymentBill.setIdentifier("123123");
+		utilityPaymentBill.setMcCode("12312312321");
+		utilityPaymentBill.setAmount(123123L);
+		utilityPaymentBill.setDueDate("2019-06-06");
+		utilityPaymentBill.setMcCode("123123123");
+		utilityPaymentBillService.save(utilityPaymentBill);
+
+		return utilityPaymentTransaction;
 	}
 
-	private TransferenciaPayment createTransferenciaPaymentMock(final Bill bill, final String tefPublicId,
+	private UtilityPaymentEft createUtilityPaymentEftMock(final UtilityPaymentTransaction utilityPaymentTransaction, final String tefPublicId,
 		final String tefNotifyId, final String mcOrderId)
 	{
-		final TransferenciaPayment transferenciaPayment = new TransferenciaPayment();
-		transferenciaPayment.setBillId(bill.getId());
-		transferenciaPayment.setStatus(TransferenciaPayment.PENDING);
-		transferenciaPayment.setPublicId(tefPublicId);
-		transferenciaPayment.setNotifyId(tefNotifyId);
-		transferenciaPayment.setMcOrderId(mcOrderId);
-		transferenciaPayment.setUrl("http://bla.bla");
-		transferenciaPaymentService.save(transferenciaPayment);
-		return transferenciaPayment;
+		final UtilityPaymentEft utilityPaymentEft = new UtilityPaymentEft();
+		utilityPaymentEft.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentEft.setStatus(UtilityPaymentEft.PENDING);
+		utilityPaymentEft.setPublicId(tefPublicId);
+		utilityPaymentEft.setNotifyId(tefNotifyId);
+		utilityPaymentEft.setOrderId(mcOrderId);
+		utilityPaymentEft.setUrl("http://bla.bla");
+		utilityPaymentEftService.save(utilityPaymentEft);
+		return utilityPaymentEft;
 	}
 }

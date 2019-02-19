@@ -1,6 +1,6 @@
 package cl.multipay.utility.payments.dto;
 
-public class TefCreateOrderResponse
+public class EftCreateOrderResponse
 {
 	private String mcOrderId;
 	private String redirectUrl;
