@@ -157,14 +157,20 @@ curl --request POST \
 Response
 ```json
 {
-  "bill_id": "efd57e7af34d4189bb705a0e231e0356",
-  "status": "pending",
-  "utility": "MUNDO_PACIFICO",
-  "collector": "3",
-  "identifier": "2312312",
+  "id": "369844d6e9c04a5da9a6a61ae5d8c70c",
+  "status": "PENDING",
+  "buy_order": 20190219181736005,
   "amount": 94290,
-  "due_date": "2015-02-23",
-  "transaction_id": "799378736"
+  "created": "2019-02-19T18:17:36.681121-03:00",
+  "updated": "2019-02-19T18:17:36.681121-03:00",
+  "bill": {
+    "utility": "ENTEL PCS",
+    "collector": "2",
+    "identifier": "173379595",
+    "mc_code": "799378736",
+    "amount": 94290,
+    "due_date": "2015-02-23"
+  }
 }
 ```
 
@@ -185,17 +191,20 @@ curl --request GET \
 Response
 ```json
 {
-  "bill_id": "efd57e7af34d4189bb705a0e231e0356",
-  "buy_order": 201902121743000003,
-  "status": "succeed",
-  "utility": "MUNDO_PACIFICO",
-  "collector": "3",
-  "identifier": "2312312",
+  "id": "369844d6e9c04a5da9a6a61ae5d8c70c",
+  "status": "PENDING",
+  "buy_order": 20190219181736005,
   "amount": 94290,
-  "due_date": "2015-02-23",
-  "transaction_id": "799378736",
-  "payment": "webpay",
-  "email": "carlos.izquierdo@multicaja.cl"
+  "created": "2019-02-19T18:17:36.681121-03:00",
+  "updated": "2019-02-19T18:17:36.681121-03:00",
+  "bill": {
+    "utility": "ENTEL PCS",
+    "collector": "2",
+    "identifier": "173379595",
+    "mc_code": "799378736",
+    "amount": 94290,
+    "due_date": "2015-02-23"
+  }
 }
 ```
 
@@ -205,7 +214,7 @@ Response
 Request
 ```bash
 curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/150bb2fc0dae4c4a945256fd1dcbfaf7/webpay \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/369844d6e9c04a5da9a6a61ae5d8c70c/webpay \
 --header 'Content-Type: application/json' \
 --data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```
@@ -223,7 +232,7 @@ Response
 Request
 ```bash
 curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/a232968c2f76475d8b021309e459948d/eft \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/369844d6e9c04a5da9a6a61ae5d8c70c/eft \
 --header 'Content-Type: application/json' \
 --data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```
