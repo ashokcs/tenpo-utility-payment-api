@@ -219,6 +219,7 @@ public class UtilityPaymentTransactionController
 	// TODO modificar body response
 	// TODO probar eft dev mc
 
+	// TODO json return null
 	// TODO modificar api readme new version
 	// TODO subir bo
 	// TODO html correo comprobante
@@ -227,4 +228,5 @@ public class UtilityPaymentTransactionController
 	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
 	// TODO bo totalizadores task correccion
+	// TODO save categoria convenio
 }
