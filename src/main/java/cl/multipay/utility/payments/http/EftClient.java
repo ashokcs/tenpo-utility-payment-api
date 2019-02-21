@@ -53,11 +53,12 @@ public class EftClient
 			post.setHeader("Authorization", "Basic " + authBase64);
 			post.setEntity(new StringEntity(xml, ContentType.TEXT_XML));
 
+			logger.info("=> {} [{}]", url, xml);
+
 			try (final CloseableHttpResponse response = client.execute(post)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {} [{}]", url, xml);
 				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {
@@ -95,11 +96,12 @@ public class EftClient
 			post.setHeader("Authorization", "Basic " + authBase64);
 			post.setEntity(new StringEntity(xml, ContentType.TEXT_XML));
 
+			logger.info("=> {} [{}]", url, xml);
+
 			try (final CloseableHttpResponse response = client.execute(post)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {} [{}]", url, xml);
 				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {

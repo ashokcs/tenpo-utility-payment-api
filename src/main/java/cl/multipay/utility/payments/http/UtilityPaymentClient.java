@@ -55,11 +55,12 @@ public class UtilityPaymentClient
 			request.setHeader("apikey", properties.getMulticajaUtilitiesApiKey());
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
+			logger.info("=> {}", url);
+
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {}", url);
 				logger.info("<= {}: {}", url, response.getStatusLine());
 
 				if (response.getStatusLine().getStatusCode() == 200) {
@@ -130,11 +131,12 @@ public class UtilityPaymentClient
 			request.setHeader("apikey", properties.getMulticajaUtilitiesApiKey());
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
+			logger.info("=> {} [{}]", url, json);
+
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {} [{}]", url, json);
 				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {

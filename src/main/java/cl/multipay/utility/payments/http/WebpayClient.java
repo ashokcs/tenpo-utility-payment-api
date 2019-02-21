@@ -60,11 +60,12 @@ public class WebpayClient
 			final HttpPost post = new HttpPost(url);
 			post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
+			logger.info("=> {} [{}]", url, json);
+
 			try (final CloseableHttpResponse response = client.execute(post)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {} [{}]", url, json);
 				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {
@@ -99,11 +100,12 @@ public class WebpayClient
 			final HttpPost post = new HttpPost(url);
 			post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
+			logger.info("=> {} [{}]", url, json);
+
 			try (final CloseableHttpResponse response = client.execute(post)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {} [{}]", url, json);
 				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {
@@ -159,11 +161,12 @@ public class WebpayClient
 			final HttpPost post = new HttpPost(url);
 			post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
+			logger.info("=> {} [{}]", url, json);
+
 			try (final CloseableHttpResponse response = client.execute(post)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("=> {} [{}]", url, json);
 				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {
