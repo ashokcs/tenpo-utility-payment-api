@@ -73,6 +73,10 @@ notify_user : xNXxrkMmMxqD77GCn2Fw
 notify_pass : dd73MTANpLMCLMkRaMxN
 notify_auth : eE5YeHJrTW1NeHFENzdHQ24yRnc6ZGQ3M01UQU5wTE1DTE1rUmFNeE4=
 ```
+## Integration
+Create Order: https://www.mcdesaqa.cl/BDPGetOrderStatus/GetOrderStatusWebService  
+Get Order Status: https://www.mcdesaqa.cl/BDPGetOrderStatus/GetOrderStatusWebService     
+
 ## Development
 Create Order: https://10.170.1.11:9191/bdpcows/CreateOrderWebService   
 Get Order Status: https://10.170.1.11:9191/BDPGetOrderStatus/GetOrderStatusWebService   
