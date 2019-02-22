@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cl.multipay.utility.payments.dto.Collector;
 import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.util.Properties;
@@ -89,12 +88,13 @@ public class UtilityPaymentClient
 							// utility collector
 							final JsonNode collectors = utility.get("collector");
 							for (final Iterator<String> keys = collectors.fieldNames(); keys.hasNext();){
-								final String key = keys.next();
-								final Collector collector = new Collector();
-								collector.setId(key);
-								collector.setName(collectors.get(key).asText());
-								tmp.setCollector(collector);
-								break;
+								tmp.setCollector(keys.next()); break;
+							}
+
+							// utility category
+							final JsonNode categories = utility.get("area");
+							for (final Iterator<String> keys = categories.fieldNames(); keys.hasNext();){
+								tmp.setCategory(keys.next()); break;
 							}
 
 							// add to list

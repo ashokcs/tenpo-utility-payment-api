@@ -299,6 +299,7 @@ public class UtilityPaymentEftControllerTests
 		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentBill.setUtility("TEST");
 		utilityPaymentBill.setCollector("2");
+		utilityPaymentBill.setCategory("100");
 		utilityPaymentBill.setIdentifier("123123");
 		utilityPaymentBill.setMcCode("12312312321");
 		utilityPaymentBill.setAmount(123123L);

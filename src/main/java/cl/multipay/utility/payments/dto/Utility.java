@@ -5,7 +5,8 @@ import java.util.List;
 public class Utility
 {
 	private String utility;
-	private Collector collector;
+	private String collector;
+	private String category;
 	private List<String> identifiers;
 
 	public String getUtility()
@@ -18,14 +19,24 @@ public class Utility
 		this.utility = utility;
 	}
 
-	public Collector getCollector()
+	public String getCollector()
 	{
 		return collector;
 	}
 
-	public void setCollector(final Collector collector)
+	public void setCollector(final String collector)
 	{
 		this.collector = collector;
+	}
+
+	public String getCategory()
+	{
+		return category;
+	}
+
+	public void setCategory(final String category)
+	{
+		this.category = category;
 	}
 
 	public List<String> getIdentifiers()

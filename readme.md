@@ -89,6 +89,28 @@ base64      : RWNvbW1lcmNlV2ViUm9sZTpFY29tbWVyY2VXZWJSb2xl
 User        : 10964112-K:1313
 ```
 
+## Categories
+```
+"1": "OTRO"
+"2": "EFT"
+"3": "SENCILLITO"
+"4": "SANTANDER"
+
+"100": "AGUA"
+"200": "LUZ"
+"300": "TELEF-TV-INTERNET"
+"400": "GAS"
+"500": "AUTOPISTAS"
+"600": "COSMETICA"
+"700": "RETAIL"
+"800": "CREDITO-FINANCIERA"
+"900": "SEGURIDAD"
+"1000": "EDUCACION",
+"1100": "CEMENTERIO"
+"1200": "OTRAS EMPRESAS"
+"1300": "EFECTIVO MULTICAJA"
+```
+
 ## Notify Request
 ```
 HTTP request - http://localhost:7771/v1/payments/transferencia/notify/b968349f0e1d4ee7802b08d944027670/1cbc544079894abc895bf74a5862563e/]---
@@ -124,11 +146,15 @@ Response
 ```json
 [
   {
+    "utility": "COSTANERA NORTE",
+    "collector": "1",
+    "category": "100",
+    "identifiers": []
+  },
+  {
     "utility": "AGUAS ANDINAS",
-    "collector": {
-      "id": "4",
-      "name": "SANTANDER"
-    },
+    "collector": "4",
+    "category": "100",
     "identifiers": [
       "NRO CLIENTE",
       "CON DIGITO VERIFICADOR"
@@ -136,10 +162,8 @@ Response
   },
   {
     "utility": "ESSBIO",
-    "collector": {
-      "id": "4",
-      "name": "SANTANDER"
-    },
+    "collector": "4",
+    "category": "100",
     "identifiers": [
       "NRO SERVICIO",
       "SIN DIGITO VERIFICADOR"
@@ -156,20 +180,21 @@ Request
 curl --request POST \
 --url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions \
 --header 'Content-Type: application/json' \
---data '{"utility": "COSTANERA NORTE","collector": "1","identifier": "57910526"}'
+--data '{"utility": "ENTEL PCS","collector": "2","category": "300","identifier": "173379595"}'
 ```
 Response
 ```json
 {
-  "id": "369844d6e9c04a5da9a6a61ae5d8c70c",
+  "id": "eaa7f715372d4b71a7fe00402d391df1",
   "status": "PENDING",
-  "buy_order": 20190219181736005,
+  "buy_order": 20190222011546002,
   "amount": 94290,
-  "created": "2019-02-19T18:17:36.681121-03:00",
-  "updated": "2019-02-19T18:17:36.681121-03:00",
+  "created": "2019-02-22T01:15:46.665983-03:00",
+  "updated": "2019-02-22T01:15:46.665983-03:00",
   "bill": {
     "utility": "ENTEL PCS",
     "collector": "2",
+    "category": "300",
     "identifier": "173379595",
     "mc_code": "799378736",
     "amount": 94290,
@@ -189,21 +214,22 @@ Response - Without debt
 Request
 ```bash
 curl --request GET \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/150bb2fc0dae4c4a945256fd1dcbfaf7 \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1 \
 --header 'Content-Type: application/json'
 ```
 Response
 ```json
 {
-  "id": "369844d6e9c04a5da9a6a61ae5d8c70c",
+  "id": "eaa7f715372d4b71a7fe00402d391df1",
   "status": "PENDING",
-  "buy_order": 20190219181736005,
+  "buy_order": 20190222011546002,
   "amount": 94290,
-  "created": "2019-02-19T18:17:36.681121-03:00",
-  "updated": "2019-02-19T18:17:36.681121-03:00",
+  "created": "2019-02-22T01:15:46.665983-03:00",
+  "updated": "2019-02-22T01:15:46.665983-03:00",
   "bill": {
     "utility": "ENTEL PCS",
     "collector": "2",
+    "category": "300",
     "identifier": "173379595",
     "mc_code": "799378736",
     "amount": 94290,
@@ -218,7 +244,7 @@ Response
 Request
 ```bash
 curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/369844d6e9c04a5da9a6a61ae5d8c70c/webpay \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1/webpay \
 --header 'Content-Type: application/json' \
 --data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```
@@ -236,7 +262,7 @@ Response
 Request
 ```bash
 curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/369844d6e9c04a5da9a6a61ae5d8c70c/eft \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1/eft \
 --header 'Content-Type: application/json' \
 --data '{"email": "carlos.izquierdo@multicaja.cl"}'
 ```

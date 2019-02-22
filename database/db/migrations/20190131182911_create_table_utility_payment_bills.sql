@@ -6,6 +6,7 @@ CREATE TABLE public.utility_payment_bills (
   transaction_id        bigint          not null,
   utility               varchar(300)    not null,
   collector             varchar(100)    not null,
+  category              varchar(100)    not null,
   identifier            varchar(300)    not null,
   mc_code               varchar(100)    not null,
   amount                numeric(12,2)   not null,
@@ -20,9 +21,10 @@ CREATE TABLE public.utility_payment_bills (
 CREATE INDEX utility_payment_bills_i1 ON public.utility_payment_bills (status);
 CREATE INDEX utility_payment_bills_i2 ON public.utility_payment_bills (utility);
 CREATE INDEX utility_payment_bills_i3 ON public.utility_payment_bills (collector);
-CREATE INDEX utility_payment_bills_i4 ON public.utility_payment_bills (identifier);
-CREATE INDEX utility_payment_bills_i5 ON public.utility_payment_bills (mc_code);
-CREATE INDEX utility_payment_bills_i6 ON public.utility_payment_bills (created);
+CREATE INDEX utility_payment_bills_i4 ON public.utility_payment_bills (category);
+CREATE INDEX utility_payment_bills_i5 ON public.utility_payment_bills (identifier);
+CREATE INDEX utility_payment_bills_i6 ON public.utility_payment_bills (mc_code);
+CREATE INDEX utility_payment_bills_i7 ON public.utility_payment_bills (created);
 
 -- migrate:down
 DROP TABLE public.utility_payment_bills;

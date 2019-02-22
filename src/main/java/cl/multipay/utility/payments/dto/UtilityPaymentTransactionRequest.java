@@ -10,12 +10,16 @@ public class UtilityPaymentTransactionRequest
 	private String utility;
 
 	@NotBlank
-	@Pattern(regexp = "^[A-Za-z0-9]{2,20}$")
-	private String identifier;
+	@Pattern(regexp = "1|2|3|4")
+	private String collector;
 
 	@NotBlank
-	@Pattern(regexp = "^[0-9]{1}$")
-	private String collector;
+	@Pattern(regexp = "^[0-9]{2,5}$")
+	private String category;
+
+	@NotBlank
+	@Pattern(regexp = "^[A-Za-z0-9]{2,20}$")
+	private String identifier;
 
 	public String getUtility()
 	{
@@ -45,5 +49,15 @@ public class UtilityPaymentTransactionRequest
 	public void setCollector(final String collector)
 	{
 		this.collector = collector;
+	}
+
+	public String getCategory()
+	{
+		return category;
+	}
+
+	public void setCategory(final String category)
+	{
+		this.category = category;
 	}
 }

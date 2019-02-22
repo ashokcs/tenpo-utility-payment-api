@@ -40,6 +40,9 @@ public class UtilityPaymentBill
 	private String collector;
 
 	@Column(updatable = false)
+	private String category;
+
+	@Column(updatable = false)
 	private String identifier;
 
 	@Column(updatable = false)
@@ -153,6 +156,16 @@ public class UtilityPaymentBill
 	public void setCollector(final String collector)
 	{
 		this.collector = collector;
+	}
+
+	public String getCategory()
+	{
+		return category;
+	}
+
+	public void setCategory(final String category)
+	{
+		this.category = category;
 	}
 
 	public Long getTransactionId()

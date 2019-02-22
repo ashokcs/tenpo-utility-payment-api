@@ -90,7 +90,7 @@ public class UtilityPaymentTransactionControllerTests
 				+ ",\"monto_ajuste\":-5,\"convenio\":\"9129\",\"confirmacion\":\"SI\",\"ajuste\":\"-5\",\"cargo_servicio\":\"0\"}]}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\",\"identifier\": \"123\"}";
+		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\", \"category\":\"100\", \"identifier\": \"123\"}";
 		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated())
@@ -104,7 +104,7 @@ public class UtilityPaymentTransactionControllerTests
 				+ "\"No se encontro Deuda para este Numero de Documento\",\"data\":{\"codigo_mc\":\"799385026\"}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
-		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\",\"identifier\": \"123\"}";
+		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\", \"category\":\"100\",\"identifier\": \"123\"}";
 		mockMvc.perform(post("/v1/transactions").content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isNoContent());
@@ -253,6 +253,7 @@ public class UtilityPaymentTransactionControllerTests
 		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentBill.setUtility("TEST");
 		utilityPaymentBill.setCollector("2");
+		utilityPaymentBill.setCategory("100");
 		utilityPaymentBill.setIdentifier("123123");
 		utilityPaymentBill.setMcCode("12312312321");
 		utilityPaymentBill.setAmount(123123L);

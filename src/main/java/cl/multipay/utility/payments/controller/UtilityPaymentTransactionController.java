@@ -92,6 +92,7 @@ public class UtilityPaymentTransactionController
 		// get utility bill
 		final String utility = request.getUtility();
 		final String collector = request.getCollector();
+		final String category = request.getCategory();
 		final String identifier = request.getIdentifier();
 		final Optional<MulticajaBill> billDetailsOptional = utilityPaymentClient.getBill(utility, identifier, collector);
 
@@ -120,6 +121,7 @@ public class UtilityPaymentTransactionController
 		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentBill.setUtility(utility);
 		utilityPaymentBill.setCollector(collector);
+		utilityPaymentBill.setCategory(category);
 		utilityPaymentBill.setIdentifier(identifier);
 		utilityPaymentBill.setMcCode(mcCode);
 		utilityPaymentBill.setAmount(amount);
@@ -220,7 +222,9 @@ public class UtilityPaymentTransactionController
 	// TODO probar eft dev mc
 	// TODO json return null
 
+	// TODO update doc new field
 	// TODO integrar correo transaccional
+	// TODO save utility category
 	// TODO modificar api readme new version
 	// TODO subir bo
 	// TODO html correo comprobante
