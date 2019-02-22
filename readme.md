@@ -74,7 +74,7 @@ notify_pass : dd73MTANpLMCLMkRaMxN
 notify_auth : eE5YeHJrTW1NeHFENzdHQ24yRnc6ZGQ3M01UQU5wTE1DTE1rUmFNeE4=
 ```
 ## Integration
-Create Order: https://www.mcdesaqa.cl/BDPGetOrderStatus/GetOrderStatusWebService  
+Create Order: https://www.mcdesaqa.cl/bdpcows/CreateOrderWebService  
 Get Order Status: https://www.mcdesaqa.cl/BDPGetOrderStatus/GetOrderStatusWebService     
 
 ## Development
