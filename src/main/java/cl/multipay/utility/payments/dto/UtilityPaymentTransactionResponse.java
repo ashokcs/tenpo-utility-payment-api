@@ -3,7 +3,9 @@ package cl.multipay.utility.payments.dto;
 import java.time.ZonedDateTime;
 
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
+import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 
 public class UtilityPaymentTransactionResponse
 {
@@ -16,6 +18,8 @@ public class UtilityPaymentTransactionResponse
 	private final ZonedDateTime created;
 	private final ZonedDateTime updated;
 	private final UtilityPaymentBill bill;
+	private UtilityPaymentWebpay webpay;
+	private UtilityPaymentEft eft;
 
 	public UtilityPaymentTransactionResponse(final UtilityPaymentTransaction utilityPaymentTransaction,
 		final UtilityPaymentBill utilityPaymentBill)
@@ -74,5 +78,25 @@ public class UtilityPaymentTransactionResponse
 	public UtilityPaymentBill getBill()
 	{
 		return bill;
+	}
+
+	public UtilityPaymentWebpay getWebpay()
+	{
+		return webpay;
+	}
+
+	public void setWebpay(final UtilityPaymentWebpay webpay)
+	{
+		this.webpay = webpay;
+	}
+
+	public UtilityPaymentEft getEft()
+	{
+		return eft;
+	}
+
+	public void setEft(final UtilityPaymentEft eft)
+	{
+		this.eft = eft;
 	}
 }

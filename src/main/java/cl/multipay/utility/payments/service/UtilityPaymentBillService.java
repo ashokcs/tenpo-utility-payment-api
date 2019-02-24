@@ -33,7 +33,7 @@ public class UtilityPaymentBillService
 			final UtilityPaymentBill saved = utilityPaymentBillRepository.save(utilityPaymentBill);
 			entityManager.refresh(saved);
 			return Optional.of(saved);
-		} catch (final Exception		 e) {
+		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -43,7 +43,7 @@ public class UtilityPaymentBillService
 	{
 		try {
 			return Optional.of(utilityPaymentBillRepository.save(utilityPaymentBill));
-		} catch (final Exception		 e) {
+		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -53,7 +53,7 @@ public class UtilityPaymentBillService
 	{
 		try {
 			return utilityPaymentBillRepository.findByTransactionId(transactionId);
-		} catch (final Exception		 e) {
+		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();

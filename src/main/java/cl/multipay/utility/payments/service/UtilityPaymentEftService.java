@@ -60,4 +60,14 @@ public class UtilityPaymentEftService
 		}
 		return Optional.empty();
 	}
+
+	public Optional<UtilityPaymentEft> findByTransactionId(final Long transactionId)
+	{
+		try {
+			return uper.findByTransactionId(transactionId);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
 }

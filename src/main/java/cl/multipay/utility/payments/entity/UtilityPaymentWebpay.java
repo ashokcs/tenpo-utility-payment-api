@@ -26,7 +26,6 @@ public class UtilityPaymentWebpay
 	@JsonIgnore
 	private Long id;
 
-	@JsonIgnore
 	private String status;
 
 	@Column(updatable = false)
@@ -34,9 +33,11 @@ public class UtilityPaymentWebpay
 	private Long transactionId;
 
 	@Column(updatable = false)
+	@JsonIgnore
 	private String token;
 
 	@Column(updatable = false)
+	@JsonIgnore
 	private String url;
 
 	private Integer responseCode;

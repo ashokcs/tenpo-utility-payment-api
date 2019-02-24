@@ -26,7 +26,6 @@ public class UtilityPaymentBill
 	@JsonIgnore
 	private Long id;
 
-	@JsonIgnore
 	private String status;
 
 	@JsonIgnore

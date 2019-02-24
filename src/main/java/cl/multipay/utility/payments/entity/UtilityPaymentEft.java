@@ -26,7 +26,6 @@ public class UtilityPaymentEft
 	@JsonIgnore
 	private Long id;
 
-	@JsonIgnore
 	private String status;
 
 	@Column(updatable = false)
@@ -41,10 +40,10 @@ public class UtilityPaymentEft
 	@Column(updatable = false)
 	private String notifyId;
 
-	@Column(updatable = false)
-	@JsonIgnore
-	private String orderId;
+	@Column(name = "\"order\"", updatable = false)
+	private String order;
 
+	@JsonIgnore
 	@Column(updatable = false)
 	private String url;
 
@@ -122,14 +121,14 @@ public class UtilityPaymentEft
 		this.transactionId = transactionId;
 	}
 
-	public String getOrderId()
+	public String getOrder()
 	{
-		return orderId;
+		return order;
 	}
 
-	public void setOrderId(final String orderId)
+	public void setOrder(final String order)
 	{
-		this.orderId = orderId;
+		this.order = order;
 	}
 
 	public ZonedDateTime getCreated()

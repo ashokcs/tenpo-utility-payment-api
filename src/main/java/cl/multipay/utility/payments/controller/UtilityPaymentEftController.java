@@ -71,8 +71,8 @@ public class UtilityPaymentEftController
 	 * @param notifyId
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST , path = "/v1/payments/eft/notify/{id}/{notifyId}",
-		produces = MediaType.TEXT_XML_VALUE, consumes = MediaType.TEXT_XML_VALUE) // TODO url
+	@RequestMapping(method = RequestMethod.POST , path = "/v1/payments/eft/notify/{id:[0-9a-f]{32}}/{notifyId:[0-9a-f]{32}}",
+		produces = MediaType.TEXT_XML_VALUE, consumes = MediaType.TEXT_XML_VALUE)
 	public ResponseEntity<String> transferenciaNotify(
 		final HttpServletRequest request,
 		@PathVariable("id") final String id,
@@ -102,7 +102,7 @@ public class UtilityPaymentEftController
 			case 101: case 106: case 107: case 109:
 				// pay bill
 				// ... TODO
-				// if pay fail refund
+				// if bill pay fail return error for notification retry
 
 				// update status
 				utilityPaymentEft.setStatus(UtilityPaymentEft.PAID);
@@ -131,8 +131,8 @@ public class UtilityPaymentEftController
 	 * @param id
 	 * @return
 	 */
-	@GetMapping("/v1/payments/eft/return/{id}")
-	public ResponseEntity<?> transferenciaReturn(final HttpServletRequest request, @PathVariable("id") final String id)
+	@GetMapping("/v1/payments/eft/return/{id:[0-9a-f]{32}}")
+	public ResponseEntity<Object> transferenciaReturn(final HttpServletRequest request, @PathVariable("id") final String id)
 	{
 		logger.info("-> " + request.getRequestURL());
 		Long utilityPaymentTransactionBuyOrder = null;
@@ -168,7 +168,7 @@ public class UtilityPaymentEftController
 		return redirectEntity(getRedirectErrorUrl(utilityPaymentTransactionBuyOrder));
 	}
 
-	private ResponseEntity<?> redirectEntity(final String url)
+	private ResponseEntity<Object> redirectEntity(final String url)
 	{
 		logger.info("<- " + url);
 		return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, url).build();

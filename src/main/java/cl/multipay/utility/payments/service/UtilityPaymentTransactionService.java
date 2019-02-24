@@ -34,7 +34,7 @@ public class UtilityPaymentTransactionService
 			final UtilityPaymentTransaction saved = utilityPaymentTransactionRepository.save(bill);
 			entityManager.refresh(saved);
 			return Optional.of(saved);
-		} catch (final Exception		 e) {
+		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -44,7 +44,7 @@ public class UtilityPaymentTransactionService
 	{
 		try {
 			return Optional.of(utilityPaymentTransactionRepository.save(bill));
-		} catch (final Exception		 e) {
+		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();

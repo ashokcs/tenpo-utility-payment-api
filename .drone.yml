@@ -40,24 +40,24 @@ pipeline:
     when:
       event: 
         - push
-  migrate:
-    image: alpine:3.8
-    commands:
-      - cd database
-      - wget https://github.com/amacneil/dbmate/releases/download/v1.4.1/dbmate-linux-musl-amd64
-      - chmod +x dbmate-linux-musl-amd64
-      - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
-      - tar xvf consul-template_0.19.5_linux_amd64.tgz
-      - ./consul-template -template ".env-staging.tmpl:.env" -once
-      - ./dbmate-linux-musl-amd64 migrate
-    secrets:
-      - source: consul_http_addr
-        target: CONSUL_HTTP_ADDR
-      - source: consul_http_token
-        target: CONSUL_HTTP_TOKEN
-    when:
-      event:
-        - push
+  # migrate:
+  #   image: alpine:3.8
+  #   commands:
+  #     - cd database
+  #     - wget https://github.com/amacneil/dbmate/releases/download/v1.4.1/dbmate-linux-musl-amd64
+  #     - chmod +x dbmate-linux-musl-amd64
+  #     - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
+  #     - tar xvf consul-template_0.19.5_linux_amd64.tgz
+  #     - ./consul-template -template ".env-staging.tmpl:.env" -once
+  #     - ./dbmate-linux-musl-amd64 migrate
+  #   secrets:
+  #     - source: consul_http_addr
+  #       target: CONSUL_HTTP_ADDR
+  #     - source: consul_http_token
+  #       target: CONSUL_HTTP_TOKEN
+  #   when:
+  #     event:
+  #       - push
   consul:
     image: alpine:3.8
     commands:

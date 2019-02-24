@@ -50,4 +50,14 @@ public class UtilityPaymentWebpayService
 		}
 		return Optional.empty();
 	}
+
+	public Optional<UtilityPaymentWebpay> findByTransactionId(final Long transactionId)
+	{
+		try {
+			return upwr.findByTransactionId(transactionId);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
 }

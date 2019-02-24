@@ -89,7 +89,7 @@ public class EftClient
 			final String authBase64 = properties.getEftBasicAuth();
 			final String commerceId = properties.getEftCommerceId();
 			final String branchId = properties.getEftBranchId();
-			final String mcOrderId = utilityPaymentEft.getOrderId();
+			final String mcOrderId = utilityPaymentEft.getOrder();
 			final String xml = getOrderStatusXml(commerceId, branchId, mcOrderId);
 
 			final HttpPost post = new HttpPost(url);

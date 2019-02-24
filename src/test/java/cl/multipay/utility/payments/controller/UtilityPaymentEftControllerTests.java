@@ -60,17 +60,17 @@ public class UtilityPaymentEftControllerTests
 	private EmailService emailService;
 
 	@Test
-	public void tefReturn_shouldReturnServerError_withInvalidParameters1() throws Exception
+	public void tefReturn_shouldReturnNotFound_withInvalidParameters1() throws Exception
 	{
-		mockMvc.perform(get("/v1/payments/eft/return/asdasd"))
+		mockMvc.perform(get("/v1/payments/eft/return/{id}", "123"))
 			.andDo(print())
-			.andExpect(status().isFound());
+			.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void tefReturn_shouldReturnServerError_withInvalidParameters2() throws Exception
 	{
-		mockMvc.perform(get("/v1/payments/eft/return/738b0aa174544c4a92e511b904ed32a4"))
+		mockMvc.perform(get("/v1/payments/eft/return/{id}", "738b0aa174544c4a92e511b904ed32a4"))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
@@ -154,7 +154,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withInvalidVerb() throws Exception
 	{
-		mockMvc.perform(get("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd"))
+		mockMvc.perform(get("/v1/payments/eft/notify/{id}/{notifyId}", "738b0aa174544c4a92e511b904ed32a4", "738b0aa174544c4a92e511b904ed32a4"))
 			.andDo(print())
 			.andExpect(status().isMethodNotAllowed());
 	}
@@ -162,7 +162,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withNoContentType() throws Exception
 	{
-		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd"))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "738b0aa174544c4a92e511b904ed32a4", "738b0aa174544c4a92e511b904ed32a4"))
 			.andDo(print())
 			.andExpect(status().isUnsupportedMediaType());
 	}
@@ -170,7 +170,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withNoAuthHeader() throws Exception
 	{
-		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd").contentType(MediaType.TEXT_XML))
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "738b0aa174544c4a92e511b904ed32a4", "738b0aa174544c4a92e511b904ed32a4").contentType(MediaType.TEXT_XML))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
@@ -186,7 +186,7 @@ public class UtilityPaymentEftControllerTests
 		final String mcOrderId = "526415205094964";
 		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "asd", "asd")
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "738b0aa174544c4a92e511b904ed32a4", "738b0aa174544c4a92e511b904ed32a4")
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -203,7 +203,7 @@ public class UtilityPaymentEftControllerTests
 		final String mcOrderId = "526415205094964";
 		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, "asd")
+		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, "5e0a1eeace5d4708b74c5e9029bae3dd")
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -318,7 +318,7 @@ public class UtilityPaymentEftControllerTests
 		utilityPaymentEft.setStatus(UtilityPaymentEft.PENDING);
 		utilityPaymentEft.setPublicId(tefPublicId);
 		utilityPaymentEft.setNotifyId(tefNotifyId);
-		utilityPaymentEft.setOrderId(mcOrderId);
+		utilityPaymentEft.setOrder(mcOrderId);
 		utilityPaymentEft.setUrl("http://bla.bla");
 		utilityPaymentEftService.save(utilityPaymentEft);
 		return utilityPaymentEft;

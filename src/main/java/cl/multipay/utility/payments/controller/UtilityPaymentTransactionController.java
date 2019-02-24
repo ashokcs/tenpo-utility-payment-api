@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.EftCreateOrderResponse;
 import cl.multipay.utility.payments.dto.MulticajaBill;
+import cl.multipay.utility.payments.dto.UtilityPaymentEftResponse;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionPay;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionRequest;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionResponse;
+import cl.multipay.utility.payments.dto.UtilityPaymentWebpayResponse;
 import cl.multipay.utility.payments.dto.WebpayInitResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
@@ -68,14 +70,32 @@ public class UtilityPaymentTransactionController
 	 * @param publicId Identificador público de la cuenta
 	 * @return Los datos de la cuenta
 	 */
-	@GetMapping("/v1/transactions/{id:^[0-9a-f]{32}$}")
+	@GetMapping("/v1/transactions/{id:[0-9a-f]{32}}")
 	public ResponseEntity<UtilityPaymentTransactionResponse> get(@PathVariable("id") final String publicId)
 	{
-		final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findByPublicId(publicId)
+		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.findByPublicId(publicId)
 				.orElseThrow(NotFoundException::new);
-		final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.findByTransactionId(utilityPaymentTransaction.getId())
+		final UtilityPaymentBill upb = utilityPaymentBillService.findByTransactionId(upt.getId())
 				.orElseThrow(NotFoundException::new);
-		return ResponseEntity.ok(new UtilityPaymentTransactionResponse(utilityPaymentTransaction, utilityPaymentBill));
+
+		final UtilityPaymentTransactionResponse uptr = new UtilityPaymentTransactionResponse(upt, upb);
+
+		if (upt.getPaymentMethod() != null) {
+			switch (upt.getPaymentMethod()) {
+
+			case UtilityPaymentTransaction.WEBPAY:
+				final Optional<UtilityPaymentWebpay> upw = utilityPaymentWebpayService.findByTransactionId(upt.getId());
+				if (upw.isPresent()) uptr.setWebpay(upw.get());
+				break;
+
+			case UtilityPaymentTransaction.EFT:
+				final Optional<UtilityPaymentEft> upe = utilityPaymentEftService.findByTransactionId(upt.getId());
+				if (upe.isPresent()) uptr.setEft(upe.get());
+				break;
+			}
+		}
+
+		return ResponseEntity.ok(uptr);
 	}
 
 	/**
@@ -140,8 +160,8 @@ public class UtilityPaymentTransactionController
 	 * @param publicId Identificador público de la cuenta
 	 * @return Url de redirección para continuar el pago
 	 */
-	@PostMapping("/v1/transactions/{id:^[0-9a-f]{32}$}/webpay")
-	public ResponseEntity<UtilityPaymentWebpay> utilityPaymentWebpay(
+	@PostMapping("/v1/transactions/{id:[0-9a-f]{32}}/webpay")
+	public ResponseEntity<UtilityPaymentWebpayResponse> webpay(
 		@PathVariable("id") final String publicId,
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
@@ -168,7 +188,7 @@ public class UtilityPaymentTransactionController
 		utilityPaymentTransactionService.save(utilityPaymentTransaction).orElseThrow(ServerErrorException::new);
 
 		// return redirect url
-		return ResponseEntity.ok(utilityPaymentWebpay);
+		return ResponseEntity.ok(new UtilityPaymentWebpayResponse(utilityPaymentWebpay));
 	}
 
 	/**
@@ -177,8 +197,8 @@ public class UtilityPaymentTransactionController
 	 * @param publicId Identificador público de la cuenta
 	 * @return Url de redirección para continuar el pago
 	 */
-	@PostMapping("/v1/transactions/{id:^[0-9a-f]{32}$}/eft")
-	public ResponseEntity<UtilityPaymentEft> payTef(
+	@PostMapping("/v1/transactions/{id:[0-9a-f]{32}}/eft")
+	public ResponseEntity<UtilityPaymentEftResponse> eft(
 		@PathVariable("id") final String publicId,
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
@@ -198,7 +218,7 @@ public class UtilityPaymentTransactionController
 		utilityPaymentEft.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentEft.setPublicId(tefPublicId);
 		utilityPaymentEft.setNotifyId(tefNotifyId);
-		utilityPaymentEft.setOrderId(tefResponse.getMcOrderId());
+		utilityPaymentEft.setOrder(tefResponse.getMcOrderId());
 		utilityPaymentEft.setUrl(tefResponse.getRedirectUrl());
 		utilityPaymentEftService.save(utilityPaymentEft).orElseThrow(ServerErrorException::new);
 
@@ -209,7 +229,7 @@ public class UtilityPaymentTransactionController
 		utilityPaymentTransactionService.save(utilityPaymentTransaction).orElseThrow(ServerErrorException::new);
 
 		// return redirect url
-		return ResponseEntity.ok(utilityPaymentEft);
+		return ResponseEntity.ok(new UtilityPaymentEftResponse(utilityPaymentEft));
 	}
 	// TODO Subir azure
 	// TODO migrations
@@ -221,17 +241,18 @@ public class UtilityPaymentTransactionController
 	// TODO modificar body response
 	// TODO probar eft dev mc
 	// TODO json return null
-
 	// TODO update doc new field
-	// TODO integrar correo transaccional
 	// TODO save utility category
 	// TODO modificar api readme new version
+
+	// TODO return payment info object
+	// TODO 1 peso mode
+	// TODO log tracking id
+	// TODO integrar correo transaccional comprobante
 	// TODO subir bo
-	// TODO html correo comprobante
 	// TODO dejar host db parameter en properties
 	// TODO rename properties redirect to front
 	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
 	// TODO bo totalizadores task correccion
-	// TODO save categoria convenio
 }

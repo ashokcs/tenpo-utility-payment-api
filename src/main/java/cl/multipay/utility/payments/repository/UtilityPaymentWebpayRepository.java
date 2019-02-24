@@ -9,4 +9,5 @@ import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 public interface UtilityPaymentWebpayRepository extends JpaRepository<UtilityPaymentWebpay, Long>
 {
 	public Optional<UtilityPaymentWebpay> findByTokenAndStatus(final String token, final String status);
+	public Optional<UtilityPaymentWebpay> findByTransactionId(final Long transactionId);
 }
