@@ -51,9 +51,9 @@ public class HttpClientConfig
         final Builder configBuilder = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
                 .setExpectContinueEnabled(true)
-                .setSocketTimeout(5000)
-                .setConnectTimeout(5000)
-                .setConnectionRequestTimeout(5000);
+                .setSocketTimeout(10000)
+                .setConnectTimeout(10000)
+                .setConnectionRequestTimeout(10000);
         final RequestConfig defaultRequestConfig = configBuilder.build();
 
 		final HttpClientBuilder builder = HttpClients.custom();
@@ -62,9 +62,9 @@ public class HttpClientConfig
 		builder.setConnectionManager(poolingHttpClientConnectionManager);
 		builder.setDefaultRequestConfig(defaultRequestConfig);
 
-		if ((properties.getHttpClientProxy() != null) && !properties.getHttpClientProxy().isEmpty()) {
+		if ((properties.httpClientProxy != null) && !properties.httpClientProxy.isEmpty()) {
 			try {
-				final URI proxyUrl = new URI(properties.getHttpClientProxy());
+				final URI proxyUrl = new URI(properties.httpClientProxy);
 				final HttpHost proxy = new HttpHost(proxyUrl.getHost(), proxyUrl.getPort(), proxyUrl.getScheme());
 				final HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy) {
 					@Override
@@ -73,8 +73,8 @@ public class HttpClientConfig
 				            final HttpRequest request,
 				            final HttpContext context) throws HttpException
 					{
-						if ((properties.getHttpClientProxyExclude() != null) && !properties.getHttpClientProxyExclude().isEmpty()) {
-							if (properties.getHttpClientProxyExclude().contains(host.getHostName())) {
+						if ((properties.httpClientProxyExclude != null) && !properties.httpClientProxyExclude.isEmpty()) {
+							if (properties.httpClientProxyExclude.contains(host.getHostName())) {
 								return new HttpRoute(host);
 							}
 						}
@@ -97,7 +97,7 @@ public class HttpClientConfig
 				.register("http", PlainConnectionSocketFactory.getSocketFactory())
 				.register("https", SSLConnectionSocketFactory.getSocketFactory());
 
-		if (properties.isHttpClientTrustAll()) {
+		if (properties.httpClientTrustAll) {
             try {
                 final SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
                 sslContextBuilder.loadTrustMaterial(new TrustSelfSignedStrategy());

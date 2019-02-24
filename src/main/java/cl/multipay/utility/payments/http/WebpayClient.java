@@ -46,15 +46,15 @@ public class WebpayClient
 			request.put("amount", utilityPaymentTransaction.getAmount());
 			request.put("sessionId", utilityPaymentTransaction.getPublicId());
 			request.put("buyOrder", utilityPaymentTransaction.getBuyOrder());
-			request.put("returnUrl", properties.getWebpayReturnUrl());
-			request.put("finalUrl", properties.getWebpayFinalUrl());
+			request.put("returnUrl", properties.webpayReturnUrl);
+			request.put("finalUrl", properties.webpayFinalUrl);
 			final ObjectNode config = mapper.createObjectNode();
-			config.put("commerceUserName", properties.getWebpayCommerceUser());
-			config.put("commercePassword", properties.getWebpayCommercePass());
-			config.put("commerceEnvironment", properties.getWebpayCommerceEnv());
+			config.put("commerceUserName", properties.webpayCommerceUser);
+			config.put("commercePassword", properties.webpayCommercePass);
+			config.put("commerceEnvironment", properties.webpayCommerceEnv);
 			request.set("config", config);
 
-			final String url = properties.getWebpayInitUrl();
+			final String url = properties.webpayInitUrl;
 			final String json = mapper.writeValueAsString(request);
 
 			final HttpPost post = new HttpPost(url);
@@ -89,12 +89,12 @@ public class WebpayClient
 			final ObjectNode request = mapper.createObjectNode();
 			request.put("token", utilityPaymentWebpay.getToken());
 			final ObjectNode config = mapper.createObjectNode();
-			config.put("commerceUserName", properties.getWebpayCommerceUser());
-			config.put("commercePassword", properties.getWebpayCommercePass());
-			config.put("commerceEnvironment", properties.getWebpayCommerceEnv());
+			config.put("commerceUserName", properties.webpayCommerceUser);
+			config.put("commercePassword", properties.webpayCommercePass);
+			config.put("commerceEnvironment", properties.webpayCommerceEnv);
 			request.set("config", config);
 
-			final String url = properties.getWebpayResultUrl();
+			final String url = properties.webpayResultUrl;
 			final String json = mapper.writeValueAsString(request);
 
 			final HttpPost post = new HttpPost(url);
@@ -150,12 +150,12 @@ public class WebpayClient
 			final ObjectNode request = mapper.createObjectNode();
 			request.put("token", utilityPaymentWebpay.getToken());
 			final ObjectNode config = mapper.createObjectNode();
-			config.put("commerceUserName", properties.getWebpayCommerceUser());
-			config.put("commercePassword", properties.getWebpayCommercePass());
-			config.put("commerceEnvironment", properties.getWebpayCommerceEnv());
+			config.put("commerceUserName", properties.webpayCommerceUser);
+			config.put("commercePassword", properties.webpayCommercePass);
+			config.put("commerceEnvironment", properties.webpayCommerceEnv);
 			request.set("config", config);
 
-			final String url = properties.getWebpayAckUrl();
+			final String url = properties.webpayAckUrl;
 			final String json = mapper.writeValueAsString(request);
 
 			final HttpPost post = new HttpPost(url);

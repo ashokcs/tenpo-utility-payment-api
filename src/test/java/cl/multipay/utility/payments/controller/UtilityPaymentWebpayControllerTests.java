@@ -25,7 +25,6 @@ import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 import cl.multipay.utility.payments.http.WebpayClient;
-import cl.multipay.utility.payments.service.EmailService;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.service.UtilityPaymentWebpayService;
@@ -56,16 +55,13 @@ public class UtilityPaymentWebpayControllerTests
 	@MockBean
 	private WebpayClient webpayClient;
 
-	@MockBean
-	private EmailService emailService;
-
 	@Test
 	public void webpayReturn_shouldReturnFound_withNoParameters() throws Exception
 	{
 		mockMvc.perform(post("/v1/payments/webpay/return"))
 			.andDo(print())
 			.andExpect(status().isFound())
-			.andExpect(header().string("Location", properties.getWebpayRedirectError()));
+			.andExpect(header().string("Location", properties.webpayRedirectError));
 	}
 
 	@Test
@@ -74,7 +70,7 @@ public class UtilityPaymentWebpayControllerTests
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", "65as4d5sad65asf46fddff"))
 			.andDo(print())
 			.andExpect(status().isFound())
-			.andExpect(header().string("Location", properties.getWebpayRedirectError()));
+			.andExpect(header().string("Location", properties.webpayRedirectError));
 	}
 
 	@Test
@@ -185,7 +181,7 @@ public class UtilityPaymentWebpayControllerTests
 		utilityPaymentTransaction.setPublicId(uuid);
 		utilityPaymentTransaction.setStatus(status);
 		utilityPaymentTransaction.setAmount(1000L);
-		utilityPaymentTransaction.setEmail("asd@asd.cl");
+		utilityPaymentTransaction.setEmail("test@multicaja.cl");
 		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction);
 		utilityPaymentTransaction.setBuyOrder(buyOrder);
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);

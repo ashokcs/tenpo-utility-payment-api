@@ -244,11 +244,12 @@ public class UtilityPaymentTransactionController
 	// TODO update doc new field
 	// TODO save utility category
 	// TODO modificar api readme new version
-
 	// TODO return payment info object
-	// TODO 1 peso mode
+
+	// TODO add sengrid prod key
 	// TODO log tracking id
 	// TODO integrar correo transaccional comprobante
+	// TODO 1 peso mode
 	// TODO subir bo
 	// TODO dejar host db parameter en properties
 	// TODO rename properties redirect to front

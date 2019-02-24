@@ -41,17 +41,17 @@ public class UtilityPaymentClient
 	public Optional<List<Utility>> getUtilities()
 	{
 		try {
-			final String url = properties.getMulticajaUtilitiesUrl();
+			final String url = properties.multicajaUtilitiesUrl;
 
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode jsonObject = mapper.createObjectNode();
-			jsonObject.put("terminal", properties.getMulticajaUtilitiesTerminal());
-			jsonObject.put("channel", properties.getMulticajaUtilitiesChannel());
+			jsonObject.put("terminal", properties.multicajaUtilitiesTerminal);
+			jsonObject.put("channel", properties.multicajaUtilitiesChannel);
 			final String json = mapper.writeValueAsString(jsonObject);
 
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
-			request.setHeader("apikey", properties.getMulticajaUtilitiesApiKey());
+			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			logger.info("=> {}", url);
@@ -115,12 +115,12 @@ public class UtilityPaymentClient
 	public Optional<MulticajaBill> getBill(final String utility, final String identifier, final String collector)
 	{
 		try {
-			final String url = properties.getMulticajaUtlitiesBillUrl();
+			final String url = properties.multicajaUtlitiesBillUrl;
 
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode jsonObject = mapper.createObjectNode();
-			jsonObject.put("terminal", properties.getMulticajaUtilitiesTerminal());
-			jsonObject.put("commerce_id", properties.getMulticajaUtilitiesCommerce());
+			jsonObject.put("terminal", properties.multicajaUtilitiesTerminal);
+			jsonObject.put("commerce_id", properties.multicajaUtilitiesCommerce);
 			jsonObject.put("firm", utility);
 			jsonObject.put("collector", collector);
 			jsonObject.put("payment_id", identifier);
@@ -128,7 +128,7 @@ public class UtilityPaymentClient
 
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
-			request.setHeader("apikey", properties.getMulticajaUtilitiesApiKey());
+			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			logger.info("=> {} [{}]", url, json);

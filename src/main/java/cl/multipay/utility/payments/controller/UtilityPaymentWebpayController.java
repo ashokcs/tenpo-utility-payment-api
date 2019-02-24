@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
+import cl.multipay.utility.payments.event.SendReceiptEvent;
 import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.HttpException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.http.WebpayClient;
-import cl.multipay.utility.payments.service.EmailService;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.service.UtilityPaymentWebpayService;
@@ -38,7 +38,6 @@ public class UtilityPaymentWebpayController
 	private final UtilityPaymentTransactionService utilityPaymentTransactionService;
 	private final UtilityPaymentBillService utilityPaymentBillService;
 	private final UtilityPaymentWebpayService utilityPaymentWebpayService;
-	private final EmailService emailService;
 
 	private final WebpayClient webpayClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
@@ -47,7 +46,6 @@ public class UtilityPaymentWebpayController
 		final UtilityPaymentTransactionService utilityPaymentTransactionService,
 		final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentWebpayService utilityPaymentWebpayService,
-		final EmailService emailService,
 		final WebpayClient webpayClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
@@ -55,7 +53,6 @@ public class UtilityPaymentWebpayController
 		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
 		this.utilityPaymentBillService = utilityPaymentBillService;
 		this.utilityPaymentWebpayService = utilityPaymentWebpayService;
-		this.emailService = emailService;
 		this.webpayClient = webpayClient;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
@@ -95,10 +92,10 @@ public class UtilityPaymentWebpayController
 				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
 				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
-				// send receipt
-				emailService.utilityPaymentReceipt();
+				// publish send receipt
+				applicationEventPublisher.publishEvent(new SendReceiptEvent(utilityPaymentTransaction));
 
-				// add totaliser data
+				// publish add totaliser data
 				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
 			}
 
@@ -143,25 +140,25 @@ public class UtilityPaymentWebpayController
 						.orElseThrow(NotFoundException::new);
 
 				if (UtilityPaymentTransaction.SUCCEEDED.equals(utilityPaymentTransaction.getStatus())) {
-					return redirectEntity(properties.getWebpayRedirectFinal().replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
+					return redirectEntity(properties.webpayRedirectFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 				} else {
-					return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", utilityPaymentTransaction.getBuyOrder().toString()));
+					return redirectEntity(properties.webpayRedirectErrorOrder.replaceAll("\\{order\\}", utilityPaymentTransaction.getBuyOrder().toString()));
 				}
 			}
 
 			// process tbk_token (user cancellation)
 			if ((tbkToken != null) && tbkToken.matches("[0-9a-f]{64}")) {
-				return postRedirectEntity(properties.getWebpayReturnUrl(), tbkToken);
+				return postRedirectEntity(properties.webpayReturnUrl, tbkToken);
 			}
 
 			// process tbk_orden_compra (timeout)
 			if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{19}")) {
-				return redirectEntity(properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", tbkOrdenCompra));
+				return redirectEntity(properties.webpayRedirectErrorOrder.replaceAll("\\{order\\}", tbkOrdenCompra));
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return redirectEntity(properties.getWebpayRedirectError());
+		return redirectEntity(properties.webpayRedirectError);
 	}
 
 	private Optional<String> getToken(final String token)
@@ -183,9 +180,9 @@ public class UtilityPaymentWebpayController
 	private String getRedirectErrorUrl(final Long buyOrder)
 	{
 		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.getWebpayRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString());
+			return properties.webpayRedirectErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
 		}
-		return properties.getWebpayRedirectError();
+		return properties.webpayRedirectError;
 	}
 
 	private ResponseEntity<?> redirectEntity(final String url)

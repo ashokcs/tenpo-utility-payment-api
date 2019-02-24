@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.event.SendReceiptEvent;
 import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.exception.UnauthorizedException;
 import cl.multipay.utility.payments.http.EftClient;
-import cl.multipay.utility.payments.service.EmailService;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentEftService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
@@ -42,7 +42,6 @@ public class UtilityPaymentEftController
 	private final UtilityPaymentTransactionService utilityPaymentTransactionService;
 	private final UtilityPaymentBillService utilityPaymentBillService;
 	private final UtilityPaymentEftService utilityPaymentEftService;
-	private final EmailService emailService;
 
 	private final EftClient eftClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
@@ -51,15 +50,13 @@ public class UtilityPaymentEftController
 		final UtilityPaymentTransactionService utilityPaymentTransactionService,
 		final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentEftService utilityPaymentEftService,
-		final EftClient eftClient, final EmailService emailService,
-		final EftClient transferenciaClient,
+		final EftClient eftClient, final EftClient transferenciaClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
 		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
 		this.utilityPaymentBillService = utilityPaymentBillService;
 		this.utilityPaymentEftService = utilityPaymentEftService;
-		this.emailService = emailService;
 		this.eftClient = eftClient;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
@@ -110,10 +107,10 @@ public class UtilityPaymentEftController
 				utilityPaymentEftService.save(utilityPaymentEft);
 				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
-				// send receipt
-				emailService.utilityPaymentReceipt();
+				// publish send receipt
+				applicationEventPublisher.publishEvent(new SendReceiptEvent(utilityPaymentTransaction));
 
-				// add totaliser data
+				// publish add totaliser data
 				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
 
 				// return ok
@@ -151,7 +148,7 @@ public class UtilityPaymentEftController
 
 			// pending, paid, notified_mc, notified_ecom, notified_con
 			case 100: case 101: case 106: case 107: case 109:
-				return redirectEntity(properties.getEftRedirectFinal().replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
+				return redirectEntity(properties.eftRedirectFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 
 			// nullified, canceled_user, expired, canceled_ecom
 			case 103: case 105: case 110: case 111:
@@ -185,9 +182,9 @@ public class UtilityPaymentEftController
 	private String getRedirectErrorUrl(final Long buyOrder)
 	{
 		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.getEftRedirectErrorOrder().replaceAll("\\{order\\}", buyOrder.toString());
+			return properties.eftRedirectErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
 		}
-		return properties.getEftRedirectError();
+		return properties.eftRedirectError;
 	}
 
 	private String notifyResponse()
@@ -203,7 +200,7 @@ public class UtilityPaymentEftController
 	private Optional<Boolean> validCredentials(final String authHeader)
 	{
 		if (authHeader != null) {
-			if (authHeader.equals("Basic " + properties.getEftNotifyBasicAuth())) {
+			if (authHeader.equals("Basic " + properties.eftNotifyBasicAuth)) {
 				return Optional.of(true);
 			}
 		}

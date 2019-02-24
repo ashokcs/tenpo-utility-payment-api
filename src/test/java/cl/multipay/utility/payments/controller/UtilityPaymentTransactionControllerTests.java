@@ -193,7 +193,7 @@ public class UtilityPaymentTransactionControllerTests
 		final String responseEntity = "{\"url\":\"https:\\\\bla.com\",\"token\":\"askdhaksjhdkashdj\"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
-		final String json = "{\"email\":\"test@test.cl\"}";
+		final String json = "{\"email\":\"test@multicaja.cl\"}";
 		mockMvc.perform(post("/v1/transactions/{id}/webpay", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -218,7 +218,7 @@ public class UtilityPaymentTransactionControllerTests
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.NOT_FOUND));
 		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
-		final String json = "{\"email\":\"test@test.cl\"}";
+		final String json = "{\"email\":\"test@multicaja.cl\"}";
 		mockMvc.perform(post("/v1/transactions/{id}/webpay", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -229,7 +229,7 @@ public class UtilityPaymentTransactionControllerTests
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.INTERNAL_SERVER_ERROR));
 		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
-		final String json = "{\"email\":\"test@test.cl\"}";
+		final String json = "{\"email\":\"test@multicaja.cl\"}";
 		mockMvc.perform(post("/v1/transactions/{id}/webpay", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -240,7 +240,7 @@ public class UtilityPaymentTransactionControllerTests
 	{
 		when(client.execute(any())).thenReturn(null);
 		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
-		final String json = "{\"email\":\"test@test.cl\"}";
+		final String json = "{\"email\":\"test@multicaja.cl\"}";
 		mockMvc.perform(post("/v1/transactions/{id}/webpay", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -252,7 +252,7 @@ public class UtilityPaymentTransactionControllerTests
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><ns2:createOrderResponse xmlns:ns2=\"http://createorder.ws.boton.multicaja.cl/\"><ns2:createOrderResult><ns2:mcOrderId>454439120367170</ns2:mcOrderId><ns2:redirectUrl>https://www.multicaja.cl/bdp/order.xhtml?id=454439120367170</ns2:redirectUrl></ns2:createOrderResult></ns2:createOrderResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
-		final String json = "{\"email\":\"test@test.cl\"}";
+		final String json = "{\"email\":\"test@multicaja.cl\"}";
 		mockMvc.perform(post("/v1/transactions/{id}/eft", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -264,7 +264,7 @@ public class UtilityPaymentTransactionControllerTests
 	{
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("", HttpStatus.UNSUPPORTED_MEDIA_TYPE));
 		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
-		final String json = "{\"email\":\"test@test.cl\"}";
+		final String json = "{\"email\":\"test@multicaja.cl\"}";
 		mockMvc.perform(post("/v1/transactions/{id}/eft", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
@@ -306,7 +306,7 @@ public class UtilityPaymentTransactionControllerTests
 
 		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.WAITING);
 		utilityPaymentTransaction.setPaymentMethod(UtilityPaymentTransaction.WEBPAY);
-		utilityPaymentTransaction.setEmail("asd@asd.cl");
+		utilityPaymentTransaction.setEmail("test@multicaja.cl");
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 		return utilityPaymentWebpay;
@@ -326,7 +326,7 @@ public class UtilityPaymentTransactionControllerTests
 
 		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.WAITING);
 		utilityPaymentTransaction.setPaymentMethod(UtilityPaymentTransaction.EFT);
-		utilityPaymentTransaction.setEmail("asd@asd.cl");
+		utilityPaymentTransaction.setEmail("test@multicaja.cl");
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 		return utilityPaymentEft;

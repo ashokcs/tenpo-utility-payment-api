@@ -39,14 +39,14 @@ public class EftClient
 		final String tefPublicId, final String tefNotifyId)
 	{
 		try {
-			final String url = properties.getEftCreateOrderUrl();
-			final String authBase64 = properties.getEftBasicAuth();
-			final String commerceId = properties.getEftCommerceId();
-			final String branchId = properties.getEftBranchId();
-			final String description = properties.getEftCreateOrderDescription();
-			final int requestDuration = properties.getEftCreateOrderRequestDuration();
-			final String goBackUrl = properties.getEftCreateOrderGoBackUrl().replaceAll("\\{id\\}", tefPublicId);
-			final String notifyUrl = properties.getEftCreateOrderNotifyUrl().replaceAll("\\{id\\}", tefPublicId).replaceAll("\\{notify\\}", tefNotifyId);
+			final String url = properties.eftCreateOrderUrl;
+			final String authBase64 = properties.eftBasicAuth;
+			final String commerceId = properties.eftCommerceId;
+			final String branchId = properties.eftBranchId;
+			final String description = properties.eftCreateOrderDescription;
+			final int requestDuration = properties.eftCreateOrderRequestDuration;
+			final String goBackUrl = properties.eftCreateOrderGoBackUrl.replaceAll("\\{id\\}", tefPublicId);
+			final String notifyUrl = properties.eftCreateOrderNotifyUrl.replaceAll("\\{id\\}", tefPublicId).replaceAll("\\{notify\\}", tefNotifyId);
 			final String xml = createOrderXmlBody(utilityPaymentTransaction, commerceId, branchId, description, requestDuration, goBackUrl, notifyUrl);
 
 			final HttpPost post = new HttpPost(url);
@@ -85,10 +85,10 @@ public class EftClient
 	public Optional<TefGetOrderStatusResponse> getOrderStatus(final UtilityPaymentEft utilityPaymentEft)
 	{
 		try {
-			final String url = properties.getEftGetOrderStatusUrl();
-			final String authBase64 = properties.getEftBasicAuth();
-			final String commerceId = properties.getEftCommerceId();
-			final String branchId = properties.getEftBranchId();
+			final String url = properties.eftGetOrderStatusUrl;
+			final String authBase64 = properties.eftBasicAuth;
+			final String commerceId = properties.eftCommerceId;
+			final String branchId = properties.eftBranchId;
 			final String mcOrderId = utilityPaymentEft.getOrder();
 			final String xml = getOrderStatusXml(commerceId, branchId, mcOrderId);
 
