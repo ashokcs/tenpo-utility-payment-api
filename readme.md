@@ -221,12 +221,15 @@ Response
 ```json
 {
   "id": "eaa7f715372d4b71a7fe00402d391df1",
-  "status": "PENDING",
-  "buy_order": 20190222011546002,
+  "status": "WAITING",
+  "buy_order": 20190223214030002,
   "amount": 94290,
-  "created": "2019-02-22T01:15:46.665983-03:00",
-  "updated": "2019-02-22T01:15:46.665983-03:00",
+  "payment_method": "EFT",
+  "email": "carlos.izquierdo@multicaja.cl",
+  "created": "2019-02-23T21:40:30.362763-03:00",
+  "updated": "2019-02-23T21:41:19.216-03:00",
   "bill": {
+    "status": "PENDING",
     "utility": "ENTEL PCS",
     "collector": "2",
     "category": "300",
@@ -234,6 +237,10 @@ Response
     "mc_code": "799378736",
     "amount": 94290,
     "due_date": "2015-02-23"
+  },
+  "eft": {
+    "status": "PENDING",
+    "order": "853121364954859"
   }
 }
 ```
@@ -269,7 +276,7 @@ curl --request POST \
 Response
 ```json
 {
-  "url": "https://10.170.1.11:9191/bdp/order.xhtml?id=394939009565861"
+  "url": "https://10.170.1.11:9191/bdp/order.xhtml?id=853121364954859"
 }
 ```
 
