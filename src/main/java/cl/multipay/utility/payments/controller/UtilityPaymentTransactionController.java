@@ -246,9 +246,9 @@ public class UtilityPaymentTransactionController
 	// TODO modificar api readme new version
 	// TODO return payment info object
 
-	// TODO add sengrid prod key
-	// TODO log tracking id
 	// TODO integrar correo transaccional comprobante
+	// TODO log tracking id
+	// TODO add sengrid prod key
 	// TODO 1 peso mode
 	// TODO subir bo
 	// TODO dejar host db parameter en properties
