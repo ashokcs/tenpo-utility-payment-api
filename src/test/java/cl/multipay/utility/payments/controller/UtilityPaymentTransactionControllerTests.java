@@ -120,9 +120,11 @@ public class UtilityPaymentTransactionControllerTests
 	@Test
 	public void createBill_shouldReturnCreated() throws Exception
 	{
-		final String responseEntity = "{\"response_code\":88,\"response_message\":\"APROBADA\",\"data\":{\"codigo_mc\":\"799378736\","
-				+ "\"authorization_code\":\"\",\"debts\":[{\"fecha_vencimiento\":\"2015-02-23\",\"monto_pago\":94295,\"monto_total\":94290"
-				+ ",\"monto_ajuste\":-5,\"convenio\":\"9129\",\"confirmacion\":\"SI\",\"ajuste\":\"-5\",\"cargo_servicio\":\"0\"}]}}";
+		final String responseEntity = "{\"response_code\": 88,\"response_message\": \"APROBADA\",\"data\": {\"mc_code\": \"799480580\",\"authorization_code\": "
+				+ "\"\",\"debts\": [{\"due_date\": \"22-11-2010\",\"payment_amount\": 1523,\"total_amount\": 1520,\"adjustment_amount\": -3,"
+				+ "\"rsp_rut_client\": \"138046966\",\"rsp_name_client\": \"ALEXIS  RODRIGO CONTRERAS JARA\",\"rsp_invoice_number\": \"55605076\",\"confirmation\": "
+				+ "\"SI\",\"authorizer\": \"EFT\",\"bill_payment_info\": \"Pago Cuentas Multicaja\",\"adjustment\": \"-3\",\"rsp_mc_code\": \"799480580\","
+				+ "\"rsp_client_id\": \"19\",\"rsp_agreement_id\": \"1\",\"rsp_agreement_version_id\": \"1\",\"rsp_amount\": \"1523\",\"rsp_due_date\": \"22-11-2010\"}],\"debt_data_id\": 5}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
 		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\", \"category\":\"100\", \"identifier\": \"123\"}";
@@ -136,7 +138,7 @@ public class UtilityPaymentTransactionControllerTests
 	public void createBill_shouldReturnNoContent() throws Exception
 	{
 		final String responseEntity = "{\"response_code\":99,\"response_message\":"
-				+ "\"No se encontro Deuda para este Numero de Documento\",\"data\":{\"codigo_mc\":\"799385026\"}}";
+				+ "\"No se encontro Deuda para este Numero de Documento\",\"data\":{\"mc_code\":\"799385026\"}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
 		final String json = "{\"utility\": \"ENTEL\", \"collector\":\"2\", \"category\":\"100\",\"identifier\": \"123\"}";

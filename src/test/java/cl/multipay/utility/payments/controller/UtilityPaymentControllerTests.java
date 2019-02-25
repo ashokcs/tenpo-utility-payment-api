@@ -37,7 +37,7 @@ public class UtilityPaymentControllerTests
 	public void getUtilities_shouldReturnOk() throws Exception
 	{
 		final String responseEntity = "{\"response_code\":1,\"response_message\":\"{agreement_data.success}\",\"data\":"
-				+ "{\"convenios\":[{\"area\":{\"100\":\"AGUA\"},\"help\":{},\"firm\":\"COSTANERANORTE\",\"gloss\":{},"
+				+ "{\"agreements\":[{\"area\":{\"100\":\"AGUA\"},\"help\":{},\"firm\":\"COSTANERANORTE\",\"gloss\":{},"
 				+ "\"collector\":{\"1\":\"OTRO\"}}]}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
