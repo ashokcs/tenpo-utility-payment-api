@@ -9,4 +9,5 @@ import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 public interface UtilityPaymentBillRepository extends JpaRepository<UtilityPaymentBill, Long>
 {
 	public Optional<UtilityPaymentBill> findByTransactionId(final Long transactionId);
+	public Optional<UtilityPaymentBill> findByTransactionIdAndStatus(final Long transactionId, final String status);
 }

@@ -54,6 +54,9 @@ public class UtilityPaymentTransactionControllerTests
 	@Autowired
 	private UtilityPaymentEftService utilityPaymentEftService;
 
+	@Autowired
+	private Utils utils;
+
 	@MockBean
 	private CloseableHttpClient client;
 
@@ -272,7 +275,7 @@ public class UtilityPaymentTransactionControllerTests
 
 	private UtilityPaymentTransaction createUtilityPaymentTransactionMock()
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
 		utilityPaymentTransaction.setPublicId(uuid);
 		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.PENDING);

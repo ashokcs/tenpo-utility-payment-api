@@ -58,4 +58,14 @@ public class UtilityPaymentBillService
 		}
 		return Optional.empty();
 	}
+
+	public Optional<UtilityPaymentBill> getPendingByTransactionId(final Long transactionId)
+	{
+		try {
+			return utilityPaymentBillRepository.findByTransactionIdAndStatus(transactionId, UtilityPaymentBill.PENDING);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
 }

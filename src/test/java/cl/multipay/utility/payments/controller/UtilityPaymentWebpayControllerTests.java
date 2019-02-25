@@ -52,6 +52,9 @@ public class UtilityPaymentWebpayControllerTests
 	@Autowired
 	private UtilityPaymentWebpayService utilityPaymentWebpayService;
 
+	@Autowired
+	private Utils utils;
+
 	@MockBean
 	private WebpayClient webpayClient;
 
@@ -76,7 +79,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayReturn_shouldReturnFound_withValidParameters() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e1";
@@ -90,7 +93,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayReturn_shouldReturnOk_withValidParametersApproved() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000002L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e2";
@@ -105,7 +108,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayReturn_shouldReturnOk_withValidParametersDenied() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000003L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3";
@@ -128,7 +131,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTokenWsSucced() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000004L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.SUCCEEDED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e4";
@@ -141,7 +144,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTokenWsFailed() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000005L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.FAILED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e454";
@@ -154,7 +157,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTbkToken() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000006L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.FAILED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e456";
@@ -167,7 +170,7 @@ public class UtilityPaymentWebpayControllerTests
 	@Test
 	public void webpayFinal_shouldReturnFound_withTbkBuyOrder() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000007L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.FAILED, uuid, buyOrder);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("TBK_ORDEN_COMPRA", utilityPaymentTransaction.getBuyOrder().toString()))

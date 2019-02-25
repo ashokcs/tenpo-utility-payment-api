@@ -59,7 +59,7 @@ public class UtilityPaymentClient
 
 					final JsonNode utilitiesJsonNode = mapper.readTree(body);
 					final JsonNode data = utilitiesJsonNode.get("data");
-					final JsonNode utilities = data.get("convenios");
+					final JsonNode utilities = data.get("agreements");
 					if (utilities.isArray()) {
 						final List<Utility> utilitiesList = new ArrayList<>();
 						for (final JsonNode utility : utilities) {
@@ -139,9 +139,9 @@ public class UtilityPaymentClient
 						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
 						for(final JsonNode bill : debtsJsonNode) {
 							final MulticajaBill mcBill = new MulticajaBill();
-							mcBill.setMcCode(dataJsonNode.get("codigo_mc").asText());
-							mcBill.setAmount(bill.get("monto_total").asLong());
-							mcBill.setDueDate(bill.get("fecha_vencimiento").asText());
+							mcBill.setMcCode(dataJsonNode.get("mc_code").asText());
+							mcBill.setAmount(bill.get("total_amount").asLong());
+							mcBill.setDueDate(bill.get("due_date").asText());
 							return Optional.of(mcBill);
 						}
 					}

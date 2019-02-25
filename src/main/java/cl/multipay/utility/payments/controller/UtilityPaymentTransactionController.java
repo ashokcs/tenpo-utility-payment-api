@@ -75,10 +75,8 @@ public class UtilityPaymentTransactionController
 	@GetMapping("/v1/transactions/{id:[0-9a-f]{32}}")
 	public ResponseEntity<UtilityPaymentTransactionResponse> get(@PathVariable("id") final String publicId)
 	{
-		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.findByPublicId(publicId)
-				.orElseThrow(NotFoundException::new);
-		final UtilityPaymentBill upb = utilityPaymentBillService.findByTransactionId(upt.getId())
-				.orElseThrow(NotFoundException::new);
+		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.findByPublicId(publicId).orElseThrow(NotFoundException::new);
+		final UtilityPaymentBill upb = utilityPaymentBillService.findByTransactionId(upt.getId()).orElseThrow(NotFoundException::new);
 
 		final UtilityPaymentTransactionResponse uptr = new UtilityPaymentTransactionResponse(upt, upb);
 
@@ -248,6 +246,8 @@ public class UtilityPaymentTransactionController
 	// TODO modificar api readme new version
 	// TODO return payment info object
 
+	// TODO comprobante webpay finish
+	// TODO comprobante transferencia
 	// TODO integrar correo transaccional comprobante
 	// TODO log tracking id
 	// TODO add sengrid prod key

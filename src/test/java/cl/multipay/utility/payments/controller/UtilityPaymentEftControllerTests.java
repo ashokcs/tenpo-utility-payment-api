@@ -50,6 +50,9 @@ public class UtilityPaymentEftControllerTests
 	private UtilityPaymentBillService utilityPaymentBillService;
 
 	@Autowired
+	private Utils utils;
+
+	@Autowired
 	private Properties properties;
 
 	@MockBean
@@ -74,7 +77,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefReturn_shouldReturnServerError_withRemoteCanceled() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a1";
@@ -93,7 +96,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefReturn_shouldReturnServerError_withRemoteError() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a2";
@@ -112,7 +115,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefReturn_shouldReturnServerError_withRemotePaid() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a3";
@@ -131,7 +134,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefReturn_shouldReturnServerError_withBillPending() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a4";
@@ -174,7 +177,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withInvalidParamenters() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a5";
@@ -191,7 +194,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withInvalidParamenters1() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a6";
@@ -208,7 +211,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withInvalidAuthHeader() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a7";
@@ -225,7 +228,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withValidPendingBill() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a8";
@@ -242,7 +245,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnOk_withParamenters() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a9";
@@ -262,7 +265,7 @@ public class UtilityPaymentEftControllerTests
 	@Test
 	public void tefNotify_shouldReturnServerError_withErrorRemote() throws Exception
 	{
-		final String uuid = Utils.uuid();
+		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32f1";

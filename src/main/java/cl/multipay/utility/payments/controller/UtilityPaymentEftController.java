@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
-import cl.multipay.utility.payments.event.SendReceiptEvent;
 import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
@@ -108,7 +107,7 @@ public class UtilityPaymentEftController
 				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 				// publish send receipt
-				applicationEventPublisher.publishEvent(new SendReceiptEvent(utilityPaymentTransaction));
+				//applicationEventPublisher.publishEvent(new SendReceiptWebpayEvent(utilityPaymentTransaction));
 
 				// publish add totaliser data
 				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));

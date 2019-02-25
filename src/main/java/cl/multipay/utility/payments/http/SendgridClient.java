@@ -15,6 +15,7 @@ import com.sendgrid.SendGrid;
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
+import cl.multipay.utility.payments.event.SendReceiptWebpayEvent;
 import cl.multipay.utility.payments.util.Properties;
 import cl.multipay.utility.payments.util.Utils;
 
@@ -32,10 +33,13 @@ public class SendgridClient
 		this.utils = utils;
 	}
 
-	public void sendReceipt(final UtilityPaymentTransaction utilityPaymentTransaction,
-		final UtilityPaymentBill utilityPaymentBill, final UtilityPaymentWebpay utilityPaymentWebpay)
+	public void sendReceipt(final SendReceiptWebpayEvent event)
 	{
 		try {
+			final UtilityPaymentTransaction utilityPaymentTransaction = event.getUtilityPaymentTransaction();
+			final UtilityPaymentBill utilityPaymentBill = event.getUtilityPaymentBill();
+			final UtilityPaymentWebpay utilityPaymentWebpay = event.getUtilityPaymentWebpay();
+
 			final Email from = new Email(properties.mailUtilityPaymentsReceiptFrom, properties.mailUtilityPaymentsReceiptFromName);
 			final Mail mail = new Mail();
 			mail.setSubject(properties.mailUtilityPaymentsReceiptSubject);
