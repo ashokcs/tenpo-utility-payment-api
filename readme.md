@@ -10,7 +10,7 @@ docker run -it --rm --link multipay_utility_postgres_1:postgres --net multipay_u
 
 ### Run migrations
 ```bash
-cd database
+cd multipay-database-migrations
 ./dbmate migrate
 ```
 
@@ -20,15 +20,6 @@ cd database
 ./gradlew bootRun
 ```
 
-### About **dbmate**
-```bash
-dbmate new create_users_table
-dbmate migrate  # run migrations
-dbmate up       # run migrations, create db if not exists
-dbmate rollback # roll back the most recent migration
-dbmate dump     # generate schema.sql
-dbmate wait     # pause until the database is available
-```
 # Azure
 
 ### **Staging PostgreSQL Database**
