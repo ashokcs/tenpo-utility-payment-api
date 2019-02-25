@@ -12,8 +12,11 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 
+import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 import cl.multipay.utility.payments.util.Properties;
+import cl.multipay.utility.payments.util.Utils;
 
 @Service
 public class SendgridClient
@@ -21,13 +24,16 @@ public class SendgridClient
 	private static final Logger logger = LoggerFactory.getLogger(SendgridClient.class);
 
 	private final Properties properties;
+	private final Utils utils;
 
-	public SendgridClient(final Properties properties)
+	public SendgridClient(final Properties properties, final Utils utils)
 	{
 		this.properties = properties;
+		this.utils = utils;
 	}
 
-	public void sendReceipt(final UtilityPaymentTransaction utilityPaymentTransaction)
+	public void sendReceipt(final UtilityPaymentTransaction utilityPaymentTransaction,
+		final UtilityPaymentBill utilityPaymentBill, final UtilityPaymentWebpay utilityPaymentWebpay)
 	{
 		try {
 			final Email from = new Email(properties.mailUtilityPaymentsReceiptFrom, properties.mailUtilityPaymentsReceiptFromName);
@@ -52,6 +58,21 @@ public class SendgridClient
 
 			// add template data
 		    personalization.addDynamicTemplateData("subject", properties.mailUtilityPaymentsReceiptSubject);
+		    personalization.addDynamicTemplateData("transaction_utility", utilityPaymentBill.getUtility());
+		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", utilityPaymentTransaction.getUpdated()));
+		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", utilityPaymentTransaction.getUpdated()) + " hrs");
+		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
+		    personalization.addDynamicTemplateData("transaction_total", utilityPaymentTransaction.getAmount()); // TODO format
+		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder());
+		    personalization.addDynamicTemplateData("transaction_auth", "123123123"); // TODO
+
+		    personalization.addDynamicTemplateData("payment_method", utils.paymentMethod(utilityPaymentTransaction.getPaymentMethod()));
+		    personalization.addDynamicTemplateData("payment_amount", utilityPaymentTransaction.getAmount());
+		    personalization.addDynamicTemplateData("payment_auth", utilityPaymentWebpay.getAuthCode());
+		    personalization.addDynamicTemplateData("payment_type", utils.paymentType(utilityPaymentWebpay.getPaymentType()));
+		    personalization.addDynamicTemplateData("payment_share_type", utils.sharesType(utilityPaymentWebpay.getPaymentType()));
+		    personalization.addDynamicTemplateData("payment_share_number", utilityPaymentWebpay.getShares());
+		    personalization.addDynamicTemplateData("payment_share_card", utilityPaymentWebpay.getCard());
 
 		    // send email
 		    final SendGrid sg = new SendGrid(properties.mailSendgridApiKey);

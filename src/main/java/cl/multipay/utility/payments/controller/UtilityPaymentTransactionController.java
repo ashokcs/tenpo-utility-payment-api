@@ -49,9 +49,10 @@ public class UtilityPaymentTransactionController
 	private final WebpayClient webpayClient;
 	private final EftClient eftClient;
 	private final UtilityPaymentClient utilityPaymentClient;
+	private final Utils utils;
 
 	public UtilityPaymentTransactionController(final UtilityPaymentTransactionService utilityPaymentTransactionService,
-		final UtilityPaymentWebpayService utilityPaymentWebpayService,
+		final UtilityPaymentWebpayService utilityPaymentWebpayService, final Utils utils,
 		final UtilityPaymentEftService utilityPaymentEftService, final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentClient utilityPaymentClient, final WebpayClient webpayClient, final EftClient eftClient)
 	{
@@ -62,6 +63,7 @@ public class UtilityPaymentTransactionController
 		this.webpayClient = webpayClient;
 		this.eftClient = eftClient;
 		this.utilityPaymentEftService = utilityPaymentEftService;
+		this.utils = utils;
 	}
 
 	/**
@@ -130,7 +132,7 @@ public class UtilityPaymentTransactionController
 		// create utility payment transaction
 		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
 		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.PENDING);
-		utilityPaymentTransaction.setPublicId(Utils.uuid());
+		utilityPaymentTransaction.setPublicId(utils.uuid());
 		utilityPaymentTransaction.setAmount(amount);
 		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction)
 			.orElseThrow(ServerErrorException::new);
@@ -203,8 +205,8 @@ public class UtilityPaymentTransactionController
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
 		// get utility payment transaction by id and status
-		final String tefPublicId = Utils.uuid();
-		final String tefNotifyId = Utils.uuid();
+		final String tefPublicId = utils.uuid();
+		final String tefNotifyId = utils.uuid();
 		final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getPendingByPublicId(publicId)
 				.orElseThrow(NotFoundException::new);
 

@@ -18,7 +18,7 @@ public class UtilityPaymentTransactionRequest
 	private String category;
 
 	@NotBlank
-	@Pattern(regexp = "^[A-Za-z0-9]{2,20}$")
+	@Pattern(regexp = "^[A-Z0-9]{2,20}$")
 	private String identifier;
 
 	public String getUtility()
