@@ -4,6 +4,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import cl.multipay.utility.payments.event.SendReceiptEftEvent;
 import cl.multipay.utility.payments.event.SendReceiptWebpayEvent;
 import cl.multipay.utility.payments.http.SendgridClient;
 
@@ -19,7 +20,14 @@ public class SendReceiptListener
 
 	@Async
 	@EventListener
-	public void onMessage(final SendReceiptWebpayEvent event)
+	public void onMessageWebpay(final SendReceiptWebpayEvent event)
+	{
+		sendgrid.sendReceipt(event);
+	}
+
+	@Async
+	@EventListener
+	public void onMessageEft(final SendReceiptEftEvent event)
 	{
 		sendgrid.sendReceipt(event);
 	}

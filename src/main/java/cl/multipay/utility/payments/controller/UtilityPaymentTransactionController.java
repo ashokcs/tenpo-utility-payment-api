@@ -246,7 +246,7 @@ public class UtilityPaymentTransactionController
 	// TODO modificar api readme new version
 	// TODO return payment info object
 
-	// TODO comprobante webpay finish
+	// TODO comprobante webpay finish, format amounts
 	// TODO comprobante transferencia
 	// TODO integrar correo transaccional comprobante
 	// TODO log tracking id
