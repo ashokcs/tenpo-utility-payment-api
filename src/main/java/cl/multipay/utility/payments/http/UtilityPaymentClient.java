@@ -41,18 +41,11 @@ public class UtilityPaymentClient
 	public Optional<List<Utility>> getUtilities()
 	{
 		try {
-			final String url = properties.multicajaUtilitiesUrl;
-
 			final ObjectMapper mapper = new ObjectMapper();
-			final ObjectNode jsonObject = mapper.createObjectNode();
-			jsonObject.put("terminal", properties.multicajaUtilitiesTerminal);
-			jsonObject.put("channel", properties.multicajaUtilitiesChannel);
-			final String json = mapper.writeValueAsString(jsonObject);
-
+			final String url = properties.multicajaUtilitiesUrl;
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
 			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
-			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			logger.info("=> {}", url);
 
@@ -119,8 +112,6 @@ public class UtilityPaymentClient
 
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode jsonObject = mapper.createObjectNode();
-			jsonObject.put("terminal", properties.multicajaUtilitiesTerminal);
-			jsonObject.put("commerce_id", properties.multicajaUtilitiesCommerce);
 			jsonObject.put("firm", utility);
 			jsonObject.put("collector", collector);
 			jsonObject.put("payment_id", identifier);
