@@ -18,6 +18,14 @@ public class Utils
 		return UUID.randomUUID().toString().replaceAll("\\-", "");
 	}
 
+	public String mdc(final String transaction)
+	{
+		if ((transaction != null) && !transaction.isEmpty()) {
+			return "[" + transaction + "] ";
+		}
+		return null;
+	}
+
 	public String format(final String pattern, final TemporalAccessor date)
 	{
 		return DateTimeFormatter.ofPattern(pattern).format(date);

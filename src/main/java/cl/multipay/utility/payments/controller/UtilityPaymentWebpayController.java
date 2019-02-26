@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,14 @@ import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.service.UtilityPaymentWebpayService;
 import cl.multipay.utility.payments.util.Properties;
+import cl.multipay.utility.payments.util.Utils;
 
 @RestController
 public class UtilityPaymentWebpayController
 {
 	private static final Logger logger = LoggerFactory.getLogger(UtilityPaymentWebpayController.class);
 
+	private final Utils utils;
 	private final Properties properties;
 	private final UtilityPaymentTransactionService utilityPaymentTransactionService;
 	private final UtilityPaymentBillService utilityPaymentBillService;
@@ -43,13 +46,14 @@ public class UtilityPaymentWebpayController
 	private final WebpayClient webpayClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public UtilityPaymentWebpayController(final Properties properties,
+	public UtilityPaymentWebpayController(final Utils utils, final Properties properties,
 		final UtilityPaymentTransactionService utilityPaymentTransactionService,
 		final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentWebpayService utilityPaymentWebpayService,
 		final WebpayClient webpayClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
+		this.utils = utils;
 		this.properties = properties;
 		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
 		this.utilityPaymentBillService = utilityPaymentBillService;
@@ -72,6 +76,7 @@ public class UtilityPaymentWebpayController
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentWebpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentWebpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			utilityPaymentBuyOrder = utilityPaymentTransaction.getBuyOrder();
+			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
 
 			// webpay get result
 			final WebpayResultResponse webpayResultResponse = webpayClient.result(utilityPaymentWebpay).orElseThrow(ServerErrorException::new);

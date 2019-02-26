@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +76,8 @@ public class UtilityPaymentTransactionController
 	@GetMapping("/v1/transactions/{id:[0-9a-f]{32}}")
 	public ResponseEntity<UtilityPaymentTransactionResponse> get(@PathVariable("id") final String publicId)
 	{
+		MDC.put("transaction", utils.mdc(publicId));
+
 		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.findByPublicId(publicId).orElseThrow(NotFoundException::new);
 		final UtilityPaymentBill upb = utilityPaymentBillService.findByTransactionId(upt.getId()).orElseThrow(NotFoundException::new);
 
@@ -107,6 +110,10 @@ public class UtilityPaymentTransactionController
 	@PostMapping("/v1/transactions")
 	public ResponseEntity<UtilityPaymentTransactionResponse> create(@RequestBody @Valid final UtilityPaymentTransactionRequest request)
 	{
+		// create transaction uuid
+		final String transactionPublicId = utils.uuid();
+		MDC.put("transaction", utils.mdc(transactionPublicId));
+
 		// TODO validate identifier
 
 		// get utility bill
@@ -130,7 +137,7 @@ public class UtilityPaymentTransactionController
 		// create utility payment transaction
 		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
 		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.PENDING);
-		utilityPaymentTransaction.setPublicId(utils.uuid());
+		utilityPaymentTransaction.setPublicId(transactionPublicId);
 		utilityPaymentTransaction.setAmount(amount);
 		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction)
 			.orElseThrow(ServerErrorException::new);
@@ -165,6 +172,8 @@ public class UtilityPaymentTransactionController
 		@PathVariable("id") final String publicId,
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
+		MDC.put("transaction", utils.mdc(publicId));
+
 		// get utility payment transaction by id and status
 		final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getPendingByPublicId(publicId)
 				.orElseThrow(NotFoundException::new);
@@ -202,6 +211,8 @@ public class UtilityPaymentTransactionController
 		@PathVariable("id") final String publicId,
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
+		MDC.put("transaction", utils.mdc(publicId));
+
 		// get utility payment transaction by id and status
 		final String tefPublicId = utils.uuid();
 		final String tefNotifyId = utils.uuid();
@@ -248,9 +259,10 @@ public class UtilityPaymentTransactionController
 	// TODO comprobante webpay finish, format amounts
 	// TODO comprobante transferencia
 	// TODO integrar correo transaccional comprobante
-
-	// TODO email receipt bill auth code
 	// TODO log tracking id
+
+	// TODO delete cache task
+	// TODO email receipt bill auth code
 	// TODO add sengrid prod key
 	// TODO 1 peso mode
 	// TODO subir bo

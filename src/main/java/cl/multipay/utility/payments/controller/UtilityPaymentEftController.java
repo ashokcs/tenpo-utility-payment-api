@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentEftService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.util.Properties;
+import cl.multipay.utility.payments.util.Utils;
 
 @RestController
 public class UtilityPaymentEftController
@@ -39,6 +41,7 @@ public class UtilityPaymentEftController
 	private static final Logger logger = LoggerFactory.getLogger(UtilityPaymentEftController.class);
 
 	private final Properties properties;
+	private final Utils utils;
 
 	private final UtilityPaymentTransactionService utilityPaymentTransactionService;
 	private final UtilityPaymentBillService utilityPaymentBillService;
@@ -47,7 +50,7 @@ public class UtilityPaymentEftController
 	private final EftClient eftClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public UtilityPaymentEftController(final Properties properties,
+	public UtilityPaymentEftController(final Properties properties, final Utils utils,
 		final UtilityPaymentTransactionService utilityPaymentTransactionService,
 		final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentEftService utilityPaymentEftService,
@@ -55,6 +58,7 @@ public class UtilityPaymentEftController
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
+		this.utils = utils;
 		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
 		this.utilityPaymentBillService = utilityPaymentBillService;
 		this.utilityPaymentEftService = utilityPaymentEftService;
@@ -90,6 +94,7 @@ public class UtilityPaymentEftController
 			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingByPublicIdAndNotifyId(tefId, tefNotifyId).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
+			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
 
 			// get eft remote status
 			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)
@@ -139,6 +144,7 @@ public class UtilityPaymentEftController
 			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			utilityPaymentTransactionBuyOrder = utilityPaymentTransaction.getBuyOrder();
+			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
 
 			// get eft remote status
 			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)
