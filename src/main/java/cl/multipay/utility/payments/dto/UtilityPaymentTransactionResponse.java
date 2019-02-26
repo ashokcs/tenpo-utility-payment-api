@@ -1,6 +1,6 @@
 package cl.multipay.utility.payments.dto;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
@@ -15,8 +15,8 @@ public class UtilityPaymentTransactionResponse
 	private final Long amount;
 	private final String paymentMethod;
 	private final String email;
-	private final ZonedDateTime created;
-	private final ZonedDateTime updated;
+	private final OffsetDateTime created;
+	private final OffsetDateTime updated;
 	private final UtilityPaymentBill bill;
 	private UtilityPaymentWebpay webpay;
 	private UtilityPaymentEft eft;
@@ -65,12 +65,12 @@ public class UtilityPaymentTransactionResponse
 		return email;
 	}
 
-	public ZonedDateTime getCreated()
+	public OffsetDateTime getCreated()
 	{
 		return created;
 	}
 
-	public ZonedDateTime getUpdated()
+	public OffsetDateTime getUpdated()
 	{
 		return updated;
 	}

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class Properties
 {
+	@Value("${time-zone.offset}") public String timezoneOffset;
+
 	/* webpay */
 	@Value("${webpay.init.url}") public String webpayInitUrl;
 	@Value("${webpay.result.url}") public String webpayResultUrl;

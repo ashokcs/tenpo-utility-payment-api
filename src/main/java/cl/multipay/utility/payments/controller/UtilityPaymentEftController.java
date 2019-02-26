@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
+import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.event.SendReceiptEftEvent;
 import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
@@ -85,10 +87,9 @@ public class UtilityPaymentEftController
 			validCredentials(auth).orElseThrow(UnauthorizedException::new);
 
 			// get utility payment eft and utility payment transaction
-			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingByPublicIdAndNotifyId(tefId, tefNotifyId)
-					.orElseThrow(NotFoundException::new);
-			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentEft.getTransactionId())
-					.orElseThrow(NotFoundException::new);
+			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingByPublicIdAndNotifyId(tefId, tefNotifyId).orElseThrow(NotFoundException::new);
+			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
+			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 
 			// get eft remote status
 			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)
@@ -107,7 +108,7 @@ public class UtilityPaymentEftController
 				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 				// publish send receipt
-				//applicationEventPublisher.publishEvent(new SendReceiptWebpayEvent(utilityPaymentTransaction));
+				applicationEventPublisher.publishEvent(new SendReceiptEftEvent(utilityPaymentTransaction, utilityPaymentBill, utilityPaymentEft));
 
 				// publish add totaliser data
 				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));

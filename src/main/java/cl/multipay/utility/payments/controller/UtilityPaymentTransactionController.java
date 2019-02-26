@@ -249,6 +249,7 @@ public class UtilityPaymentTransactionController
 	// TODO comprobante webpay finish, format amounts
 	// TODO comprobante transferencia
 	// TODO integrar correo transaccional comprobante
+	// TODO email receipt bill auth code
 	// TODO log tracking id
 	// TODO add sengrid prod key
 	// TODO 1 peso mode

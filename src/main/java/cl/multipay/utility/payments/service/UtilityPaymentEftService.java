@@ -41,16 +41,6 @@ public class UtilityPaymentEftService
 		return Optional.empty();
 	}
 
-	public Optional<UtilityPaymentEft> getPendingByPublicId(final String publicId)
-	{
-		try {
-			return uper.findByPublicIdAndStatus(publicId, UtilityPaymentEft.PENDING);
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}
-
 	public Optional<UtilityPaymentEft> getPendingByPublicIdAndNotifyId(final String publicId, final String notifyId)
 	{
 		try {

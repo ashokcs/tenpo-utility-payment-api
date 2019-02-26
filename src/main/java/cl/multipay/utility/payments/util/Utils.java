@@ -1,7 +1,9 @@
 package cl.multipay.utility.payments.util;
 
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -61,5 +63,10 @@ public class Utils
 			}
 		}
 		return "";
+	}
+
+	public String currency(final long amount)
+	{
+		return "$" + NumberFormat.getNumberInstance(new Locale("es", "CL")).format(amount);
 	}
 }

@@ -1,6 +1,8 @@
 package cl.multipay.utility.payments.http;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,18 +49,21 @@ public class SendgridClient
 			final Mail mail = getReceiptMail(utilityPaymentTransaction, properties.mailUtilityPaymentsReceiptWebpayTemplate);
 			final Personalization personalization = mail.getPersonalization().get(0);
 
+			final OffsetDateTime updated = utilityPaymentTransaction.getUpdated()
+					.withOffsetSameInstant(ZoneOffset.of(properties.timezoneOffset));
+
 			// add template data
 		    personalization.addDynamicTemplateData("subject", properties.mailUtilityPaymentsReceiptSubject);
 		    personalization.addDynamicTemplateData("transaction_utility", utilityPaymentBill.getUtility());
-		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", utilityPaymentTransaction.getUpdated()));
-		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", utilityPaymentTransaction.getUpdated()) + " hrs");
+		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", updated));
+		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
 		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder());
 		    personalization.addDynamicTemplateData("transaction_auth", "123123123"); // TODO
-		    personalization.addDynamicTemplateData("transaction_total", utilityPaymentTransaction.getAmount()); // TODO format
+		    personalization.addDynamicTemplateData("transaction_total", utils.currency(utilityPaymentTransaction.getAmount()));
 
 		    personalization.addDynamicTemplateData("payment_method", utils.paymentMethod(utilityPaymentTransaction.getPaymentMethod()));
-		    personalization.addDynamicTemplateData("payment_amount", utilityPaymentTransaction.getAmount()); // TODO format
+		    personalization.addDynamicTemplateData("payment_amount", utils.currency(utilityPaymentTransaction.getAmount()));
 		    personalization.addDynamicTemplateData("payment_auth", utilityPaymentWebpay.getAuthCode());
 		    personalization.addDynamicTemplateData("payment_type", utils.paymentType(utilityPaymentWebpay.getPaymentType()));
 		    personalization.addDynamicTemplateData("payment_share_type", utils.sharesType(utilityPaymentWebpay.getPaymentType()));
@@ -82,18 +87,21 @@ public class SendgridClient
 			final Mail mail = getReceiptMail(utilityPaymentTransaction, properties.mailUtilityPaymentsReceiptEftTemplate);
 			final Personalization personalization = mail.getPersonalization().get(0);
 
+			final OffsetDateTime updated = utilityPaymentTransaction.getUpdated()
+					.withOffsetSameInstant(ZoneOffset.of(properties.timezoneOffset));
+
 			// add template data
 		    personalization.addDynamicTemplateData("subject", properties.mailUtilityPaymentsReceiptSubject);
 		    personalization.addDynamicTemplateData("transaction_utility", utilityPaymentBill.getUtility());
-		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", utilityPaymentTransaction.getUpdated()));
-		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", utilityPaymentTransaction.getUpdated()) + " hrs");
+		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", updated));
+		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
 		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder());
 		    personalization.addDynamicTemplateData("transaction_auth", "123123123"); // TODO
-		    personalization.addDynamicTemplateData("transaction_total", utilityPaymentTransaction.getAmount()); // TODO format
+		    personalization.addDynamicTemplateData("transaction_total", utils.currency(utilityPaymentTransaction.getAmount()));
 
 		    personalization.addDynamicTemplateData("payment_method", utils.paymentMethod(utilityPaymentTransaction.getPaymentMethod()));
-		    personalization.addDynamicTemplateData("payment_amount", utilityPaymentTransaction.getAmount()); // TODO format
+		    personalization.addDynamicTemplateData("payment_amount", utils.currency(utilityPaymentTransaction.getAmount()));
 		    personalization.addDynamicTemplateData("payment_order", utilityPaymentEft.getOrder());
 
 		    // send email

@@ -1,6 +1,6 @@
 package cl.multipay.utility.payments.entity;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,15 +51,15 @@ public class UtilityPaymentTransaction
 	private String email;
 
 	@Column(insertable = false, updatable = false)
-	private ZonedDateTime created;
+	private OffsetDateTime created;
 
 	@Column(insertable = false)
-	private ZonedDateTime updated;
+	private OffsetDateTime updated;
 
 	@PreUpdate
 	private void preUpdate()
 	{
-		updated = ZonedDateTime.now();
+		updated = OffsetDateTime.now();
 	}
 
 	@PrePersist
@@ -120,22 +120,22 @@ public class UtilityPaymentTransaction
 		this.email = email;
 	}
 
-	public ZonedDateTime getCreated()
+	public OffsetDateTime getCreated()
 	{
 		return created;
 	}
 
-	public void setCreated(final ZonedDateTime created)
+	public void setCreated(final OffsetDateTime created)
 	{
 		this.created = created;
 	}
 
-	public ZonedDateTime getUpdated()
+	public OffsetDateTime getUpdated()
 	{
 		return updated;
 	}
 
-	public void setUpdated(final ZonedDateTime updated)
+	public void setUpdated(final OffsetDateTime updated)
 	{
 		this.updated = updated;
 	}
