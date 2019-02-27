@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,9 +24,9 @@ public class UtilityPaymentController
 	}
 
 	@GetMapping("/v1/utilities")
-	@Cacheable("utilities")
-	public ResponseEntity<List<Utility>> get()
+	@Cacheable(value = "utilities", unless = "#result.size() == 0")
+	public List<Utility> get()
 	{
-		return ResponseEntity.ok(utilityPaymentClient.getUtilities().orElseThrow(ServerErrorException::new));
+		return utilityPaymentClient.getUtilities().orElseThrow(ServerErrorException::new);
 	}
 }
