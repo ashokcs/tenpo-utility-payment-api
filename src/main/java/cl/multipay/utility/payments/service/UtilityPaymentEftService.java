@@ -41,10 +41,11 @@ public class UtilityPaymentEftService
 		return Optional.empty();
 	}
 
-	public Optional<UtilityPaymentEft> getPendingByPublicIdAndNotifyId(final String publicId, final String notifyId)
+	public Optional<UtilityPaymentEft> getPendingOrPaidByPublicIdAndNotifyId(final String publicId, final String notifyId)
 	{
 		try {
-			return uper.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, UtilityPaymentEft.PENDING);
+			final Optional<UtilityPaymentEft> pen = uper.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, UtilityPaymentEft.PENDING);
+			return pen.isPresent() ? pen : uper.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, UtilityPaymentEft.PAID);
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}

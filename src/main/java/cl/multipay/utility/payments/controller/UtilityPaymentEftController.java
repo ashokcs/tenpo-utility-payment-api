@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.multipay.utility.payments.dto.MulticajaPayBillResponse;
 import cl.multipay.utility.payments.dto.TefGetOrderStatusResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
@@ -29,6 +30,7 @@ import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.exception.UnauthorizedException;
 import cl.multipay.utility.payments.http.EftClient;
+import cl.multipay.utility.payments.http.UtilityPaymentClient;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentEftService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
@@ -48,6 +50,7 @@ public class UtilityPaymentEftController
 	private final UtilityPaymentEftService utilityPaymentEftService;
 
 	private final EftClient eftClient;
+	private final UtilityPaymentClient utilityPaymentClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public UtilityPaymentEftController(final Properties properties, final Utils utils,
@@ -55,6 +58,7 @@ public class UtilityPaymentEftController
 		final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentEftService utilityPaymentEftService,
 		final EftClient eftClient, final EftClient transferenciaClient,
+		final UtilityPaymentClient utilityPaymentClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.properties = properties;
@@ -63,6 +67,7 @@ public class UtilityPaymentEftController
 		this.utilityPaymentBillService = utilityPaymentBillService;
 		this.utilityPaymentEftService = utilityPaymentEftService;
 		this.eftClient = eftClient;
+		this.utilityPaymentClient = utilityPaymentClient;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
@@ -91,7 +96,7 @@ public class UtilityPaymentEftController
 			validCredentials(auth).orElseThrow(UnauthorizedException::new);
 
 			// get utility payment eft and utility payment transaction
-			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingByPublicIdAndNotifyId(tefId, tefNotifyId).orElseThrow(NotFoundException::new);
+			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingOrPaidByPublicIdAndNotifyId(tefId, tefNotifyId).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
@@ -102,24 +107,36 @@ public class UtilityPaymentEftController
 
 			switch (tefGetOrderStatusResponse.getOrderStatus()) {
 			case 101: case 106: case 107: case 109:
-				// pay bill
-				// ... TODO
-				// if bill pay fail return error for notification retry
 
 				// update status
 				utilityPaymentEft.setStatus(UtilityPaymentEft.PAID);
-				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
 				utilityPaymentEftService.save(utilityPaymentEft);
-				utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
-				// publish send receipt
-				applicationEventPublisher.publishEvent(new SendReceiptEftEvent(utilityPaymentTransaction, utilityPaymentBill, utilityPaymentEft));
+				// pay bill
+				final Long debtDataId = utilityPaymentBill.getDataId();
+				final Integer debtNumber = utilityPaymentBill.getNumber();
+				final Long amount = utilityPaymentBill.getAmount();
+				final Optional<MulticajaPayBillResponse> billPayment = utilityPaymentClient.payBill(debtDataId, debtNumber, amount);
 
-				// publish add totaliser data
-				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
+				if (billPayment.isPresent()) {
 
-				// return ok
-				return ResponseEntity.ok(notifyResponse());
+					// update bill // TODO auth code, mc_code
+					utilityPaymentBill.setStatus(UtilityPaymentBill.CONFIRMED);
+					utilityPaymentBillService.save(utilityPaymentBill);
+
+					// update transaction
+					utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
+					utilityPaymentTransactionService.save(utilityPaymentTransaction);
+
+					// publish send receipt
+					applicationEventPublisher.publishEvent(new SendReceiptEftEvent(utilityPaymentTransaction, utilityPaymentBill, utilityPaymentEft));
+
+					// publish add totaliser data
+					applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
+
+					// return ok
+					return ResponseEntity.ok(notifyResponse());
+				}
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage());

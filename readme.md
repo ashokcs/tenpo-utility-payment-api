@@ -78,6 +78,10 @@ username    : EcommerceWebRole
 password    : EcommerceWebRole
 base64      : RWNvbW1lcmNlV2ViUm9sZTpFY29tbWVyY2VXZWJSb2xl
 User        : 10964112-K:1313
+
+notify_user : hyayvu58aK8SSFyHVqfz
+notify_pass : bnykHGZ8rKRZrJvR6H9M
+notify_auth : aHlheXZ1NThhSzhTU0Z5SFZxZno6Ym55a0hHWjhyS1Jackp2UjZIOU0=
 ```
 
 ## Categories

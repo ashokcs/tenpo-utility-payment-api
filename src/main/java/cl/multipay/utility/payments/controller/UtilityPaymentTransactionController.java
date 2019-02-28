@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.EftCreateOrderResponse;
-import cl.multipay.utility.payments.dto.MulticajaBill;
+import cl.multipay.utility.payments.dto.MulticajaBillResponse;
 import cl.multipay.utility.payments.dto.UtilityPaymentEftResponse;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionPay;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionRequest;
@@ -121,7 +121,7 @@ public class UtilityPaymentTransactionController
 		final String collector = request.getCollector();
 		final String category = request.getCategory();
 		final String identifier = request.getIdentifier();
-		final Optional<MulticajaBill> billDetailsOptional = utilityPaymentClient.getBill(utility, identifier, collector);
+		final Optional<MulticajaBillResponse> billDetailsOptional = utilityPaymentClient.getBill(utility, identifier, collector);
 
 		// if not present return 204 no content
 		if (!billDetailsOptional.isPresent()) {
@@ -129,7 +129,9 @@ public class UtilityPaymentTransactionController
 		}
 
 		// get response
-		final MulticajaBill multicajaBill = billDetailsOptional.get();
+		final MulticajaBillResponse multicajaBill = billDetailsOptional.get();
+		final Long dataId = multicajaBill.getDebtDataId();
+		final Integer debtNumber = multicajaBill.getDebtNumber();
 		final String mcCode = multicajaBill.getMcCode();
 		final Long amount = multicajaBill.getAmount();
 		final String dueDate = multicajaBill.getDueDate();
@@ -150,7 +152,9 @@ public class UtilityPaymentTransactionController
 		utilityPaymentBill.setCollector(collector);
 		utilityPaymentBill.setCategory(category);
 		utilityPaymentBill.setIdentifier(identifier);
-		utilityPaymentBill.setMcCode(mcCode);
+		utilityPaymentBill.setDataId(dataId);
+		utilityPaymentBill.setNumber(debtNumber);
+		utilityPaymentBill.setMcCode1(mcCode);
 		utilityPaymentBill.setAmount(amount);
 		utilityPaymentBill.setDueDate(dueDate);
 		utilityPaymentBillService.saveAndRefresh(utilityPaymentBill)
@@ -261,6 +265,9 @@ public class UtilityPaymentTransactionController
 	// TODO integrar correo transaccional comprobante
 	// TODO log tracking id
 
+	// TODO mdc clear
+	// TODO cambiar namespace kubernetes
+	// TODO save totaliser by user email
 	// TODO delete cache task
 	// TODO email receipt bill auth code
 	// TODO add sengrid prod key

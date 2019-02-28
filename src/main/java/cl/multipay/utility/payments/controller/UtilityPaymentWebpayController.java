@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.multipay.utility.payments.dto.MulticajaPayBillResponse;
 import cl.multipay.utility.payments.dto.WebpayResultResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
@@ -25,6 +26,7 @@ import cl.multipay.utility.payments.event.TotaliserEvent;
 import cl.multipay.utility.payments.exception.HttpException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
+import cl.multipay.utility.payments.http.UtilityPaymentClient;
 import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
@@ -44,13 +46,14 @@ public class UtilityPaymentWebpayController
 	private final UtilityPaymentWebpayService utilityPaymentWebpayService;
 
 	private final WebpayClient webpayClient;
+	private final UtilityPaymentClient utilityPaymentClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public UtilityPaymentWebpayController(final Utils utils, final Properties properties,
 		final UtilityPaymentTransactionService utilityPaymentTransactionService,
 		final UtilityPaymentBillService utilityPaymentBillService,
 		final UtilityPaymentWebpayService utilityPaymentWebpayService,
-		final WebpayClient webpayClient,
+		final WebpayClient webpayClient, final UtilityPaymentClient utilityPaymentClient,
 		final ApplicationEventPublisher applicationEventPublisher)
 	{
 		this.utils = utils;
@@ -59,6 +62,7 @@ public class UtilityPaymentWebpayController
 		this.utilityPaymentBillService = utilityPaymentBillService;
 		this.utilityPaymentWebpayService = utilityPaymentWebpayService;
 		this.webpayClient = webpayClient;
+		this.utilityPaymentClient = utilityPaymentClient;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
@@ -91,17 +95,39 @@ public class UtilityPaymentWebpayController
 			// if payment approved
 			if (isWebpayPaymentApproved(webpayResultResponse) == true) {
 
-				// pay bill TODO
-				// if pay fail, throw exception
+				final Long debtDataId = utilityPaymentBill.getDataId();
+				final Integer debtNumber = utilityPaymentBill.getNumber();
+				final Long amount = utilityPaymentBill.getAmount();
+				final Optional<MulticajaPayBillResponse> billPayment = utilityPaymentClient.payBill(debtDataId, debtNumber, amount);
 
-				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
-				utilityPaymentTransactionService.save(utilityPaymentTransaction);
+				if (billPayment.isPresent()) {
 
-				// publish send receipt
-				applicationEventPublisher.publishEvent(new SendReceiptWebpayEvent(utilityPaymentTransaction, utilityPaymentBill, utilityPaymentWebpay));
+					// update bill // TODO auth code, mc_code
+					utilityPaymentBill.setStatus(UtilityPaymentBill.CONFIRMED);
+					utilityPaymentBillService.save(utilityPaymentBill);
 
-				// publish add totaliser data
-				applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
+					// update transaction
+					utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
+					utilityPaymentTransactionService.save(utilityPaymentTransaction);
+
+					// publish send receipt
+					applicationEventPublisher.publishEvent(new SendReceiptWebpayEvent(utilityPaymentTransaction, utilityPaymentBill, utilityPaymentWebpay));
+
+					// publish add totaliser data
+					applicationEventPublisher.publishEvent(new TotaliserEvent(utilityPaymentTransaction.getAmount()));
+
+				} else {
+					// update bill // TODO mc_code
+					utilityPaymentBill.setStatus(UtilityPaymentBill.FAILED);
+					utilityPaymentBillService.save(utilityPaymentBill);
+
+					// update transaction
+					utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.FAILED);
+					utilityPaymentTransactionService.save(utilityPaymentTransaction);
+
+					// throw exception
+					throw new ServerErrorException();
+				}
 			}
 
 			// if payment not approved
@@ -111,7 +137,7 @@ public class UtilityPaymentWebpayController
 			}
 
 			// webpay ack
-			webpayClient.ack(utilityPaymentWebpay).orElseThrow(ServerErrorException::new); // TODO handle if ack fail, nullify?
+			webpayClient.ack(utilityPaymentWebpay).orElseThrow(ServerErrorException::new);
 			utilityPaymentWebpay.setStatus(UtilityPaymentWebpay.ACKNOWLEDGED);
 			utilityPaymentWebpayService.save(utilityPaymentWebpay);
 

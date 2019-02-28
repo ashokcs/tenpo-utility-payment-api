@@ -1,10 +1,12 @@
 package cl.multipay.utility.payments.dto;
 
-public class MulticajaBill
+public class MulticajaBillResponse
 {
 	private String mcCode;
+	private Long debtDataId;
 	private String dueDate;
 	private Long amount;
+	private Integer debtNumber;
 
 	public String getMcCode()
 	{
@@ -34,5 +36,25 @@ public class MulticajaBill
 	public void setAmount(final Long amount)
 	{
 		this.amount = amount;
+	}
+
+	public Long getDebtDataId()
+	{
+		return debtDataId;
+	}
+
+	public void setDebtDataId(final Long debtDataId)
+	{
+		this.debtDataId = debtDataId;
+	}
+
+	public Integer getDebtNumber()
+	{
+		return debtNumber;
+	}
+
+	public void setDebtNumber(final Integer debtNumber)
+	{
+		this.debtNumber = debtNumber;
 	}
 }

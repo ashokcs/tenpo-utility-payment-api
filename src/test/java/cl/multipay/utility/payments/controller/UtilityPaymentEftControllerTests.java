@@ -300,10 +300,10 @@ public class UtilityPaymentEftControllerTests
 		utilityPaymentBill.setCollector("2");
 		utilityPaymentBill.setCategory("100");
 		utilityPaymentBill.setIdentifier("123123");
-		utilityPaymentBill.setMcCode("12312312321");
+		utilityPaymentBill.setMcCode1("12312312321");
 		utilityPaymentBill.setAmount(123123L);
 		utilityPaymentBill.setDueDate("2019-06-06");
-		utilityPaymentBill.setMcCode("123123123");
+		utilityPaymentBill.setMcCode1("123123123");
 		utilityPaymentBillService.save(utilityPaymentBill);
 
 		return utilityPaymentTransaction;

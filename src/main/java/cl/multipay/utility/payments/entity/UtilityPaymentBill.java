@@ -45,7 +45,13 @@ public class UtilityPaymentBill
 	private String identifier;
 
 	@Column(updatable = false)
-	private String mcCode;
+	private Long dataId;
+
+	@Column(updatable = false)
+	private Integer number;
+
+	@Column(name="mc_code_1", updatable = false)
+	private String mcCode1;
 
 	@Column(updatable = false)
 	private Long amount;
@@ -177,13 +183,33 @@ public class UtilityPaymentBill
 		this.transactionId = transactionId;
 	}
 
-	public String getMcCode()
+	public String getMcCode1()
 	{
-		return mcCode;
+		return mcCode1;
 	}
 
-	public void setMcCode(final String mcCode)
+	public void setMcCode1(final String mcCode1)
 	{
-		this.mcCode = mcCode;
+		this.mcCode1 = mcCode1;
+	}
+
+	public Long getDataId()
+	{
+		return dataId;
+	}
+
+	public void setDataId(final Long dataId)
+	{
+		this.dataId = dataId;
+	}
+
+	public Integer getNumber()
+	{
+		return number;
+	}
+
+	public void setNumber(final Integer number)
+	{
+		this.number = number;
 	}
 }

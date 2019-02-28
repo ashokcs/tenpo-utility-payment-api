@@ -38,8 +38,10 @@ public class Properties
 
 	/* multicaja utilities */
 	@Value("${multicaja.utilities.apikey}") public String multicajaUtilitiesApiKey;
+	@Value("${multicaja.utilities.password}") public String multicajaUtilitiesPassword;
 	@Value("${multicaja.utilities.url}") public String multicajaUtilitiesUrl;
 	@Value("${multicaja.utilities.bill.url}") public String multicajaUtlitiesBillUrl;
+	@Value("${multicaja.utilities.bill-confirm.url}") public String multicajaUtlitiesBillConfirmUrl;
 
 	/* proxy */
 	@Value("${httpclient.proxy}") public String httpClientProxy;
