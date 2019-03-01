@@ -176,8 +176,8 @@ public class UtilityPaymentEftController
 			// nullified, canceled_user, expired, canceled_ecom
 			case 103: case 105: case 110: case 111:
 				utilityPaymentEft.setStatus(UtilityPaymentEft.CANCELED);
-				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.FAILED);
 				utilityPaymentEftService.save(utilityPaymentEft).orElseThrow(ServerErrorException::new);;
+				utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.FAILED);
 				utilityPaymentTransactionService.save(utilityPaymentTransaction).orElseThrow(ServerErrorException::new);;
 			}
 		} catch (final Exception e) {

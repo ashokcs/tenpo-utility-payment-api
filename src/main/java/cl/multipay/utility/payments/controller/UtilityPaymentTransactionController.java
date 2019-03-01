@@ -267,7 +267,8 @@ public class UtilityPaymentTransactionController
 	// TODO add sengrid prod key
 	// TODO rename properties redirect to front
 
-	// change deployment names
+	// TODO api transbank dejar privada
+	// TODO change deployment names
 	// TODO update readme
 	// TODO mdc clear
 	// TODO cambiar namespace kubernetes
