@@ -69,17 +69,17 @@ public class UtilityPaymentWebpayController
 	@PostMapping("/v1/payments/webpay/return")
 	public ResponseEntity<?> webpayReturn(
 		final HttpServletRequest request,
-		@RequestParam(required = false, name = "token_ws") final String tokenWs,
-		@RequestParam(required = false, name = "buy_order") Long utilityPaymentBuyOrder
+		@RequestParam(required = false, name = "token_ws") final String tokenWs
 	) {
 		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
+		String utilityPaymentTransactionPublicId = null;
 		try {
 			// get utility payment transaction and webpay
 			final String token = getToken(tokenWs).orElseThrow(ServerErrorException::new);
 			final UtilityPaymentWebpay utilityPaymentWebpay = utilityPaymentWebpayService.getPendingByToken(token).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentWebpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentWebpay.getTransactionId()).orElseThrow(NotFoundException::new);
-			utilityPaymentBuyOrder = utilityPaymentTransaction.getBuyOrder();
+			utilityPaymentTransactionPublicId = utilityPaymentTransaction.getPublicId();
 			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
 
 			// webpay get result
@@ -151,7 +151,7 @@ public class UtilityPaymentWebpayController
 		}
 
 		// redirect to error page
-		return redirectEntity(getRedirectErrorUrl(utilityPaymentBuyOrder));
+		return redirectEntity(getRedirectErrorUrl(utilityPaymentTransactionPublicId));
 	}
 
 	@PostMapping("/v1/payments/webpay/final")
@@ -173,7 +173,7 @@ public class UtilityPaymentWebpayController
 				if (UtilityPaymentTransaction.SUCCEEDED.equals(utilityPaymentTransaction.getStatus())) {
 					return redirectEntity(properties.webpayFrontFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 				} else {
-					return redirectEntity(properties.webpayFrontErrorOrder.replaceAll("\\{order\\}", utilityPaymentTransaction.getBuyOrder().toString()));
+					return redirectEntity(properties.webpayFrontErrorOrder.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 				}
 			}
 
@@ -183,9 +183,9 @@ public class UtilityPaymentWebpayController
 			}
 
 			// process tbk_orden_compra (timeout)
-			if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{19}")) {
-				return redirectEntity(properties.webpayFrontErrorOrder.replaceAll("\\{order\\}", tbkOrdenCompra));
-			}
+			/*if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{19}")) {
+				return redirectEntity(properties.webpayFrontErrorOrder.replaceAll("\\{id\\}", tbkOrdenCompra));
+			}*/
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -208,10 +208,10 @@ public class UtilityPaymentWebpayController
 		return false;
 	}
 
-	private String getRedirectErrorUrl(final Long buyOrder)
+	private String getRedirectErrorUrl(final String utilityPaymentPublicId)
 	{
-		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.webpayFrontErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
+		if ((utilityPaymentPublicId != null) && !utilityPaymentPublicId.isEmpty()) {
+			return properties.webpayFrontErrorOrder.replaceAll("\\{id\\}", utilityPaymentPublicId);
 		}
 		return properties.webpayFrontError;
 	}

@@ -154,13 +154,13 @@ public class UtilityPaymentEftController
 	public ResponseEntity<Object> transferenciaReturn(final HttpServletRequest request, @PathVariable("id") final String id)
 	{
 		logger.info("-> " + request.getRequestURL());
-		Long utilityPaymentTransactionBuyOrder = null;
+		String utilityPaymentTransactionPublicId = null;
 		try {
 			// get utility payment transaction and eft
 			final String tefId = getId(id).orElseThrow(ServerErrorException::new);
 			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
-			utilityPaymentTransactionBuyOrder = utilityPaymentTransaction.getBuyOrder();
+			utilityPaymentTransactionPublicId = utilityPaymentTransaction.getPublicId();
 			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
 
 			// get eft remote status
@@ -185,7 +185,7 @@ public class UtilityPaymentEftController
 		}
 
 		// redirect to error page
-		return redirectEntity(getRedirectErrorUrl(utilityPaymentTransactionBuyOrder));
+		return redirectEntity(getRedirectErrorUrl(utilityPaymentTransactionPublicId));
 	}
 
 	private ResponseEntity<Object> redirectEntity(final String url)
@@ -202,10 +202,10 @@ public class UtilityPaymentEftController
 		return Optional.empty();
 	}
 
-	private String getRedirectErrorUrl(final Long buyOrder)
+	private String getRedirectErrorUrl(final String utilityPaymentTransactionPublicId)
 	{
-		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.eftFrontErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
+		if ((utilityPaymentTransactionPublicId != null) && (!utilityPaymentTransactionPublicId.isEmpty())) {
+			return properties.eftFrontErrorOrder.replaceAll("\\{id\\}", utilityPaymentTransactionPublicId);
 		}
 		return properties.eftFrontError;
 	}
