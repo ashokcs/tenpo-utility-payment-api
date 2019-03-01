@@ -10,12 +10,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +27,7 @@ import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
 import cl.multipay.utility.payments.http.WebpayClient;
+import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
 import cl.multipay.utility.payments.service.UtilityPaymentWebpayService;
@@ -57,6 +60,9 @@ public class UtilityPaymentWebpayControllerTests
 
 	@MockBean
 	private WebpayClient webpayClient;
+
+	@MockBean
+	private CloseableHttpClient client;
 
 	@Test
 	public void webpayReturn_shouldReturnFound_withNoParameters() throws Exception
@@ -98,8 +104,12 @@ public class UtilityPaymentWebpayControllerTests
 		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e2";
 		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.PENDING, token);
+
+		final String responseEntity = "{\"response_code\": 1,\"response_message\": \"TRANSACCION APROBADA\"}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(utilityPaymentTransaction, 0));
 		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
+
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", utilityPaymentWebpay.getToken()))
 			.andDo(print())
 			.andExpect(status().isOk());

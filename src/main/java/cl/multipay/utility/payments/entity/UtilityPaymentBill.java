@@ -44,12 +44,15 @@ public class UtilityPaymentBill
 	@Column(updatable = false)
 	private String identifier;
 
+	@JsonIgnore
 	@Column(updatable = false)
 	private Long dataId;
 
+	@JsonIgnore
 	@Column(updatable = false)
 	private Integer number;
 
+	@JsonIgnore
 	@Column(name="mc_code_1", updatable = false)
 	private String mcCode1;
 

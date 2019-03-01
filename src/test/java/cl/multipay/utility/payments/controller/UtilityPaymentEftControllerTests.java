@@ -7,6 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +23,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import cl.multipay.utility.payments.dto.MulticajaPayBillResponse;
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
+import cl.multipay.utility.payments.http.UtilityPaymentClient;
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
 import cl.multipay.utility.payments.service.UtilityPaymentEftService;
@@ -57,6 +62,9 @@ public class UtilityPaymentEftControllerTests
 
 	@MockBean
 	private CloseableHttpClient client;
+
+	@MockBean
+	private UtilityPaymentClient utilityPaymentClient;
 
 	@Test
 	public void tefReturn_shouldReturnNotFound_withInvalidParameters1() throws Exception
@@ -253,8 +261,9 @@ public class UtilityPaymentEftControllerTests
 		final String mcOrderId = "526415205094965";
 		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
-		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
+		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>123123</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK, ContentType.TEXT_XML));
+		when(utilityPaymentClient.payBill(any(), any(), any())).thenReturn(Optional.of(new MulticajaPayBillResponse()));
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.eftNotifyBasicAuth))
@@ -273,7 +282,7 @@ public class UtilityPaymentEftControllerTests
 		final String mcOrderId = "526415205094966";
 		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
-		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>100/orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
+		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>100</orderStatus><description>PENDING</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)

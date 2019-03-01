@@ -265,6 +265,7 @@ public class UtilityPaymentTransactionController
 	// TODO integrar correo transaccional comprobante
 	// TODO log tracking id
 
+	// TODO update readme
 	// TODO mdc clear
 	// TODO cambiar namespace kubernetes
 	// TODO save totaliser by user email

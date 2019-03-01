@@ -20,17 +20,27 @@ public class CloseableHttpResponseMock implements CloseableHttpResponse
 {
 	private final String stringEntity;
 	private final HttpStatus httpStatus;
+	private final ContentType contentType;
 
 	public CloseableHttpResponseMock()
 	{
 		stringEntity = "{}";
 		httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		contentType = ContentType.APPLICATION_JSON;
 	}
 
 	public CloseableHttpResponseMock(final String stringEntity, final HttpStatus httpStatus)
 	{
 		this.stringEntity = stringEntity;
 		this.httpStatus = httpStatus;
+		contentType = ContentType.APPLICATION_JSON;
+	}
+
+	public CloseableHttpResponseMock(final String stringEntity, final HttpStatus httpStatus, final ContentType contentType)
+	{
+		this.stringEntity = stringEntity;
+		this.httpStatus = httpStatus;
+		this.contentType = contentType;
 	}
 
 	@Override
@@ -60,7 +70,7 @@ public class CloseableHttpResponseMock implements CloseableHttpResponse
 
 	@Override
 	public HttpEntity getEntity() {
-		return new StringEntity(stringEntity, ContentType.APPLICATION_JSON);
+		return new StringEntity(stringEntity, contentType);
 	}
 
 	@Override
