@@ -171,9 +171,9 @@ public class UtilityPaymentWebpayController
 						.orElseThrow(NotFoundException::new);
 
 				if (UtilityPaymentTransaction.SUCCEEDED.equals(utilityPaymentTransaction.getStatus())) {
-					return redirectEntity(properties.webpayRedirectFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
+					return redirectEntity(properties.webpayFrontFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 				} else {
-					return redirectEntity(properties.webpayRedirectErrorOrder.replaceAll("\\{order\\}", utilityPaymentTransaction.getBuyOrder().toString()));
+					return redirectEntity(properties.webpayFrontErrorOrder.replaceAll("\\{order\\}", utilityPaymentTransaction.getBuyOrder().toString()));
 				}
 			}
 
@@ -184,12 +184,12 @@ public class UtilityPaymentWebpayController
 
 			// process tbk_orden_compra (timeout)
 			if ((tbkOrdenCompra != null) && tbkOrdenCompra.matches("[0-9]{19}")) {
-				return redirectEntity(properties.webpayRedirectErrorOrder.replaceAll("\\{order\\}", tbkOrdenCompra));
+				return redirectEntity(properties.webpayFrontErrorOrder.replaceAll("\\{order\\}", tbkOrdenCompra));
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return redirectEntity(properties.webpayRedirectError);
+		return redirectEntity(properties.webpayFrontError);
 	}
 
 	private Optional<String> getToken(final String token)
@@ -211,9 +211,9 @@ public class UtilityPaymentWebpayController
 	private String getRedirectErrorUrl(final Long buyOrder)
 	{
 		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.webpayRedirectErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
+			return properties.webpayFrontErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
 		}
-		return properties.webpayRedirectError;
+		return properties.webpayFrontError;
 	}
 
 	private ResponseEntity<?> redirectEntity(final String url)

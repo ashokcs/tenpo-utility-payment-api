@@ -17,9 +17,9 @@ public class Properties
 	@Value("${webpay.commerce.user}") public String webpayCommerceUser;
 	@Value("${webpay.commerce.pass}") public String webpayCommercePass;
 	@Value("${webpay.commerce.env}") public String webpayCommerceEnv;
-	@Value("${webpay.redirect.error}") public String webpayRedirectError;
-	@Value("${webpay.redirect.error-order}") public String webpayRedirectErrorOrder;
-	@Value("${webpay.redirect.final}") public String webpayRedirectFinal;
+	@Value("${webpay.front.error}") public String webpayFrontError;
+	@Value("${webpay.front.error-order}") public String webpayFrontErrorOrder;
+	@Value("${webpay.front.final}") public String webpayFrontFinal;
 
 	/* eft */
 	@Value("${eft.basic-auth}") public String eftBasicAuth;
@@ -32,9 +32,9 @@ public class Properties
 	@Value("${eft.create-order.request-duration}") public int eftCreateOrderRequestDuration;
 	@Value("${eft.create-order.go-back-url}") public String eftCreateOrderGoBackUrl;
 	@Value("${eft.create-order.notify-url}") public String eftCreateOrderNotifyUrl;
-	@Value("${eft.redirect.error}") public String eftRedirectError;
-	@Value("${eft.redirect.error-order}") public String eftRedirectErrorOrder;
-	@Value("${eft.redirect.final}") public String eftRedirectFinal;
+	@Value("${eft.front.error}") public String eftFrontError;
+	@Value("${eft.front.error-order}") public String eftFrontErrorOrder;
+	@Value("${eft.front.final}") public String eftFrontFinal;
 
 	/* multicaja utilities */
 	@Value("${multicaja.utilities.apikey}") public String multicajaUtilitiesApiKey;

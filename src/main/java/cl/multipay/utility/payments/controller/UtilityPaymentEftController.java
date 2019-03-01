@@ -171,7 +171,7 @@ public class UtilityPaymentEftController
 
 			// pending, paid, notified_mc, notified_ecom, notified_con
 			case 100: case 101: case 106: case 107: case 109:
-				return redirectEntity(properties.eftRedirectFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
+				return redirectEntity(properties.eftFrontFinal.replaceAll("\\{id\\}", utilityPaymentTransaction.getPublicId()));
 
 			// nullified, canceled_user, expired, canceled_ecom
 			case 103: case 105: case 110: case 111:
@@ -205,9 +205,9 @@ public class UtilityPaymentEftController
 	private String getRedirectErrorUrl(final Long buyOrder)
 	{
 		if ((buyOrder != null) && (buyOrder.compareTo(0L) > 0)) {
-			return properties.eftRedirectErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
+			return properties.eftFrontErrorOrder.replaceAll("\\{order\\}", buyOrder.toString());
 		}
-		return properties.eftRedirectError;
+		return properties.eftFrontError;
 	}
 
 	private String notifyResponse()

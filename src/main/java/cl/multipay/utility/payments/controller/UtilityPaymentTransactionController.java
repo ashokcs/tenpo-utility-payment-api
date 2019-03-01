@@ -264,6 +264,8 @@ public class UtilityPaymentTransactionController
 	// TODO comprobante transferencia
 	// TODO integrar correo transaccional comprobante
 	// TODO log tracking id
+	// TODO add sengrid prod key
+	// TODO rename properties redirect to front
 
 	// TODO update readme
 	// TODO mdc clear
@@ -271,11 +273,9 @@ public class UtilityPaymentTransactionController
 	// TODO save totaliser by user email
 	// TODO delete cache task
 	// TODO email receipt bill auth code
-	// TODO add sengrid prod key
 	// TODO 1 peso mode
 	// TODO subir bo
 	// TODO dejar host db parameter en properties
-	// TODO rename properties redirect to front
 	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
 	// TODO bo totalizadores task correccion

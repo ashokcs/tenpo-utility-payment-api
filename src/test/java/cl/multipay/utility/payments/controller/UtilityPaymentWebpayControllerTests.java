@@ -70,7 +70,7 @@ public class UtilityPaymentWebpayControllerTests
 		mockMvc.perform(post("/v1/payments/webpay/return"))
 			.andDo(print())
 			.andExpect(status().isFound())
-			.andExpect(header().string("Location", properties.webpayRedirectError));
+			.andExpect(header().string("Location", properties.webpayFrontError));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class UtilityPaymentWebpayControllerTests
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", "65as4d5sad65asf46fddff"))
 			.andDo(print())
 			.andExpect(status().isFound())
-			.andExpect(header().string("Location", properties.webpayRedirectError));
+			.andExpect(header().string("Location", properties.webpayFrontError));
 	}
 
 	@Test
