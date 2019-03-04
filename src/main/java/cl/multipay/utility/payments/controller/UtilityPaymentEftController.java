@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -86,6 +85,7 @@ public class UtilityPaymentEftController
 		@PathVariable("notifyId") final String notifyId,
 		@RequestHeader(value = "Authorization") final String auth)
 	{
+		utils.clear();
 		logger.info("-> " + request.getRequestURL());
 		try {
 			// get and check ids
@@ -99,7 +99,7 @@ public class UtilityPaymentEftController
 			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.getPendingOrPaidByPublicIdAndNotifyId(tefId, tefNotifyId).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
-			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
+			utils.mdc(utilityPaymentTransaction.getPublicId());
 
 			// get eft remote status
 			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)
@@ -153,6 +153,7 @@ public class UtilityPaymentEftController
 	@GetMapping("/v1/payments/eft/return/{id:[0-9a-f]{32}}")
 	public ResponseEntity<Object> transferenciaReturn(final HttpServletRequest request, @PathVariable("id") final String id)
 	{
+		utils.clear();
 		logger.info("-> " + request.getRequestURL());
 		String utilityPaymentTransactionPublicId = null;
 		try {
@@ -161,7 +162,7 @@ public class UtilityPaymentEftController
 			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			utilityPaymentTransactionPublicId = utilityPaymentTransaction.getPublicId();
-			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
+			utils.mdc(utilityPaymentTransaction.getPublicId());
 
 			// get eft remote status
 			final TefGetOrderStatusResponse tefGetOrderStatusResponse = eftClient.getOrderStatus(utilityPaymentEft)

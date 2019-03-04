@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -71,6 +70,7 @@ public class UtilityPaymentWebpayController
 		final HttpServletRequest request,
 		@RequestParam(required = false, name = "token_ws") final String tokenWs
 	) {
+		utils.clear();
 		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
 		String utilityPaymentTransactionPublicId = null;
 		try {
@@ -80,7 +80,7 @@ public class UtilityPaymentWebpayController
 			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getWaitingById(utilityPaymentWebpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			final UtilityPaymentBill utilityPaymentBill = utilityPaymentBillService.getPendingByTransactionId(utilityPaymentWebpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			utilityPaymentTransactionPublicId = utilityPaymentTransaction.getPublicId();
-			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
+			utils.mdc(utilityPaymentTransaction.getPublicId());
 
 			// webpay get result
 			final WebpayResultResponse webpayResultResponse = webpayClient.result(utilityPaymentWebpay).orElseThrow(ServerErrorException::new);
@@ -161,6 +161,7 @@ public class UtilityPaymentWebpayController
 		@RequestParam(required = false, name = "TBK_TOKEN") final String tbkToken,
 		@RequestParam(required = false, name = "TBK_ORDEN_COMPRA") final String tbkOrdenCompra
 	) {
+		utils.clear();
 		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
 		try {
 			// process token_ws (approved, denied)

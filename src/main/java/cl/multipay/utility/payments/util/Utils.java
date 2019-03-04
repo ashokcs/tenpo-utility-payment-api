@@ -6,6 +6,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
@@ -18,12 +19,17 @@ public class Utils
 		return UUID.randomUUID().toString().replaceAll("\\-", "");
 	}
 
-	public String mdc(final String transaction)
+	public void mdc(final String transaction)
 	{
+		MDC.clear();
 		if ((transaction != null) && !transaction.isEmpty()) {
-			return "[" + transaction + "] ";
+			MDC.put("transaction", "["+transaction+"] ");
 		}
-		return null;
+	}
+
+	public void clear()
+	{
+		MDC.clear();
 	}
 
 	public String format(final String pattern, final TemporalAccessor date)

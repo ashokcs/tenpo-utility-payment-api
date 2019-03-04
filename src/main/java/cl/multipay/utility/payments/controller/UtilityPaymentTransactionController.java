@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +75,7 @@ public class UtilityPaymentTransactionController
 	@GetMapping("/v1/transactions/{id:[0-9a-f]{32}}")
 	public ResponseEntity<UtilityPaymentTransactionResponse> get(@PathVariable("id") final String publicId)
 	{
-		MDC.put("transaction", utils.mdc(publicId));
+		utils.mdc(publicId);
 
 		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.findByPublicId(publicId).orElseThrow(NotFoundException::new);
 		final UtilityPaymentBill upb = utilityPaymentBillService.findByTransactionId(upt.getId()).orElseThrow(NotFoundException::new);
@@ -112,7 +111,7 @@ public class UtilityPaymentTransactionController
 	{
 		// create transaction uuid
 		final String transactionPublicId = utils.uuid();
-		MDC.put("transaction", utils.mdc(transactionPublicId));
+		utils.mdc(transactionPublicId);
 
 		// TODO validate identifier
 
@@ -176,7 +175,7 @@ public class UtilityPaymentTransactionController
 		@PathVariable("id") final String publicId,
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
-		MDC.put("transaction", utils.mdc(publicId));
+		utils.mdc(publicId);
 
 		// get utility payment transaction by id and status
 		final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.getPendingByPublicId(publicId)
@@ -215,7 +214,7 @@ public class UtilityPaymentTransactionController
 		@PathVariable("id") final String publicId,
 		@RequestBody @Valid final UtilityPaymentTransactionPay utilityPaymentTransactionPay
 	) {
-		MDC.put("transaction", utils.mdc(publicId));
+		utils.mdc(publicId);
 
 		// get utility payment transaction by id and status
 		final String tefPublicId = utils.uuid();

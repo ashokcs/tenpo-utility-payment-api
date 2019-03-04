@@ -6,7 +6,6 @@ import java.time.ZoneOffset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import com.sendgrid.Email;
@@ -46,7 +45,7 @@ public class SendgridClient
 			final UtilityPaymentTransaction utilityPaymentTransaction = event.getUtilityPaymentTransaction();
 			final UtilityPaymentBill utilityPaymentBill = event.getUtilityPaymentBill();
 			final UtilityPaymentWebpay utilityPaymentWebpay = event.getUtilityPaymentWebpay();
-			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
+			utils.mdc(utilityPaymentTransaction.getPublicId());
 
 			final Mail mail = getReceiptMail(utilityPaymentTransaction, properties.mailUtilityPaymentsReceiptWebpayTemplate);
 			final Personalization personalization = mail.getPersonalization().get(0);
@@ -85,7 +84,7 @@ public class SendgridClient
 			final UtilityPaymentTransaction utilityPaymentTransaction = event.getUtilityPaymentTransaction();
 			final UtilityPaymentBill utilityPaymentBill = event.getUtilityPaymentBill();
 			final UtilityPaymentEft utilityPaymentEft = event.getUtilityPaymentEft();
-			MDC.put("transaction", utils.mdc(utilityPaymentTransaction.getPublicId()));
+			utils.mdc(utilityPaymentTransaction.getPublicId());
 
 			final Mail mail = getReceiptMail(utilityPaymentTransaction, properties.mailUtilityPaymentsReceiptEftTemplate);
 			final Personalization personalization = mail.getPersonalization().get(0);
