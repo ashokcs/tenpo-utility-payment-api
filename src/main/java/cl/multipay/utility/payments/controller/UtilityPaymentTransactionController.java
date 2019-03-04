@@ -246,39 +246,19 @@ public class UtilityPaymentTransactionController
 		// return redirect url
 		return ResponseEntity.ok(new UtilityPaymentEftResponse(utilityPaymentEft));
 	}
-	// TODO Subir azure
-	// TODO migrations
-	// TODO create tabla padre
-	// TODO service entry sendgrid
-	// TODO check time on azure db, gmt?
-	// TODO bo totalizadores
-	// TODO docker file staging production env
-	// TODO modificar body response
-	// TODO probar eft dev mc
-	// TODO json return null
-	// TODO update doc new field
-	// TODO save utility category
-	// TODO modificar api readme new version
-	// TODO return payment info object
-	// TODO comprobante webpay finish, format amounts
-	// TODO comprobante transferencia
-	// TODO integrar correo transaccional comprobante
-	// TODO log tracking id
-	// TODO add sengrid prod key
-	// TODO rename properties redirect to front
 
-	// TODO api transbank dejar privada
+	// TODO monitor api health
 	// TODO change deployment names
+	// TODO cambiar namespace kubernetes
 	// TODO update readme
 	// TODO mdc clear
-	// TODO cambiar namespace kubernetes
 	// TODO save totaliser by user email
 	// TODO delete cache task
 	// TODO email receipt bill auth code
 	// TODO 1 peso mode
-	// TODO subir bo
 	// TODO dejar host db parameter en properties
 	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
 	// TODO bo totalizadores task correccion
+	// TODO subir bo
 }
