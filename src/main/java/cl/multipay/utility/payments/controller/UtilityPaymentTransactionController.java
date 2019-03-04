@@ -247,9 +247,6 @@ public class UtilityPaymentTransactionController
 		return ResponseEntity.ok(new UtilityPaymentEftResponse(utilityPaymentEft));
 	}
 
-	// TODO monitor api health
-	// TODO change deployment names
-	// TODO cambiar namespace kubernetes
 	// TODO update readme
 	// TODO mdc clear
 	// TODO save totaliser by user email

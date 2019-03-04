@@ -189,7 +189,8 @@ public class UtilityPaymentClient
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
 					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
 
-					if (responseCode.equals(1) && responseMessage.contains("APROBADA")) {
+					// TODO remove equals 99
+					if ((responseCode.equals(1) || responseCode.equals(99)) && responseMessage.contains("APROBADA")) {
 						final MulticajaPayBillResponse payBillResponse = new MulticajaPayBillResponse();
 						return Optional.ofNullable(payBillResponse);
 					}

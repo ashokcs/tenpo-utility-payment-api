@@ -39,6 +39,7 @@ public class UtilityPaymentBill
 	private String collector;
 
 	@Column(updatable = false)
+	@JsonIgnore
 	private String category;
 
 	@Column(updatable = false)

@@ -227,7 +227,6 @@ Response
     "status": "PENDING",
     "utility": "ENTEL PCS",
     "collector": "2",
-    "category": "300",
     "identifier": "173379595",
     "mc_code": "799378736",
     "amount": 94290,
