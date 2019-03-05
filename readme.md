@@ -274,6 +274,21 @@ Response
 }
 ```
 
+## `POST /utility-payments/v1/transactions/{id}/receipt`
+**Reenvía el comprobante de un pago de cuenta**
+
+Request
+```bash
+curl --request POST \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1/receipt \
+--header 'Content-Type: application/json' \
+--data '{"email": "carlos.izquierdo@multicaja.cl","recaptcha": "03AOLTBLTVBtniCIGwS_N4XFQAQ3d5vXsQJp8kYLRsDcqhBUEf2mh8onvgXDOJ_e5mgk7qgNOXOlihtvc4GzV75D6vIsbEfrVb1ha-jmnW-1RzopTSKvNi-0PqttZPrYDqF8ApYfrSKLOPX8WY0uMX4HsfiwVGjZ0MNN8pcLloREsXEsQ-_lZvgOBD8g0eEB-P2jtdFntdnSQR-lvJN2krFqu0X679KkMHq5C1WNAlP_mZW4huwSenvNFUcNZku3-zXgOMzXhpppAhy4ovEqP8GtIUOlcR9vMKn7TkQUOgEwJf7-vvwEo-dlygU2cT9XhaVQpGfddOYm1iNTPsIaFksypT169DAFsn6bW-WMDSUfj6UvlTRnGkwxU"}'
+```
+Response
+```json
+200 - OK
+```
+
 # TODOS
 - hacer pipeline, Implementar migrations, secrets and consul
 - hacer pago tef

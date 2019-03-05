@@ -74,4 +74,9 @@ public class UtilityPaymentTransactionService
 	{
 		return utilityPaymentTransactionRepository.findByIdAndStatus(id, UtilityPaymentTransaction.SUCCEEDED);
 	}
+
+	public Optional<UtilityPaymentTransaction> getSucceedByPublicId(final String publicId)
+	{
+		return utilityPaymentTransactionRepository.findByPublicIdAndStatus(publicId, UtilityPaymentTransaction.SUCCEEDED);
+	}
 }

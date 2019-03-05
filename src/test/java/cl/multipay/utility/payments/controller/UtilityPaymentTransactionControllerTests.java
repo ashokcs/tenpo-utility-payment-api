@@ -275,6 +275,60 @@ public class UtilityPaymentTransactionControllerTests
 			.andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	public void receipt_shouldReturnBadRequest_withNoData() throws Exception
+	{
+		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
+		final String json = "{}";
+		mockMvc.perform(post("/v1/transactions/{id}/receipt", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void receipt_shouldReturnBadRequest_withInvalidEmail() throws Exception
+	{
+		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
+		final String json = "{\"email\":\"asd\"}";
+		mockMvc.perform(post("/v1/transactions/{id}/receipt", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void receipt_shouldReturnBadRequest_withRecaptchaError() throws Exception
+	{
+
+		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionMock();
+		final String json = "{\"email\":\"test@multicaja.cl\", \"recaptcha\":\"asdasd\"}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{}", HttpStatus.INTERNAL_SERVER_ERROR));
+		mockMvc.perform(post("/v1/transactions/{id}/receipt", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void receiptEft_shouldReturnOk_withValidParams() throws Exception
+	{
+		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionSucceededMock();
+		final String json = "{\"email\":\"test@multicaja.cl\", \"recaptcha\":\"asdasd\"}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{\"success\":true}", HttpStatus.OK));
+		mockMvc.perform(post("/v1/transactions/{id}/receipt", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+
+	@Test
+	public void receiptWebpay_shouldReturnOk_withValidParams() throws Exception
+	{
+		final UtilityPaymentTransaction upt = createUtilityPaymentTransactionSucceededWebpayMock();
+		final String json = "{\"email\":\"test@multicaja.cl\", \"recaptcha\":\"asdasd\"}";
+		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock("{\"success\":true}", HttpStatus.OK));
+		mockMvc.perform(post("/v1/transactions/{id}/receipt", upt.getPublicId()).content(json).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+
 	private UtilityPaymentTransaction createUtilityPaymentTransactionMock()
 	{
 		final String uuid = utils.uuid();
@@ -335,5 +389,75 @@ public class UtilityPaymentTransactionControllerTests
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
 		return utilityPaymentEft;
+	}
+
+	private UtilityPaymentTransaction createUtilityPaymentTransactionSucceededMock()
+	{
+		final String uuid = utils.uuid();
+		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
+		utilityPaymentTransaction.setPublicId(uuid);
+		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
+		utilityPaymentTransaction.setAmount(1000L);
+		utilityPaymentTransaction.setPaymentMethod(UtilityPaymentTransaction.EFT);
+		utilityPaymentTransaction.setEmail("test@multicaja.cl");
+		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction);
+
+		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
+		utilityPaymentBill.setStatus(UtilityPaymentBill.CONFIRMED);
+		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentBill.setUtility("TEST");
+		utilityPaymentBill.setCollector("2");
+		utilityPaymentBill.setCategory("100");
+		utilityPaymentBill.setIdentifier("123123");
+		utilityPaymentBill.setMcCode1("12312312321");
+		utilityPaymentBill.setAmount(123123L);
+		utilityPaymentBill.setDueDate("2019-06-06");
+		utilityPaymentBill.setMcCode1("123123123");
+		utilityPaymentBillService.save(utilityPaymentBill);
+
+		final UtilityPaymentEft utilityPaymentEft = new UtilityPaymentEft();
+		utilityPaymentEft.setStatus(UtilityPaymentEft.PAID);
+		utilityPaymentEft.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentEft.setPublicId("9ae45649f3ce4b868bc8169dfc92d123");
+		utilityPaymentEft.setNotifyId("9ae45649f3ce4b868bc8169dfc92d543");
+		utilityPaymentEft.setOrder("853121364954859");
+		utilityPaymentEft.setUrl("https://www.multicaja.cl/bdp/order.xhtml?id=853121364954859");
+		utilityPaymentEftService.save(utilityPaymentEft);
+
+		return utilityPaymentTransaction;
+	}
+
+	private UtilityPaymentTransaction createUtilityPaymentTransactionSucceededWebpayMock()
+	{
+		final String uuid = utils.uuid();
+		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
+		utilityPaymentTransaction.setPublicId(uuid);
+		utilityPaymentTransaction.setStatus(UtilityPaymentTransaction.SUCCEEDED);
+		utilityPaymentTransaction.setAmount(1000L);
+		utilityPaymentTransaction.setPaymentMethod(UtilityPaymentTransaction.WEBPAY);
+		utilityPaymentTransaction.setEmail("test@multicaja.cl");
+		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction);
+
+		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
+		utilityPaymentBill.setStatus(UtilityPaymentBill.CONFIRMED);
+		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentBill.setUtility("TEST");
+		utilityPaymentBill.setCollector("2");
+		utilityPaymentBill.setCategory("100");
+		utilityPaymentBill.setIdentifier("123123");
+		utilityPaymentBill.setMcCode1("12312312321");
+		utilityPaymentBill.setAmount(123123L);
+		utilityPaymentBill.setDueDate("2019-06-06");
+		utilityPaymentBill.setMcCode1("123123123");
+		utilityPaymentBillService.save(utilityPaymentBill);
+
+		final UtilityPaymentWebpay utilityPaymentWebpay = new UtilityPaymentWebpay();
+		utilityPaymentWebpay.setStatus(UtilityPaymentWebpay.ACKNOWLEDGED);
+		utilityPaymentWebpay.setTransactionId(utilityPaymentTransaction.getId());
+		utilityPaymentWebpay.setToken("edec64843a14a828092719e4a9b2a243e3ed57577d42837b01fc7783e989e2e3");
+		utilityPaymentWebpay.setUrl("https://webpay3gint.transbank.cl/webpayserver/initTransaction");
+		utilityPaymentWebpayService.save(utilityPaymentWebpay);
+
+		return utilityPaymentTransaction;
 	}
 }

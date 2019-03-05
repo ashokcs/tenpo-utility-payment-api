@@ -56,4 +56,8 @@ public class Properties
 	@Value("${mail.utility-payments.receipt.subject}") public String mailUtilityPaymentsReceiptSubject;
 	@Value("${mail.utility-payments.receipt.webpay.template}") public String mailUtilityPaymentsReceiptWebpayTemplate;
 	@Value("${mail.utility-payments.receipt.eft.template}") public String mailUtilityPaymentsReceiptEftTemplate;
+
+	/* recaptcha */
+	@Value("${recaptcha.verify.url}") public String recaptchaVerifyUrl;
+	@Value("${recaptcha.secret}") public String recaptchaSecret;
 }

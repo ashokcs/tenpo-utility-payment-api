@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.EftCreateOrderResponse;
 import cl.multipay.utility.payments.dto.MulticajaBillResponse;
+import cl.multipay.utility.payments.dto.ReceiptRequest;
 import cl.multipay.utility.payments.dto.UtilityPaymentEftResponse;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionPay;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionRequest;
@@ -26,9 +28,13 @@ import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
 import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
+import cl.multipay.utility.payments.event.SendReceiptEftEvent;
+import cl.multipay.utility.payments.event.SendReceiptWebpayEvent;
+import cl.multipay.utility.payments.exception.BadRequestException;
 import cl.multipay.utility.payments.exception.NotFoundException;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.http.EftClient;
+import cl.multipay.utility.payments.http.RecaptchaClient;
 import cl.multipay.utility.payments.http.UtilityPaymentClient;
 import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.service.UtilityPaymentBillService;
@@ -48,13 +54,17 @@ public class UtilityPaymentTransactionController
 
 	private final WebpayClient webpayClient;
 	private final EftClient eftClient;
+	private final RecaptchaClient recaptchaClient;
 	private final UtilityPaymentClient utilityPaymentClient;
 	private final Utils utils;
+
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public UtilityPaymentTransactionController(final UtilityPaymentTransactionService utilityPaymentTransactionService,
 		final UtilityPaymentWebpayService utilityPaymentWebpayService, final Utils utils,
 		final UtilityPaymentEftService utilityPaymentEftService, final UtilityPaymentBillService utilityPaymentBillService,
-		final UtilityPaymentClient utilityPaymentClient, final WebpayClient webpayClient, final EftClient eftClient)
+		final UtilityPaymentClient utilityPaymentClient, final WebpayClient webpayClient, final EftClient eftClient,
+		final ApplicationEventPublisher applicationEventPublisher, final RecaptchaClient recaptchaClient)
 	{
 		this.utilityPaymentTransactionService = utilityPaymentTransactionService;
 		this.utilityPaymentWebpayService = utilityPaymentWebpayService;
@@ -64,6 +74,8 @@ public class UtilityPaymentTransactionController
 		this.eftClient = eftClient;
 		this.utilityPaymentEftService = utilityPaymentEftService;
 		this.utils = utils;
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.recaptchaClient = recaptchaClient;
 	}
 
 	/**
@@ -244,6 +256,41 @@ public class UtilityPaymentTransactionController
 
 		// return redirect url
 		return ResponseEntity.ok(new UtilityPaymentEftResponse(utilityPaymentEft));
+	}
+
+	/**
+	 * Reenvia el comprobante de pago.
+	 *
+	 * @param publicId Identificador público de la cuenta
+	 */
+	@PostMapping("/v1/transactions/{id:[0-9a-f]{32}}/receipt")
+	public void receipt(
+		@PathVariable("id") final String publicId,
+		@RequestBody @Valid final ReceiptRequest receiptRequest
+	) {
+		utils.mdc(publicId);
+
+		// check captcha
+		recaptchaClient.check(receiptRequest.getRecaptcha()).orElseThrow(BadRequestException::new);
+
+		// get utility payment transaction by id and status
+		final UtilityPaymentTransaction upt = utilityPaymentTransactionService.getSucceedByPublicId(publicId).orElseThrow(NotFoundException::new);
+		final UtilityPaymentBill upb = utilityPaymentBillService.findByTransactionId(upt.getId()).orElseThrow(NotFoundException::new);
+		upt.setEmail(receiptRequest.getEmail());
+
+		// check payment method
+		if (upt.getPaymentMethod() != null) {
+			switch (upt.getPaymentMethod()) {
+			case UtilityPaymentTransaction.WEBPAY:
+				final UtilityPaymentWebpay upw = utilityPaymentWebpayService.findByTransactionId(upt.getId()).orElseThrow(NotFoundException::new);
+				applicationEventPublisher.publishEvent(new SendReceiptWebpayEvent(upt, upb, upw));
+				return;
+			case UtilityPaymentTransaction.EFT:
+				final UtilityPaymentEft upe = utilityPaymentEftService.findByTransactionId(upt.getId()).orElseThrow(NotFoundException::new);
+				applicationEventPublisher.publishEvent(new SendReceiptEftEvent(upt, upb, upe));
+				return;
+			}
+		}
 	}
 
 	// TODO update readme
