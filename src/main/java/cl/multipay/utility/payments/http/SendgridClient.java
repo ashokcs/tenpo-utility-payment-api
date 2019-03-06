@@ -130,7 +130,7 @@ public class SendgridClient
 		if ((properties.mailUtilityPaymentsReceiptBcc != null) && !properties.mailUtilityPaymentsReceiptBcc.isEmpty()) {
 			final String[] bccs = properties.mailUtilityPaymentsReceiptBcc.split("\\,");
 			for (final String bcc : bccs) {
-				//if (utilityPaymentTransaction.getEmail().equals(bcc)) continue;
+				if (utilityPaymentTransaction.getEmail().equals(bcc)) continue;
 				personalization.addBcc(new Email(bcc.trim()));
 			}
 		}
