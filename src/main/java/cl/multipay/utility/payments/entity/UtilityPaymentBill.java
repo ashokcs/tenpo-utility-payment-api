@@ -60,7 +60,7 @@ public class UtilityPaymentBill
 	@Column(updatable = false)
 	private String dueDate;
 
-	@Column(name="mc_code_1", updatable = false)
+	@Column(name="mc_code_1")
 	@JsonIgnore
 	private String mcCode1;
 

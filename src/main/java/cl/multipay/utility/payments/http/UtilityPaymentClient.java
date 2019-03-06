@@ -170,7 +170,6 @@ public class UtilityPaymentClient
 			jsonObject.put("debt_data_id", debtDataId);
 			jsonObject.put("debt_number", debtNumber);
 			jsonObject.put("payment_amount", amount);
-			jsonObject.put("password", properties.multicajaUtilitiesPassword);
 			final String json = mapper.writeValueAsString(jsonObject);
 
 			final HttpPost request = new HttpPost(url);

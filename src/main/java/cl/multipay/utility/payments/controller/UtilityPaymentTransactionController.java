@@ -296,10 +296,8 @@ public class UtilityPaymentTransactionController
 	// TODO update readme
 	// TODO save totaliser by user email
 	// TODO delete cache task
-	// TODO 1 peso mode
-	// TODO dejar host db parameter en properties
-	// TODO backup database
 	// TODO mover archivos de ambientes a carpetas, env
 	// TODO bo totalizadores task correccion
+	// TODO dejar host db parameter en properties
 	// TODO subir bo
 }
