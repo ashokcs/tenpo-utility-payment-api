@@ -60,7 +60,7 @@ public class SendgridClient
 		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
 		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder());
-		    personalization.addDynamicTemplateData("transaction_auth", "123123123"); // TODO
+		    personalization.addDynamicTemplateData("transaction_auth", utilityPaymentBill.getAuthCode());
 		    personalization.addDynamicTemplateData("transaction_total", utils.currency(utilityPaymentTransaction.getAmount()));
 
 		    personalization.addDynamicTemplateData("payment_method", utils.paymentMethod(utilityPaymentTransaction.getPaymentMethod()));
@@ -99,7 +99,7 @@ public class SendgridClient
 		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
 		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder());
-		    personalization.addDynamicTemplateData("transaction_auth", "123123123"); // TODO
+		    personalization.addDynamicTemplateData("transaction_auth", utilityPaymentBill.getAuthCode());
 		    personalization.addDynamicTemplateData("transaction_total", utils.currency(utilityPaymentTransaction.getAmount()));
 
 		    personalization.addDynamicTemplateData("payment_method", utils.paymentMethod(utilityPaymentTransaction.getPaymentMethod()));
@@ -130,8 +130,8 @@ public class SendgridClient
 		if ((properties.mailUtilityPaymentsReceiptBcc != null) && !properties.mailUtilityPaymentsReceiptBcc.isEmpty()) {
 			final String[] bccs = properties.mailUtilityPaymentsReceiptBcc.split("\\,");
 			for (final String bcc : bccs) {
-				if (utilityPaymentTransaction.getEmail().equals(bcc)) continue;
-				personalization.addTo(new Email(bcc.trim()));
+				//if (utilityPaymentTransaction.getEmail().equals(bcc)) continue;
+				personalization.addBcc(new Email(bcc.trim()));
 			}
 		}
 

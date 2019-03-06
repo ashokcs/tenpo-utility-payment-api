@@ -116,11 +116,15 @@ public class UtilityPaymentEftController
 				final Long debtDataId = utilityPaymentBill.getDataId();
 				final Integer debtNumber = utilityPaymentBill.getNumber();
 				final Long amount = utilityPaymentBill.getAmount();
-				final Optional<MulticajaPayBillResponse> billPayment = utilityPaymentClient.payBill(debtDataId, debtNumber, amount);
+				final Optional<MulticajaPayBillResponse> payBillResponseOpt = utilityPaymentClient.payBill(debtDataId, debtNumber, amount);
 
-				if (billPayment.isPresent()) {
-
-					// update bill // TODO auth code, mc_code
+				if (payBillResponseOpt.isPresent()) {
+					// update bill
+					final MulticajaPayBillResponse payBillResponse = payBillResponseOpt.get();
+					utilityPaymentBill.setMcCode2(payBillResponse.getMcCode());
+					utilityPaymentBill.setAuthCode(payBillResponse.getAuthCode());
+					utilityPaymentBill.setDate(payBillResponse.getDate());
+					utilityPaymentBill.setHour(payBillResponse.getHour());
 					utilityPaymentBill.setStatus(UtilityPaymentBill.CONFIRMED);
 					utilityPaymentBillService.save(utilityPaymentBill);
 

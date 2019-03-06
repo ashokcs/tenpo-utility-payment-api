@@ -294,10 +294,8 @@ public class UtilityPaymentTransactionController
 	}
 
 	// TODO update readme
-	// TODO mdc clear
 	// TODO save totaliser by user email
 	// TODO delete cache task
-	// TODO email receipt bill auth code
 	// TODO 1 peso mode
 	// TODO dejar host db parameter en properties
 	// TODO backup database

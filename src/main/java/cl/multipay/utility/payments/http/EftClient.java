@@ -139,8 +139,7 @@ public class EftClient
 			            "<cre:ecOrderId>"+utilityPaymentTransaction.getBuyOrder()+"</cre:ecOrderId>" +
 			            "<cre:commerceId>"+commerceId+"</cre:commerceId>" +
 			            "<cre:branchId>"+branchId+"</cre:branchId>" +
-			            //"<cre:totalAmount>"+utilityPaymentTransaction.getAmount()+"</cre:totalAmount>" + // TODO
-			            "<cre:totalAmount>"+1+"</cre:totalAmount>" +
+			            "<cre:totalAmount>"+utilityPaymentTransaction.getAmount()+"</cre:totalAmount>" +
 			            "<cre:generalDescription>"+description+"</cre:generalDescription>" +
 			            "<cre:requestDuration>"+requestDuration+"</cre:requestDuration>" +
 			            "<cre:goBackUrl>"+goBackUrl+"</cre:goBackUrl>" +

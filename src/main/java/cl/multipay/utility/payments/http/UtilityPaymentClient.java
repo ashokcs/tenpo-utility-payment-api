@@ -144,7 +144,9 @@ public class UtilityPaymentClient
 							mcBill.setMcCode(dataJsonNode.get("mc_code").asText());
 							mcBill.setDebtDataId(dataJsonNode.get("debt_data_id").asLong());
 							mcBill.setDebtNumber(number);
-							mcBill.setAmount(bill.get("total_amount").asLong());
+							// TODO eye on this
+							//mcBill.setAmount(bill.get("total_amount").asLong());
+							mcBill.setAmount(bill.get("payment_amount").asLong());
 							mcBill.setDueDate(bill.get("due_date").asText());
 							// number++;
 							return Optional.of(mcBill);
@@ -187,12 +189,18 @@ public class UtilityPaymentClient
 				if (response.getStatusLine().getStatusCode() == 200) {
 					final JsonNode billJsonNode = mapper.readTree(body);
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
-					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
-
-					// TODO remove equals 99
+					//final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
+					// TODO fix
 					//if ((responseCode.equals(1) || responseCode.equals(99)) && responseMessage.contains("APROBADA")) {
-					if (responseCode.equals(1) || responseCode.equals(99)) {
+					//if (responseCode.equals(1) || responseCode.equals(99)) {
+					if (responseCode.equals(1)) {
+						final JsonNode dataJsonNode = billJsonNode.get("data");
+
 						final MulticajaPayBillResponse payBillResponse = new MulticajaPayBillResponse();
+						payBillResponse.setAuthCode(dataJsonNode.get("authorization_code").asText(""));
+						payBillResponse.setMcCode(dataJsonNode.get("mc_code").asText(""));
+						payBillResponse.setDate(dataJsonNode.get("date").asText(""));
+						payBillResponse.setHour(dataJsonNode.get("hour").asText(""));
 						return Optional.ofNullable(payBillResponse);
 					}
 				}

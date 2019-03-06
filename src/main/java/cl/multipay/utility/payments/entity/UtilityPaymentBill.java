@@ -28,14 +28,15 @@ public class UtilityPaymentBill
 
 	private String status;
 
-	@JsonIgnore
 	@Column(updatable = false)
+	@JsonIgnore
 	private Long transactionId;
 
 	@Column(updatable = false)
 	private String utility;
 
 	@Column(updatable = false)
+	@JsonIgnore
 	private String collector;
 
 	@Column(updatable = false)
@@ -45,17 +46,13 @@ public class UtilityPaymentBill
 	@Column(updatable = false)
 	private String identifier;
 
-	@JsonIgnore
 	@Column(updatable = false)
+	@JsonIgnore
 	private Long dataId;
 
-	@JsonIgnore
 	@Column(updatable = false)
-	private Integer number;
-
 	@JsonIgnore
-	@Column(name="mc_code_1", updatable = false)
-	private String mcCode1;
+	private Integer number;
 
 	@Column(updatable = false)
 	private Long amount;
@@ -63,12 +60,28 @@ public class UtilityPaymentBill
 	@Column(updatable = false)
 	private String dueDate;
 
+	@Column(name="mc_code_1", updatable = false)
 	@JsonIgnore
-	@Column(insertable = false, updatable = false)
-	private OffsetDateTime created;
+	private String mcCode1;
+
+	@Column(name="mc_code_2")
+	@JsonIgnore
+	private String mcCode2;
+
+	private String authCode;
 
 	@JsonIgnore
+	private String date;
+
+	@JsonIgnore
+	private String hour;
+
+	@Column(insertable = false, updatable = false)
+	@JsonIgnore
+	private OffsetDateTime created;
+
 	@Column(insertable = false)
+	@JsonIgnore
 	private OffsetDateTime updated;
 
 	@PreUpdate
@@ -215,5 +228,45 @@ public class UtilityPaymentBill
 	public void setNumber(final Integer number)
 	{
 		this.number = number;
+	}
+
+	public String getMcCode2()
+	{
+		return mcCode2;
+	}
+
+	public void setMcCode2(final String mcCode2)
+	{
+		this.mcCode2 = mcCode2;
+	}
+
+	public String getAuthCode()
+	{
+		return authCode;
+	}
+
+	public void setAuthCode(final String authCode)
+	{
+		this.authCode = authCode;
+	}
+
+	public String getDate()
+	{
+		return date;
+	}
+
+	public void setDate(final String date)
+	{
+		this.date = date;
+	}
+
+	public String getHour()
+	{
+		return hour;
+	}
+
+	public void setHour(final String hour)
+	{
+		this.hour = hour;
 	}
 }
