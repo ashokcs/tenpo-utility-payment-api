@@ -135,7 +135,7 @@ public class UtilityPaymentClient
 					final JsonNode billJsonNode = mapper.readTree(body);
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
 					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
-					if (responseCode.equals(88) && responseMessage.equals("APROBADA")) {
+					if (responseCode.equals(88) /* && responseMessage.equals("APROBADA") TODO */) {
 						final JsonNode dataJsonNode = billJsonNode.get("data");
 						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
 						final int number = 1;
