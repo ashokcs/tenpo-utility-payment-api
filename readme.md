@@ -40,6 +40,10 @@ create database multipay owner multipay;
 revoke multipay from prepago;
 ```
 
+### Enviroments
+**Staging**: 104.210.0.151  
+**Sandbox**: 40.70.213.215
+
 ### **Container Registry**
 ```
 Username: McContainerRegistry (docker_username)
