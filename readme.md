@@ -43,6 +43,8 @@ revoke multipay from prepago;
 ### Enviroments
 **Staging**: 104.210.0.151  
 **Sandbox**: 40.70.213.215
+**Atlas**  : 168.61.187.123
+**Apollo** : 40.70.213.171
 
 ### **Container Registry**
 ```
