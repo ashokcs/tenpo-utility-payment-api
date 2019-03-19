@@ -6,6 +6,8 @@ public class MulticajaPayBillResponse
 	private String authCode;
 	private String date;
 	private String hour;
+	private Long paymentId;
+	private String state;
 
 	public String getAuthCode()
 	{
@@ -45,5 +47,25 @@ public class MulticajaPayBillResponse
 	public void setMcCode(final String mcCode)
 	{
 		this.mcCode = mcCode;
+	}
+
+	public Long getPaymentId()
+	{
+		return paymentId;
+	}
+
+	public void setPaymentId(final Long paymentId)
+	{
+		this.paymentId = paymentId;
+	}
+
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(final String state)
+	{
+		this.state = state;
 	}
 }

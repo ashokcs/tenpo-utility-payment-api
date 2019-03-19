@@ -199,10 +199,12 @@ public class UtilityPaymentClient
 						final JsonNode dataJsonNode = billJsonNode.get("data");
 
 						final MulticajaPayBillResponse payBillResponse = new MulticajaPayBillResponse();
-						payBillResponse.setAuthCode(dataJsonNode.get("authorization_code").asText(""));
-						payBillResponse.setMcCode(dataJsonNode.get("mc_code").asText(""));
-						payBillResponse.setDate(dataJsonNode.get("date").asText(""));
-						payBillResponse.setHour(dataJsonNode.get("hour").asText(""));
+						payBillResponse.setAuthCode(dataJsonNode.get("authorization_code").asText());
+						payBillResponse.setMcCode(dataJsonNode.get("mc_code").asText());
+						payBillResponse.setDate(dataJsonNode.get("date").asText());
+						payBillResponse.setHour(dataJsonNode.get("hour").asText());
+						payBillResponse.setPaymentId(dataJsonNode.get("confirm_payment_id").asLong());
+						payBillResponse.setState(dataJsonNode.get("tx_state_iso").asText());
 						return Optional.ofNullable(payBillResponse);
 					}
 				}

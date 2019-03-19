@@ -125,6 +125,8 @@ public class UtilityPaymentEftController
 					utilityPaymentBill.setAuthCode(payBillResponse.getAuthCode());
 					utilityPaymentBill.setDate(payBillResponse.getDate());
 					utilityPaymentBill.setHour(payBillResponse.getHour());
+					utilityPaymentBill.setPaymentId(payBillResponse.getPaymentId());
+					utilityPaymentBill.setPaymentState(payBillResponse.getState());
 					utilityPaymentBill.setStatus(UtilityPaymentBill.CONFIRMED);
 					utilityPaymentBillService.save(utilityPaymentBill);
 

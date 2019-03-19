@@ -68,6 +68,12 @@ public class UtilityPaymentBill
 	@JsonIgnore
 	private String mcCode2;
 
+	@JsonIgnore
+	private Long paymentId;
+
+	@JsonIgnore
+	private String paymentState;
+
 	private String authCode;
 
 	@JsonIgnore
@@ -268,5 +274,25 @@ public class UtilityPaymentBill
 	public void setHour(final String hour)
 	{
 		this.hour = hour;
+	}
+
+	public Long getPaymentId()
+	{
+		return paymentId;
+	}
+
+	public void setPaymentId(final Long paymentId)
+	{
+		this.paymentId = paymentId;
+	}
+
+	public String getPaymentState()
+	{
+		return paymentState;
+	}
+
+	public void setPaymentState(final String paymentState)
+	{
+		this.paymentState = paymentState;
 	}
 }
