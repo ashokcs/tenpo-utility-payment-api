@@ -69,6 +69,7 @@ public class UtilityPaymentClient
 							final String utilityName = utility.get("firm").asText();
 							final Utility tmp = new Utility();
 							tmp.setUtility(utilityName);
+							tmp.setFriendlyName(normalizeUtilityName(utilityName));
 
 							// utility identifiers
 							final JsonNode utilityIdentifiers = utility.get("gloss");
@@ -210,5 +211,10 @@ public class UtilityPaymentClient
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
+	}
+
+	private String normalizeUtilityName(final String utility)
+	{
+		return utility.replaceAll("\\_", " ");
 	}
 }

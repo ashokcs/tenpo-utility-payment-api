@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Utility
 {
+	private String friendlyName;
 	private String utility;
 	private String collector;
 	private String category;
@@ -47,5 +48,15 @@ public class Utility
 	public void setIdentifiers(final List<String> identifiers)
 	{
 		this.identifiers = identifiers;
+	}
+
+	public String getFriendlyName()
+	{
+		return friendlyName;
+	}
+
+	public void setFriendlyName(final String friendlyName)
+	{
+		this.friendlyName = friendlyName;
 	}
 }
