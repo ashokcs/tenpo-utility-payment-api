@@ -1,0 +1,14 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: multipay-utility-payments-api-db
+  namespace: multipay
+spec:
+  hosts:
+    - postgres-db-sandbox.postgres.database.azure.com
+  location: MESH_EXTERNAL
+  ports:
+    - number: 5432
+      name: tcp-db
+      protocol: TCP

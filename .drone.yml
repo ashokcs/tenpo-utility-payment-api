@@ -105,6 +105,13 @@ pipeline:
     when:
       event: 
         - push
+  sandbox_service_entry:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    cluster: sandbox
+    template: service-entry-sandbox.yml
+    when:
+      event: 
+        - push
   sandbox_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: sandbox
