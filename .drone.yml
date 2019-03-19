@@ -29,7 +29,7 @@ pipeline:
       event:
         - push
         - pull_request
-  docker:
+  docker_staging:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
     target: staging
@@ -40,7 +40,7 @@ pipeline:
     when:
       event: 
         - push
-  consul:
+  consul_staging:
     image: alpine:3.8
     commands:
       - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
@@ -54,16 +54,58 @@ pipeline:
     when:
       event: 
         - push
-  secrets:
+  secrets_staging:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: staging
     template: secrets-staging.yml
     when:
       event: 
         - push
-  staging:
+  deployment_staging:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: staging
+    template: deployment.yml
+    vars:
+      - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}
+    when:
+      branch: master
+      event:
+        - push
+  docker_sandbox:
+    registry: mccontainerregistry.azurecr.io
+    image: plugins/docker
+    target: sandbox
+    repo: mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api
+    secrets: [ docker_username, docker_password ]
+    tags:
+      - ${DRONE_COMMIT_SHA}
+    when:
+      event: 
+        - push
+  consul_sandbox:
+    image: alpine:3.8
+    commands:
+      - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
+      - tar xvf consul-template_0.19.5_linux_amd64.tgz
+      - ./consul-template -template "secrets-sandbox.yml.tmpl:secrets-sandbox.yml" -once
+    secrets:
+      - source: consul_http_addr
+        target: CONSUL_HTTP_ADDR
+      - source: consul_http_token
+        target: CONSUL_HTTP_TOKEN
+    when:
+      event: 
+        - push
+  secrets_sandbox:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    cluster: sandbox
+    template: secrets-sandbox.yml
+    when:
+      event: 
+        - push
+  deployment_sandbox:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    cluster: sandbox
     template: deployment.yml
     vars:
       - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}
