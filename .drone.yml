@@ -29,7 +29,7 @@ pipeline:
       event:
         - push
         - pull_request
-  docker_staging:
+  staging_docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
     target: staging
@@ -40,7 +40,7 @@ pipeline:
     when:
       event: 
         - push
-  consul_staging:
+  staging_consul:
     image: alpine:3.8
     commands:
       - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
@@ -54,14 +54,14 @@ pipeline:
     when:
       event: 
         - push
-  secrets_staging:
+  staging_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: staging
     template: secrets-staging.yml
     when:
       event: 
         - push
-  deployment_staging:
+  staging_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: staging
     template: deployment.yml
@@ -71,7 +71,7 @@ pipeline:
       branch: master
       event:
         - push
-  docker_sandbox:
+  sandbox_docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
     target: sandbox
@@ -82,9 +82,11 @@ pipeline:
     when:
       event: 
         - push
-  consul_sandbox:
+  sandbox_consul:
     image: alpine:3.8
     commands:
+      - rm -f consul-template_0.19.5_linux_amd64.tgz
+      - rm -f consul-template
       - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
       - tar xvf consul-template_0.19.5_linux_amd64.tgz
       - ./consul-template -template "secrets-sandbox.yml.tmpl:secrets-sandbox.yml" -once
@@ -96,14 +98,14 @@ pipeline:
     when:
       event: 
         - push
-  secrets_sandbox:
+  sandbox_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: sandbox
     template: secrets-sandbox.yml
     when:
       event: 
         - push
-  deployment_sandbox:
+  sandbox_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
     cluster: sandbox
     template: deployment.yml
