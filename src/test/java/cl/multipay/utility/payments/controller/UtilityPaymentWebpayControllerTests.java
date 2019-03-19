@@ -105,7 +105,7 @@ public class UtilityPaymentWebpayControllerTests
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e2";
 		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.PENDING, token);
 
-		final String responseEntity = "{\"response_code\": 1,\"response_message\": \"APROBADA\",\"data\": {\"authorization_code\": \"1231313\",\"date\": \"06/03/2019\",\"hour\": \"09:25:46\",\"mc_code\": \"799483722\"}}";
+		final String responseEntity = "{\"response_code\": 1,\"response_message\": \"APROBADA\",\"data\": {\"authorization_code\": \"1231313\",\"date\": \"06/03/2019\",\"hour\": \"09:25:46\",\"mc_code\": \"799483722\",\"confirm_payment_id\":123,\"tx_state_iso\":\"APROBADO\"}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
 		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(utilityPaymentTransaction, 0));
 		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
