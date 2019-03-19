@@ -75,7 +75,10 @@ public class UtilityPaymentClient
 							final List<String> utilityIdentifiersList = new ArrayList<>();
 							for (final Iterator<String> keys = utilityIdentifiers.fieldNames(); keys.hasNext();){
 								final String key = keys.next();
-								utilityIdentifiersList.add(utilityIdentifiers.get(key).asText());
+								final String value = utilityIdentifiers.get(key).asText();
+								if (!value.isEmpty()) {
+									utilityIdentifiersList.add(value);
+								}
 							}
 							tmp.setIdentifiers(utilityIdentifiersList);
 
@@ -190,8 +193,7 @@ public class UtilityPaymentClient
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
 					//final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
 					// TODO fix
-					//if ((responseCode.equals(1) || responseCode.equals(99)) && responseMessage.contains("APROBADA")) {
-					//if (responseCode.equals(1) || responseCode.equals(99)) {
+					//if (responseCode.equals(1) && responseMessage.contains("APROBADA")) {
 					if (responseCode.equals(1)) {
 						final JsonNode dataJsonNode = billJsonNode.get("data");
 
