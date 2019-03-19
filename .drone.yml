@@ -55,14 +55,14 @@ pipeline:
       event: 
         - push
   staging_secrets:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
     template: secrets-staging.yml
     when:
       event: 
         - push
   staging_deployment:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
     template: deployment.yml
     vars:
@@ -99,21 +99,21 @@ pipeline:
       event: 
         - push
   sandbox_secrets:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: secrets-sandbox.yml
     when:
       event: 
         - push
   sandbox_service_entry:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: service-entry-sandbox.yml
     when:
       event: 
         - push
   sandbox_deployment:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:0.1.4
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: deployment.yml
     vars:
