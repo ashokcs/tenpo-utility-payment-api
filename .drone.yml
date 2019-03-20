@@ -9,6 +9,7 @@ pipeline:
       event:
         - push
         - pull_request
+        - tag
   build:
     image: openjdk:8-alpine
     environment:
@@ -19,6 +20,7 @@ pipeline:
       event:
         - push
         - pull_request
+        - tag
   sonarqube:
     image: openjdk:8-alpine
     environment:
