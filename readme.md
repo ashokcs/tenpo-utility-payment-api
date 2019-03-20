@@ -41,10 +41,17 @@ revoke multipay from prepago;
 ```
 
 ### Enviroments
+```md
 **Staging**: 104.210.0.151  
 **Sandbox**: 40.70.213.215  
 **Atlas**  : 168.61.187.123   
 **Apollo** : 40.70.213.171
+```
+
+### Local Urls
+```md
+- DB: postgres-db.external-svc.svc.cluster.local 5432
+```
 
 ### **Container Registry**
 ```

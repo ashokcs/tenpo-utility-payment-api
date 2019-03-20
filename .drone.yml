@@ -38,6 +38,7 @@ pipeline:
     tags:
       - ${DRONE_COMMIT_SHA}
     when:
+      branch: master
       event: 
         - push
   staging_consul:
@@ -52,6 +53,7 @@ pipeline:
       - source: consul_http_token
         target: CONSUL_HTTP_TOKEN
     when:
+      branch: master
       event: 
         - push
   staging_secrets:
@@ -59,6 +61,7 @@ pipeline:
     cluster: staging
     template: secrets-staging.yml
     when:
+      branch: master
       event: 
         - push
   staging_deployment:
@@ -80,8 +83,7 @@ pipeline:
     tags:
       - ${DRONE_COMMIT_SHA}
     when:
-      event: 
-        - push
+      ref: refs/tags/snapshot*
   sandbox_consul:
     image: alpine:3.8
     commands:
@@ -96,22 +98,19 @@ pipeline:
       - source: consul_http_token
         target: CONSUL_HTTP_TOKEN
     when:
-      event: 
-        - push
+      ref: refs/tags/snapshot*
   sandbox_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: secrets-sandbox.yml
     when:
-      event: 
-        - push
+      ref: refs/tags/snapshot*
   sandbox_service_entry:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: service-entry-sandbox.yml
     when:
-      event: 
-        - push
+      ref: refs/tags/snapshot*
   sandbox_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
@@ -119,9 +118,7 @@ pipeline:
     vars:
       - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}
     when:
-      branch: master
-      event:
-        - push
+      ref: refs/tags/snapshot*
   slack:
     image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
     channel: multipay-ci
