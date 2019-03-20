@@ -11,6 +11,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import cl.multipay.utility.payments.util.Utils;
 
 @Entity
 @Table(name = "utility_payment_bills")
@@ -89,6 +92,15 @@ public class UtilityPaymentBill
 	@Column(insertable = false)
 	@JsonIgnore
 	private OffsetDateTime updated;
+
+	@JsonProperty("friendly_name")
+	public String friendlyName()
+	{
+		if (utility != null) {
+			return Utils.normalizeUtilityName(utility);
+		}
+	    return null;
+	}
 
 	@PreUpdate
 	private void preUpdate()

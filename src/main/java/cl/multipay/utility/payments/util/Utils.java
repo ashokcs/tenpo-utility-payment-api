@@ -83,4 +83,9 @@ public class Utils
 	{
 		return "$" + NumberFormat.getNumberInstance(new Locale("es", "CL")).format(amount);
 	}
+
+	public static String normalizeUtilityName(final String utility)
+	{
+		return utility.replaceAll("\\_", " ");
+	}
 }
