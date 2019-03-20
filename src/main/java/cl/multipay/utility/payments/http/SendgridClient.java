@@ -55,7 +55,7 @@ public class SendgridClient
 
 			// add template data
 		    personalization.addDynamicTemplateData("subject", properties.mailUtilityPaymentsReceiptSubject);
-		    personalization.addDynamicTemplateData("transaction_utility", utilityPaymentBill.getUtility());
+		    personalization.addDynamicTemplateData("transaction_utility", Utils.normalizeUtilityName(utilityPaymentBill.getUtility()));
 		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", updated));
 		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
@@ -94,7 +94,7 @@ public class SendgridClient
 
 			// add template data
 		    personalization.addDynamicTemplateData("subject", properties.mailUtilityPaymentsReceiptSubject);
-		    personalization.addDynamicTemplateData("transaction_utility", utilityPaymentBill.getUtility());
+		    personalization.addDynamicTemplateData("transaction_utility", Utils.normalizeUtilityName(utilityPaymentBill.getUtility()));
 		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", updated));
 		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
