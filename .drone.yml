@@ -38,7 +38,7 @@ pipeline:
     repo: mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api
     secrets: [ docker_username, docker_password ]
     tags:
-      - ${DRONE_COMMIT_SHA}
+      - ${DRONE_COMMIT_SHA}-stg
     when:
       branch: master
       event: 
@@ -71,7 +71,7 @@ pipeline:
     cluster: staging
     template: deployment.yml
     vars:
-      - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}
+      - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}-stg
     when:
       branch: master
       event:
@@ -83,7 +83,7 @@ pipeline:
     repo: mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api
     secrets: [ docker_username, docker_password ]
     tags:
-      - ${DRONE_COMMIT_SHA}
+      - ${DRONE_COMMIT_SHA}-sbx
     when:
       ref: refs/tags/snapshot*
   sandbox_consul:
@@ -118,7 +118,7 @@ pipeline:
     cluster: sandbox
     template: deployment.yml
     vars:
-      - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}
+      - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}-sbx
     when:
       ref: refs/tags/snapshot*
   slack:

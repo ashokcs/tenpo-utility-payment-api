@@ -312,3 +312,11 @@ Response
 - api transbank poner api-key
 - api tef poner api-key
 - integrar tef multicaja
+
+# Git
+```sh
+git tag -a snapshot-v1.0.0 -m "snapshot-v1.0.0"
+git push bb snapshot-v1.0.0
+git push --delete bb snapshot-v1.0.0
+git tag --delete snapshot-v1.0.0
+```
