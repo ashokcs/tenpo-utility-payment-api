@@ -302,17 +302,6 @@ Response
 200 - OK
 ```
 
-# TODOS
-- hacer pipeline, Implementar migrations, secrets and consul
-- hacer pago tef
-- hacer reintentos
-- reportes conciliación
-- implementar email
-- hacer bo
-- api transbank poner api-key
-- api tef poner api-key
-- integrar tef multicaja
-
 # Git
 ```sh
 git tag -a snapshot-v1.0.0 -m "snapshot-v1.0.0"
