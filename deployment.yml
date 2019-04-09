@@ -39,6 +39,11 @@ spec:
                 secretKeyRef:
                   name: multipay-utility-payments-api-secrets
                   key: pg_password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: multipay-utility-payments-api-secrets
+                  key: pg_name
             - name: ELASTIC_APM_SERVICE_NAME
               value: multipay-utility-payments-api
             - name: ELASTIC_APM_APPLICATION_PACKAGES
@@ -107,3 +112,4 @@ spec:
     - number: 587
       name: tcp-smtp
       protocol: TCP
+    

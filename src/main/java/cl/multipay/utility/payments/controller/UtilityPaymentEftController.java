@@ -162,11 +162,13 @@ public class UtilityPaymentEftController
 		utils.clear();
 		logger.info("-> " + request.getRequestURL());
 		String utilityPaymentTransactionPublicId = null;
+		UtilityPaymentEft utilityPaymentEft = null;
+		UtilityPaymentTransaction utilityPaymentTransaction = null;
 		try {
 			// get utility payment transaction and eft
-			final String tefId = getId(id).orElseThrow(ServerErrorException::new);
-			final UtilityPaymentEft utilityPaymentEft = utilityPaymentEftService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
-			final UtilityPaymentTransaction utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
+			String tefId = getId(id).orElseThrow(ServerErrorException::new);
+			utilityPaymentEft = utilityPaymentEftService.findByPublicId(tefId).orElseThrow(NotFoundException::new);
+			utilityPaymentTransaction = utilityPaymentTransactionService.findById(utilityPaymentEft.getTransactionId()).orElseThrow(NotFoundException::new);
 			utilityPaymentTransactionPublicId = utilityPaymentTransaction.getPublicId();
 			utils.mdc(utilityPaymentTransaction.getPublicId());
 
@@ -189,6 +191,8 @@ public class UtilityPaymentEftController
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage());
+			utilityPaymentEft.setStatus(UtilityPaymentEft.CANCELED);
+			utilityPaymentEftService.save(utilityPaymentEft).orElseThrow(ServerErrorException::new);
 		}
 
 		// redirect to error page
