@@ -172,12 +172,12 @@ pipeline:
     template: service-entry-production.yml
     when:
       ref: refs/tags/release*
-  # atlas_virtual_service:
-  #   image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
-  #   cluster: atlas
-  #   template: virtual-service.production.yml
-  #   when:
-  #     ref: refs/tags/release*
+  atlas_virtual_service:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: atlas
+    template: virtual-service.production.yml
+    when:
+      ref: refs/tags/release*
   atlas_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
