@@ -6,7 +6,7 @@ metadata:
   namespace: multipay
 spec:
   hosts:
-    - apidev.mcdesaqa.cl
+    - multicaja.cl
   location: MESH_EXTERNAL
   ports:
     - number: 443

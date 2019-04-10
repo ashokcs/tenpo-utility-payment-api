@@ -315,8 +315,13 @@ Response
 
 # Git
 ```sh
-git tag -a snapshot-v1.0.0 -m "snapshot-v1.0.0"
-git push bb snapshot-v1.0.0
-git push --delete bb snapshot-v1.0.0
-git tag --delete snapshot-v1.0.0
+git tag -a snapshot-v1.0.2 -m "snapshot-v1.0.2"
+git push bb snapshot-v1.0.2
+git push --delete bb snapshot-v1.0.2
+git tag --delete snapshot-v1.0.2
+
+git tag -a release-v1.0.2 -m "release-v1.0.2"
+git push bb release-v1.0.2
+git push --delete bb release-v1.0.2
+git tag --delete release-v1.0.2
 ```
