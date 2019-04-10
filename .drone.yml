@@ -10,6 +10,7 @@ pipeline:
         - push
         - pull_request
         - tag
+
   build:
     image: openjdk:8-alpine
     environment:
@@ -21,6 +22,7 @@ pipeline:
         - push
         - pull_request
         - tag
+
   #sonarqube:
     #image: openjdk:8-alpine
     #environment:
@@ -31,6 +33,7 @@ pipeline:
       #event:
         #- push
         #- pull_request
+
   staging_docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
@@ -43,6 +46,7 @@ pipeline:
       branch: master
       event: 
         - push
+
   staging_consul:
     image: alpine:3.8
     commands:
@@ -58,6 +62,7 @@ pipeline:
       branch: master
       event: 
         - push
+
   staging_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
@@ -66,6 +71,7 @@ pipeline:
       branch: master
       event: 
         - push
+
   staging_virtual_service:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
@@ -74,6 +80,7 @@ pipeline:
       branch: master
       event: 
         - push
+
   staging_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
@@ -84,6 +91,7 @@ pipeline:
       branch: master
       event:
         - push
+
   sandbox_docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
@@ -94,6 +102,7 @@ pipeline:
       - ${DRONE_COMMIT_SHA}-sbx
     when:
       ref: refs/tags/snapshot*
+
   sandbox_consul:
     image: alpine:3.8
     commands:
@@ -109,24 +118,28 @@ pipeline:
         target: CONSUL_HTTP_TOKEN
     when:
       ref: refs/tags/snapshot*
+
   sandbox_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: secrets-sandbox.yml
     when:
       ref: refs/tags/snapshot*
+
   sandbox_virtual_service:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: virtual-service.staging-sandbox.yml
     when:
       ref: refs/tags/snapshot*
+
   sandbox_service_entry:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
     template: service-entry-sandbox.yml
     when:
       ref: refs/tags/snapshot*
+
   sandbox_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: sandbox
@@ -135,6 +148,7 @@ pipeline:
       - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}-sbx
     when:
       ref: refs/tags/snapshot*
+
   production_docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
@@ -145,6 +159,7 @@ pipeline:
       - ${DRONE_COMMIT_SHA}-prod
     when:
       ref: refs/tags/release*
+
   production_consul:
     image: alpine:3.8
     commands:
@@ -160,24 +175,28 @@ pipeline:
         target: CONSUL_HTTP_TOKEN
     when:
       ref: refs/tags/release*
+
   atlas_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: secrets-production.yml
     when:
       ref: refs/tags/release*
+
   atlas_service_entry:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: service-entry-production.yml
     when:
       ref: refs/tags/release*
+
   atlas_virtual_service:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: virtual-service.production.yml
     when:
       ref: refs/tags/release*
+
   atlas_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
@@ -186,6 +205,64 @@ pipeline:
       - IMAGE=mccontainerregistry.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}-prod
     when:
       ref: refs/tags/release*
+
+  oti_production_docker:
+    registry: acrtenpodigital.azurecr.io
+    image: plugins/docker
+    target: production
+    repo: acrtenpodigital.azurecr.io/multipay/multipay-utility-payments-api
+    secrets: [ docker_username, docker_password ]
+    tags:
+      - ${DRONE_COMMIT_SHA}-prod
+    when:
+      ref: refs/tags/oti*
+
+  oti_production_consul:
+    image: alpine:3.8
+    commands:
+      - rm -f consul-template_0.19.5_linux_amd64.tgz
+      - rm -f consul-template
+      - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
+      - tar xvf consul-template_0.19.5_linux_amd64.tgz
+      - ./consul-template -template "secrets-production.yml.tmpl:secrets-production.yml" -once
+    secrets:
+      - source: consul_http_addr
+        target: CONSUL_HTTP_ADDR
+      - source: consul_http_token
+        target: CONSUL_HTTP_TOKEN
+    when:
+      ref: refs/tags/oti*
+
+  oti_atlas_secrets:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: atlas
+    template: secrets-production.yml
+    when:
+      ref: refs/tags/oti*
+
+  oti_atlas_service_entry:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: atlas
+    template: service-entry-production.yml
+    when:
+      ref: refs/tags/oti*
+
+  oti_atlas_virtual_service:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: atlas
+    template: virtual-service.production.yml
+    when:
+      ref: refs/tags/oti*
+
+  oti_atlas_deployment:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: atlas
+    template: deployment.yml
+    vars:
+      - IMAGE=acrtenpodigital.azurecr.io/multipay/multipay-utility-payments-api:${DRONE_COMMIT_SHA}-prod
+    when:
+      ref: refs/tags/oti*
+
   slack:
     image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
     channel: multipay-ci
