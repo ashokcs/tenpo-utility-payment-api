@@ -84,3 +84,17 @@ spec:
     - number: 587
       name: tcp-smtp
       protocol: TCP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: multipay-utility-payments-api-se-db
+  namespace: multipay
+spec:
+  hosts:
+    - "*.database.azure.com"
+  location: MESH_EXTERNAL
+  ports:
+    - number: 5432
+      name: tcp-db
+      protocol: TCP
