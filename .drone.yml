@@ -234,28 +234,28 @@ pipeline:
       ref: refs/tags/oti*
 
   oti_atlas_secrets:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    image: acrtenpodigital.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: secrets-production.yml
     when:
       ref: refs/tags/oti*
 
   oti_atlas_service_entry:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    image: acrtenpodigital.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: service-entry-production.yml
     when:
       ref: refs/tags/oti*
 
   oti_atlas_virtual_service:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    image: acrtenpodigital.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: virtual-service.production.yml
     when:
       ref: refs/tags/oti*
 
   oti_atlas_deployment:
-    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    image: acrtenpodigital.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: atlas
     template: deployment.yml
     vars:
@@ -263,11 +263,11 @@ pipeline:
     when:
       ref: refs/tags/oti*
 
-  slack:
-    image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
-    channel: multipay-ci
-    icon_emoji: ":package:"
-    when:
-      status: 
-        - success
-        - failure
+  # slack:
+  #   image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
+  #   channel: multipay-ci
+  #   icon_emoji: ":package:"
+  #   when:
+  #     status: 
+  #       - success
+  #       - failure
