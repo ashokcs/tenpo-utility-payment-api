@@ -1,0 +1,28 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: multipay-utility-payments-api-vts
+  namespace: multipay
+spec:
+  hosts:
+    - multipay.${CLUSTER_ENVIRONMENT}.${CLUSTER_DOMAIN}
+  gateways:
+    - global-gateway.default.svc.cluster.local
+  http:
+    - match:
+      - uri:
+          prefix: /utility-payments
+      route:
+      - destination:
+          host: multipay-utility-payments-api-svc
+          port:
+            number: 80
+    - match:
+      - uri:
+          prefix: /
+      route:
+      - destination:
+          host: multipay-frontend
+          port:
+            number: 80

@@ -304,8 +304,18 @@ Response
 
 # Git
 ```sh
-git tag -a snapshot-v1.0.0 -m "snapshot-v1.0.0"
-git push bb snapshot-v1.0.0
-git push --delete bb snapshot-v1.0.0
-git tag --delete snapshot-v1.0.0
+git tag -a snapshot-v1.0.7 -m "snapshot-v1.0.7"
+git push bb snapshot-v1.0.7
+git push --delete bb snapshot-v1.0.7
+git tag --delete snapshot-v1.0.7
+
+git tag -a release-v1.0.7 -m "release-v1.0.7"
+git push bb release-v1.0.7
+git push --delete bb release-v1.0.7
+git tag --delete release-v1.0.7
+
+git tag -a oti-v1.0.7 -m "oti-v1.0.7"
+git push bb oti-v1.0.7
+git push --delete bb oti-v1.0.7
+git tag --delete oti-v1.0.7
 ```
