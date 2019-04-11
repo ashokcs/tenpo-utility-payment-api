@@ -6,7 +6,7 @@ metadata:
   namespace: multipay
 spec:
   hosts:
-    - multicajapagosdigitales.cloud
+    - tenpodigital.cloud
   gateways:
     - multipay-gateway.default.svc.cluster.local
   http:
