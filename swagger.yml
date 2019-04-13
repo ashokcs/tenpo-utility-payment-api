@@ -1,0 +1,266 @@
+openapi: 3.0.1
+info:
+  title: Utility Payments
+  version: 1.0.0
+servers:
+  - url: https://multipay.staging.multicajadigital.cloud
+tags:
+  - name: utility payments
+    description: Operaciones de pago de cuenta
+paths:
+  /utility-payments/v1/utilities:
+    get:
+      tags: 
+        - utility payments
+      summary: Obtiene los convenios de pago de cuenta
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utility'
+
+  /utility-payments/v1/transactions:
+    post:
+      tags: 
+        - utility payments
+      summary: Crea una transacción de pago de cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilityPaymentRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilityPaymentTransaction'
+
+  /utility-payments/v1/transactions/{id}:
+    get:
+      tags: 
+        - utility payments
+      summary: Obtiene los detalles de una transacción de pago de cuenta
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Id de la transacción de pago de cuenta
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilityPaymentTransaction'
+
+  /utility-payments/v1/transactions/{id}/webpay:
+    post:
+      tags: 
+        - utility payments
+      summary: Paga una transacción de pago de cuenta con Webpay
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Id de la transacción de pago de cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilityPaymentEmailRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilityPaymentWebpayResponse'
+
+  /utility-payments/v1/transactions/{id}/eft:
+    post:
+      tags: 
+        - utility payments
+      summary: Paga una transacción de pago de cuenta con Transferencia
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Id de la transacción de pago de cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilityPaymentEmailRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilityPaymentEftResponse'
+
+  /utility-payments/v1/transactions/{id}/receipt:
+    post:
+      tags: 
+        - utility payments
+      summary: Reenvía el comprobante de una transacción de pago de cuenta
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Id de la transacción de pago de cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilityPaymentReceiptRequest'
+      responses:
+        200:
+          description: successful operation
+          
+components:
+  schemas:
+    Utility:
+      type: object
+      properties:
+        friendly_name:
+          type: string
+          example: MUNDO PACIFICO
+        utility:
+          type: string
+          example: MUNDO_PACIFICO
+        collector:
+          type: string
+          example: 1
+        category:
+          type: string
+          example: 300
+        identifiers:
+          type: array
+          items:
+            type: string
+          example: ["RUT", "CON DIGITO VERIFICADOR"]
+    UtilityPaymentRequest:
+      type: object
+      properties:
+        utility:
+          type: string
+          example: MUNDO_PACIFICO
+        collector:
+          type: string
+          example: 1
+        category:
+          type: string
+          example: 300
+        identifier:
+          type: string
+          example: 0106849927
+    UtilityPaymentTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          example: eaa7f715372d4b71a7fe00402d391df1
+        status:
+          type: string
+          example: WAITING
+        buy_order:
+          type: integer
+          format: int64
+          example: 20190223214030002
+        amount:
+          type: integer
+          example: 94290
+        payment_method:
+          type: string
+          example: EFT
+        email:
+          type: string
+          example: carlos.izquierdo@multicaja.cl
+        created:
+          type: string
+          example: "2019-02-23T21:40:30.362763-03:00"
+        updated:
+          type: string
+          example: "2019-02-23T21:41:19.216-03:00"
+        bill:
+          type: object
+          properties:
+            status: 
+              type: string
+              example: PENDING
+            utility:
+              type: string
+              example: ENTEL PCS
+            collector:
+              type: string
+              example: 2
+            identifier:
+              type: string
+              example: 171379695
+            mc_code:
+              type: string
+              example: 799378736
+            amount:
+              type: integer
+              example: 94290
+            due_date:
+              type: string
+              example: "2015-02-23"
+        eft:
+          type: object
+          properties:
+            status:
+              type: string
+              example: PENDING
+            order:
+              type: string
+              example: 853121364954859
+    UtilityPaymentEmailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: carlos.izquierdo@multicaja.cl
+    UtilityPaymentWebpayResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: e8863e2f2d9e4d83b09d978c18403d6a20f1a6febb40c22d8342b2ae173f1d5b
+        url:
+          type: string
+          example: "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
+    UtilityPaymentEftResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          example: "https://10.170.1.11:9191/bdp/order.xhtml?id=853121364954859"
+    UtilityPaymentReceiptRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: carlos.izquierdo@multicaja.cl
+        recaptcha:
+          type: string
+          example: "03AOLTBLTVBtniCIGwS_N4XFQAQ3d5vXsQJp8kYLRsDcqhBUEf2mh8onvgXDOJ"
