@@ -4,8 +4,8 @@
 
 ### Docker Compose (for PostgreSQL)
 ```bash
-docker-compose -p multipay_utility up
-docker run -it --rm --link multipay_utility_postgres_1:postgres --net multipay_utility_default postgres:9-alpine psql -h postgres -U multipay
+docker-compose -p multipay up
+docker run -it --rm --link multipay_postgres_1:postgres --net multipay_default postgres:9-alpine psql -h postgres -U multipay
 ```
 
 ### Run migrations

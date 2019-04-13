@@ -59,7 +59,7 @@ public class SendgridClient
 		    personalization.addDynamicTemplateData("transaction_date", utils.format("dd/MM/yyyy", updated));
 		    personalization.addDynamicTemplateData("transaction_time", utils.format("HH:mm", updated) + " hrs");
 		    personalization.addDynamicTemplateData("transaction_identifier", utilityPaymentBill.getIdentifier());
-		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder());
+		    personalization.addDynamicTemplateData("transaction_order", utilityPaymentTransaction.getBuyOrder().toString());
 		    personalization.addDynamicTemplateData("transaction_auth", utilityPaymentBill.getAuthCode());
 		    personalization.addDynamicTemplateData("transaction_total", utils.currency(utilityPaymentTransaction.getAmount()));
 
