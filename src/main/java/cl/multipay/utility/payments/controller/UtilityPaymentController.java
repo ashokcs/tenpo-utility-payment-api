@@ -1,6 +1,9 @@
 package cl.multipay.utility.payments.controller;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -27,6 +30,19 @@ public class UtilityPaymentController
 	@Cacheable(value = "utilities", unless = "#result.size() == 0")
 	public List<Utility> get()
 	{
-		return utilityPaymentClient.getUtilities().orElseThrow(ServerErrorException::new);
+		final Set<String> filter = Stream.of("CUPON_PAGO", "EMPRESA DE PRUEBAS", "FONASA", "RECAUDA_REDFACIL")
+				.collect(Collectors.toSet());
+		return utilityPaymentClient.getUtilities()
+				.orElseThrow(ServerErrorException::new)
+				.stream()
+				.filter(utility -> !filter.contains(utility.getUtility()))
+				.collect(Collectors.toList());
+	}
+
+	@GetMapping("/v1/utilities/multicaja")
+	@Cacheable(value = "utilities-multicaja", unless = "#result.equals(\"\")")
+	public String getRaw()
+	{
+		return utilityPaymentClient.getUtilitiesMulticaja().orElseThrow(ServerErrorException::new);
 	}
 }

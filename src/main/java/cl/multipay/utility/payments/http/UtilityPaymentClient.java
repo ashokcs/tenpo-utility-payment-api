@@ -40,6 +40,30 @@ public class UtilityPaymentClient
 		this.properties = properties;
 	}
 
+	public Optional<String> getUtilitiesMulticaja()
+	{
+		try {
+			final String url = properties.multicajaUtilitiesUrl;
+			final HttpPost request = new HttpPost(url);
+			request.setHeader("Content-Type", "application/json");
+			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
+			logger.info("=> {}", url);
+			try (final CloseableHttpResponse response = client.execute(request)) {
+				final HttpEntity entity = response.getEntity();
+				final String body = EntityUtils.toString(entity);
+				logger.info("<= {}: {}", url, response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() == 200) {
+					return Optional.of(body);
+				} else {
+					logger.error("<= {}: {}", url, body);
+				}
+			}
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
 	public Optional<List<Utility>> getUtilities()
 	{
 		try {
