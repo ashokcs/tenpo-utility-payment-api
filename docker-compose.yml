@@ -5,5 +5,5 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=multipay
-      - POSTGRES_USER=mp
+      - POSTGRES_PASSWORD=mp
+      - POSTGRES_USER=multipay
