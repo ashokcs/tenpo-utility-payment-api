@@ -1,5 +1,6 @@
 package cl.multipay.utility.payments.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.multipay.utility.payments.dto.Category;
 import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.exception.ServerErrorException;
 import cl.multipay.utility.payments.http.UtilityPaymentClient;
@@ -26,9 +28,30 @@ public class UtilityPaymentController
 		this.utilityPaymentClient = multicajaService;
 	}
 
+	@GetMapping("/v1/categories")
+	@Cacheable(value = "categories", unless = "#result.size() == 0")
+	public List<Category> categories()
+	{
+		final List<Category> result = new ArrayList<>();
+		result.add(new Category("100", "AGUA"));
+		result.add(new Category("200", "LUZ"));
+		result.add(new Category("300", "TELEF-TV-INTERNET"));
+		result.add(new Category("400", "GAS"));
+		result.add(new Category("500", "AUTOPISTAS"));
+		result.add(new Category("600", "COSMETICA"));
+		result.add(new Category("700", "RETAIL"));
+		result.add(new Category("800", "CREDITO-FINANCIERA"));
+		result.add(new Category("900", "SEGURIDAD"));
+		result.add(new Category("1000", "EDUCACION"));
+		result.add(new Category("1100", "CEMENTERIO"));
+		result.add(new Category("1200", "OTRAS EMPRESAS"));
+		result.add(new Category("1300", "EFECTIVO MULTICAJA"));
+		return result;
+	}
+
 	@GetMapping("/v1/utilities")
 	@Cacheable(value = "utilities", unless = "#result.size() == 0")
-	public List<Utility> get()
+	public List<Utility> utilities()
 	{
 		final Set<String> filter = Stream.of("CUPON_PAGO", "EMPRESA DE PRUEBAS", "FONASA", "RECAUDA_REDFACIL")
 				.collect(Collectors.toSet());
@@ -41,7 +64,7 @@ public class UtilityPaymentController
 
 	@GetMapping("/v1/utilities/multicaja")
 	@Cacheable(value = "utilities-multicaja", unless = "#result.equals(\"\")")
-	public String getRaw()
+	public String utilitiesMulticaja()
 	{
 		return utilityPaymentClient.getUtilitiesMulticaja().orElseThrow(ServerErrorException::new);
 	}

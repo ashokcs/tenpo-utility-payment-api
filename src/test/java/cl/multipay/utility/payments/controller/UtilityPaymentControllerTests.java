@@ -45,4 +45,12 @@ public class UtilityPaymentControllerTests
 			.andDo(print())
 			.andExpect(status().isOk());
 	}
+
+	@Test
+	public void getCategories_shouldReturnOk() throws Exception
+	{
+		mockMvc.perform(get("/v1/categories").contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
 }
