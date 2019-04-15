@@ -2,6 +2,9 @@ package cl.multipay.utility.payments.dto;
 
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import cl.multipay.utility.payments.entity.UtilityPaymentBill;
 import cl.multipay.utility.payments.entity.UtilityPaymentEft;
 import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
@@ -11,6 +14,7 @@ public class UtilityPaymentTransactionResponse
 {
 	private final String id;
 	private final String status;
+	@JsonSerialize(using = ToStringSerializer.class)
 	private final Long buyOrder;
 	private final Long amount;
 	private final String paymentMethod;
