@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cl.multipay.utility.payments.dto.MulticajaBillResponse;
+import cl.multipay.utility.payments.dto.MulticajaBill;
 import cl.multipay.utility.payments.dto.MulticajaPayBillResponse;
 import cl.multipay.utility.payments.dto.Utility;
 import cl.multipay.utility.payments.util.Properties;
@@ -135,11 +135,13 @@ public class UtilityPaymentClient
 		return Optional.empty();
 	}
 
-	public Optional<MulticajaBillResponse> getBill(final String utility, final String identifier, final String collector)
+	public List<MulticajaBill> getBills(final String utility, final String identifier, final String collector)
 	{
+		final List<MulticajaBill> bills = new ArrayList<>();
 		try {
 			final String url = properties.multicajaUtlitiesBillUrl;
 
+			// create json
 			final ObjectMapper mapper = new ObjectMapper();
 			final ObjectNode jsonObject = mapper.createObjectNode();
 			jsonObject.put("firm", utility);
@@ -147,6 +149,7 @@ public class UtilityPaymentClient
 			jsonObject.put("payment_id", identifier);
 			final String json = mapper.writeValueAsString(jsonObject);
 
+			// create request
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
 			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
@@ -163,22 +166,33 @@ public class UtilityPaymentClient
 				if (response.getStatusLine().getStatusCode() == 200) {
 					final JsonNode billJsonNode = mapper.readTree(body);
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
-					//final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
-					if (responseCode.equals(88) /* && responseMessage.equals("APROBADA") TODO */) {
+					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
+					if (responseCode.equals(88) && responseMessage.equals("APROBADA")) {
 						final JsonNode dataJsonNode = billJsonNode.get("data");
 						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
-						final int number = 1;
+						int number = 1;
 						for(final JsonNode bill : debtsJsonNode) {
-							final MulticajaBillResponse mcBill = new MulticajaBillResponse();
-							mcBill.setMcCode(dataJsonNode.get("mc_code").asText());
-							mcBill.setDebtDataId(dataJsonNode.get("debt_data_id").asLong());
-							mcBill.setDebtNumber(number);
-							// TODO eye on this
-							//mcBill.setAmount(bill.get("total_amount").asLong());
-							mcBill.setAmount(bill.get("payment_amount").asLong());
-							mcBill.setDueDate(bill.get("due_date").asText());
-							// number++;
-							return Optional.of(mcBill);
+							final MulticajaBill tmp = new MulticajaBill();
+							tmp.setOrder(number);
+							tmp.setMcCode(dataJsonNode.get("mc_code").asText());
+							tmp.setDebtDataId(dataJsonNode.get("debt_data_id").asLong());
+							tmp.setAmount(bill.get("payment_amount").asLong());
+							tmp.setDueDate(bill.get("due_date").asText());
+							if (bill.get("order") != null) {
+								tmp.setOrder(bill.get("order").asInt(number));
+							} else {
+								tmp.setOrder(number);
+							}
+							if ("D.TOTAL".equals(tmp.getDueDate())) {
+								tmp.setDesc("Deuda total");
+								tmp.setDueDate("No disponible");
+							}
+							if ("D.VENCIDA".equals(tmp.getDueDate())) {
+								tmp.setDesc("Deuda vencida");
+								tmp.setDueDate("No disponible");
+							}
+							bills.add(tmp);
+							number++;
 						}
 					}
 				}
@@ -186,7 +200,7 @@ public class UtilityPaymentClient
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return Optional.empty();
+		return bills;
 	}
 
 	public Optional<MulticajaPayBillResponse> payBill(final Long debtDataId, final Integer debtNumber, final Long amount)

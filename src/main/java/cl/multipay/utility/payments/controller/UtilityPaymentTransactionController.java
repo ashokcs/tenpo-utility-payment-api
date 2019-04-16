@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.multipay.utility.payments.dto.EftCreateOrderResponse;
-import cl.multipay.utility.payments.dto.MulticajaBillResponse;
 import cl.multipay.utility.payments.dto.ReceiptRequest;
 import cl.multipay.utility.payments.dto.UtilityPaymentEftResponse;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionPay;
-import cl.multipay.utility.payments.dto.UtilityPaymentTransactionRequest;
 import cl.multipay.utility.payments.dto.UtilityPaymentTransactionResponse;
 import cl.multipay.utility.payments.dto.UtilityPaymentWebpayResponse;
 import cl.multipay.utility.payments.dto.WebpayInitResponse;
@@ -118,6 +115,7 @@ public class UtilityPaymentTransactionController
 	 * @param request El identificador del servicio y cuenta a consultar
 	 * @return Los datos de la cuenta
 	 */
+	/*
 	@PostMapping("/v1/transactions")
 	public ResponseEntity<UtilityPaymentTransactionResponse> create(@RequestBody @Valid final UtilityPaymentTransactionRequest request)
 	{
@@ -132,7 +130,7 @@ public class UtilityPaymentTransactionController
 		final String collector = request.getCollector();
 		final String category = request.getCategory();
 		final String identifier = request.getIdentifier();
-		final Optional<MulticajaBillResponse> billDetailsOptional = utilityPaymentClient.getBill(utility, identifier, collector);
+		final Optional<MulticajaBills> billDetailsOptional = utilityPaymentClient.getBill(utility, identifier, collector);
 
 		// if not present return 204 no content
 		if (!billDetailsOptional.isPresent()) {
@@ -140,7 +138,7 @@ public class UtilityPaymentTransactionController
 		}
 
 		// get response
-		final MulticajaBillResponse multicajaBill = billDetailsOptional.get();
+		final MulticajaBills multicajaBill = billDetailsOptional.get();
 		final Long dataId = multicajaBill.getDebtDataId();
 		final Integer debtNumber = multicajaBill.getDebtNumber();
 		final String mcCode = multicajaBill.getMcCode();
@@ -175,6 +173,7 @@ public class UtilityPaymentTransactionController
 		final UtilityPaymentTransactionResponse result = new UtilityPaymentTransactionResponse(utilityPaymentTransaction, utilityPaymentBill);
 		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
+	*/
 
 	/**
 	 * Inicializa el pago de una transacción mediante webpay.

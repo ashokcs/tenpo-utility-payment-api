@@ -149,16 +149,18 @@ DEUDA VENCIDA
     "mc_code": "1570079266",
     "debts": [
       {
-        "due_date": "D.TOTAL",
         "order": "1",
+        "due_date": "D.TOTAL",
         "payment_amount": 12571,
+
         "total_amount": 12570,
         "adjustment_amount": -1
       },
       {
-        "due_date": "D.VENCIDA",
         "order": "2",
+        "due_date": "D.VENCIDA",
         "payment_amount": 12571,
+
         "total_amount": 12570,
         "adjustment_amount": -1
       }
@@ -179,17 +181,18 @@ DEUDA VENCIDA
       {
         "due_date": "No disponible",
         "payment_amount": 15515,
-        "total_amount": 15510,
+        
         "adjustment_amount": -5,
+        "total_amount": 15510,
         "agreement": "2014",
         "confirmation": "SI",
         "authorizer": "EFT",
         "bill_payment_info": "Pago Cuentas Multicaja",
         "pay_validation": "1",
         "mc_relation_code": "1570099696",
+        "adjustment": "-5",
         "rsp_authorization_code": "74055746",
         "rsp_data_time": "20190412112407",
-        "adjustment": "-5",
         "rsp_mc_code": "1570099696",
         "rsp_client_id": "130609K",
         "rsp_agreement_id": "2014",
@@ -213,6 +216,7 @@ DEUDA VENCIDA
       {
         "due_date": "NO DISPONIBLE ",
         "payment_amount": 49112,
+
         "total_amount": "49110",
         "adjustment_amount": -2,
         "agreement": "12058",
@@ -220,8 +224,8 @@ DEUDA VENCIDA
         "authorizer": "CLARO",
         "bill_payment_info": "Pago Cuentas Multicaja",
         "adjustment": "-2",
-        "rsp_mc_code": "1570138666",
         "monto_ajustado": "49110",
+        "rsp_mc_code": "1570138666",
         "rsp_transaction_id": "1155508369553923",
         "rsp_total_payment": "49112"
       }
@@ -242,6 +246,7 @@ DEUDA VENCIDA
       {
         "due_date": "No disponible",
         "payment_amount": 597434,
+
         "total_amount": 597430,
         "adjustment_amount": -4,
         "agreement": "6621",
@@ -250,9 +255,9 @@ DEUDA VENCIDA
         "bill_payment_info": "Pago Cuentas Multicaja",
         "pay_validation": "1",
         "mc_relation_code": "1574199124",
+        "adjustment": "-4",
         "rsp_authorization_code": "74193362",
         "rsp_data_time": "20190415155445",
-        "adjustment": "-4",
         "rsp_mc_code": "1574199124",
         "rsp_client_id": "113920335",
         "rsp_agreement_id": "6621",
@@ -276,15 +281,16 @@ DEUDA VENCIDA
       {
         "due_date": "10-04-2019",
         "payment_amount": 41297,
+
         "total_amount": 41300,
         "adjustment_amount": 3,
-        "rsp_rut_client": "126617852",
-        "rsp_name_client": "LORETO NAVIA LOPEZ",
-        "rsp_invoice_number": "216414517",
         "confirmation": "SI",
         "authorizer": "EFT",
         "bill_payment_info": "Pago Cuentas Multicaja",
         "adjustment": "3",
+        "rsp_rut_client": "126617852",
+        "rsp_name_client": "LORETO NAVIA LOPEZ",
+        "rsp_invoice_number": "216414517",
         "rsp_mc_code": "1574391724",
         "rsp_client_id": "126617852",
         "rsp_agreement_id": "1",
