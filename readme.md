@@ -229,170 +229,73 @@ DEUDA VENCIDA
     "debt_data_id": 25
   }
 }
-```
 
-# Endpoints
-
-## `GET /utility-payments/v1/utilities`
-**Obtiene los convenios de pago de cuenta**
-
-Request
-```bash
-curl --request GET \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/utilities \
---header 'Content-Type: application/json'
-```
-
-Response
-```json
-[
-  {
-    "utility": "COSTANERA NORTE",
-    "collector": "1",
-    "category": "100",
-    "identifiers": []
-  },
-  {
-    "utility": "AGUAS ANDINAS",
-    "collector": "4",
-    "category": "100",
-    "identifiers": [
-      "NRO CLIENTE",
-      "CON DIGITO VERIFICADOR"
-    ]
-  },
-  {
-    "utility": "ESSBIO",
-    "collector": "4",
-    "category": "100",
-    "identifiers": [
-      "NRO SERVICIO",
-      "SIN DIGITO VERIFICADOR"
-    ]
-  }
-]
-```
-
-## `POST /utility-payments/v1/transactions`
-**Crea un pago de cuenta**
-
-Request
-```bash
-curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions \
---header 'Content-Type: application/json' \
---data '{"utility": "ENTEL PCS","collector": "2","category": "300","identifier": "173379595"}'
-```
-Response
-```json
+{"firm":"RIPLEY","collector":"3","payment_id":"113920335"}
 {
-  "id": "eaa7f715372d4b71a7fe00402d391df1",
-  "status": "PENDING",
-  "buy_order": 20190222011546002,
-  "amount": 94290,
-  "created": "2019-02-22T01:15:46.665983-03:00",
-  "updated": "2019-02-22T01:15:46.665983-03:00",
-  "bill": {
-    "utility": "ENTEL PCS",
-    "collector": "2",
-    "category": "300",
-    "identifier": "173379595",
-    "mc_code": "799378736",
-    "amount": 94290,
-    "due_date": "2015-02-23"
+  "response_code": 88,
+  "response_message": "APROBADA",
+  "data": {
+    "mc_code": "1574199124",
+    "authorization_code": "74193362",
+    "date_time": "20190415155445",
+    "debts": [
+      {
+        "due_date": "No disponible",
+        "payment_amount": 597434,
+        "total_amount": 597430,
+        "adjustment_amount": -4,
+        "agreement": "6621",
+        "confirmation": "SI",
+        "authorizer": "EFT",
+        "bill_payment_info": "Pago Cuentas Multicaja",
+        "pay_validation": "1",
+        "mc_relation_code": "1574199124",
+        "rsp_authorization_code": "74193362",
+        "rsp_data_time": "20190415155445",
+        "adjustment": "-4",
+        "rsp_mc_code": "1574199124",
+        "rsp_client_id": "113920335",
+        "rsp_agreement_id": "6621",
+        "rsp_agreement_version_id": "1",
+        "rsp_amount": "597434",
+        "rsp_due_date": "No disponible",
+        "rsp_data_invoice": "order:1;clientNumber:113920335;amount:597434;"
+      }
+    ],
+    "debt_data_id": 131
   }
 }
-```
 
-Response - Without debt  
-```
-204 No Content
-```
-
-## `GET /utility-payments/v1/transactions/{id}`
-**Obtiene los detalles de un pago de cuenta**
-
-Request
-```bash
-curl --request GET \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1 \
---header 'Content-Type: application/json'
-```
-Response
-```json
+{"firm":"ENTEL PCS","collector":"2","payment_id":"126617852"}
 {
-  "id": "eaa7f715372d4b71a7fe00402d391df1",
-  "status": "WAITING",
-  "buy_order": 20190223214030002,
-  "amount": 94290,
-  "payment_method": "EFT",
-  "email": "carlos.izquierdo@multicaja.cl",
-  "created": "2019-02-23T21:40:30.362763-03:00",
-  "updated": "2019-02-23T21:41:19.216-03:00",
-  "bill": {
-    "status": "PENDING",
-    "utility": "ENTEL PCS",
-    "collector": "2",
-    "identifier": "173379595",
-    "mc_code": "799378736",
-    "amount": 94290,
-    "due_date": "2015-02-23"
-  },
-  "eft": {
-    "status": "PENDING",
-    "order": "853121364954859"
+  "response_code": 88,
+  "response_message": "APROBADA",
+  "data": {
+    "mc_code": "1574391724",
+    "debts": [
+      {
+        "due_date": "10-04-2019",
+        "payment_amount": 41297,
+        "total_amount": 41300,
+        "adjustment_amount": 3,
+        "rsp_rut_client": "126617852",
+        "rsp_name_client": "LORETO NAVIA LOPEZ",
+        "rsp_invoice_number": "216414517",
+        "confirmation": "SI",
+        "authorizer": "EFT",
+        "bill_payment_info": "Pago Cuentas Multicaja",
+        "adjustment": "3",
+        "rsp_mc_code": "1574391724",
+        "rsp_client_id": "126617852",
+        "rsp_agreement_id": "1",
+        "rsp_agreement_version_id": "1",
+        "rsp_amount": "41297",
+        "rsp_due_date": "10-04-2019"
+      }
+    ],
+    "debt_data_id": 136
   }
 }
-```
-
-## `POST /utility-payments/v1/transactions/{id}/webpay`
-**Inicia el proceso para pagar un pago de cuenta con webpay**
-
-Request
-```bash
-curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1/webpay \
---header 'Content-Type: application/json' \
---data '{"email": "carlos.izquierdo@multicaja.cl"}'
-```
-Response
-```json
-{
-  "token": "e8863e2f2d9e4d83b09d978c18403d6a20f1a6febb40c22d8342b2ae173f1d5b",
-  "url": "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
-}
-```
-
-## `POST /utility-payments/v1/transactions/{id}/eft`
-**Inicia el proceso para pagar un pago de cuenta con transferencia**
-
-Request
-```bash
-curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1/eft \
---header 'Content-Type: application/json' \
---data '{"email": "carlos.izquierdo@multicaja.cl"}'
-```
-Response
-```json
-{
-  "url": "https://10.170.1.11:9191/bdp/order.xhtml?id=853121364954859"
-}
-```
-
-## `POST /utility-payments/v1/transactions/{id}/receipt`
-**Reenvía el comprobante de un pago de cuenta**
-
-Request
-```bash
-curl --request POST \
---url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/transactions/eaa7f715372d4b71a7fe00402d391df1/receipt \
---header 'Content-Type: application/json' \
---data '{"email": "carlos.izquierdo@multicaja.cl","recaptcha": "03AOLTBLTVBtniCIGwS_N4XFQAQ3d5vXsQJp8kYLRsDcqhBUEf2mh8onvgXDOJ_e5mgk7qgNOXOlihtvc4GzV75D6vIsbEfrVb1ha-jmnW-1RzopTSKvNi-0PqttZPrYDqF8ApYfrSKLOPX8WY0uMX4HsfiwVGjZ0MNN8pcLloREsXEsQ-_lZvgOBD8g0eEB-P2jtdFntdnSQR-lvJN2krFqu0X679KkMHq5C1WNAlP_mZW4huwSenvNFUcNZku3-zXgOMzXhpppAhy4ovEqP8GtIUOlcR9vMKn7TkQUOgEwJf7-vvwEo-dlygU2cT9XhaVQpGfddOYm1iNTPsIaFksypT169DAFsn6bW-WMDSUfj6UvlTRnGkwxU"}'
-```
-Response
-```json
-200 - OK
 ```
 
 # Git
