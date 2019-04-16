@@ -1,5 +1,73 @@
 # Endpoints
 
+## `GET /utility-payments/v1/categories`
+**Obtiene las categorías de los convenios de pago de cuenta**
+
+Request
+```bash
+curl --request GET \
+--url https://multipay.staging.multicajadigital.cloud/utility-payments/v1/categories \
+--header 'Content-Type: application/json'
+```
+
+Response
+```json
+[
+    {
+        "id": "100",
+        "name": "AGUA"
+    },
+    {
+        "id": "200",
+        "name": "LUZ"
+    },
+    {
+        "id": "300",
+        "name": "TELEF-TV-INTERNET"
+    },
+    {
+        "id": "400",
+        "name": "GAS"
+    },
+    {
+        "id": "500",
+        "name": "AUTOPISTAS"
+    },
+    {
+        "id": "600",
+        "name": "COSMETICA"
+    },
+    {
+        "id": "700",
+        "name": "RETAIL"
+    },
+    {
+        "id": "800",
+        "name": "CREDITO-FINANCIERA"
+    },
+    {
+        "id": "900",
+        "name": "SEGURIDAD"
+    },
+    {
+        "id": "1000",
+        "name": "EDUCACION"
+    },
+    {
+        "id": "1100",
+        "name": "CEMENTERIO"
+    },
+    {
+        "id": "1200",
+        "name": "OTRAS EMPRESAS"
+    },
+    {
+        "id": "1300",
+        "name": "EFECTIVO MULTICAJA"
+    }
+]
+```
+
 ## `GET /utility-payments/v1/utilities`
 **Obtiene los convenios de pago de cuenta**
 
