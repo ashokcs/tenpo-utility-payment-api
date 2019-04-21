@@ -4,15 +4,17 @@ import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Transferencia;
 
-public class SendReceiptEftEvent
+public class SendReceipTransferenciaEvent
 {
-	private final Transaction transaction;
 	private final Bill bill;
+	private final Transaction transaction;
 	private final Transferencia transferencia;
 
-	public SendReceiptEftEvent(final Transaction transaction,
-		final Bill bill, final Transferencia transferencia)
-	{
+	public SendReceipTransferenciaEvent(
+		final Bill bill,
+		final Transaction transaction,
+		final Transferencia transferencia
+	){
 		this.transaction = transaction;
 		this.bill = bill;
 		this.transferencia = transferencia;

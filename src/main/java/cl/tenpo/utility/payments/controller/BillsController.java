@@ -6,7 +6,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,23 +24,26 @@ import cl.tenpo.utility.payments.util.http.UtilitiesClient;
  * @author Carlos Izquierdo
  */
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(
+	consumes = MediaType.APPLICATION_JSON_VALUE,
+	produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class BillsController
 {
-	private final UtilitiesClient utilityPaymentClient;
 	private final BillService billService;
+	private final UtilitiesClient utilityPaymentClient;
 
 	public BillsController(
-		final UtilitiesClient utilityPaymentClient,
-		final BillService billService
+			final BillService billService,
+		final UtilitiesClient utilityPaymentClient
 	){
-		this.utilityPaymentClient = utilityPaymentClient;
 		this.billService = billService;
+		this.utilityPaymentClient = utilityPaymentClient;
 	}
 
 	@Transactional
 	@PostMapping("/v1/bills")
-	public ResponseEntity<List<Bill>> bills(
+	public List<Bill> bills(
 		@RequestBody @Valid final BillsRequest request
 	){
 		// get request parameters
@@ -71,10 +73,9 @@ public class BillsController
 			bill.setQueryId(b.getDebtDataId());
 			bill.setQueryOrder(b.getOrder());
 			bill.setQueryTransactionId(b.getMcCode());
-			billService.save(bill).orElseThrow(ServerErrorException::new);;
+			billService.save(bill).orElseThrow(ServerErrorException::new);
 			result.add(bill);
 		}
-
-		return ResponseEntity.ok(result);
+		return result;
 	}
 }

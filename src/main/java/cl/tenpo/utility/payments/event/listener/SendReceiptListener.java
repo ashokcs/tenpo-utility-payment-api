@@ -4,7 +4,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import cl.tenpo.utility.payments.event.SendReceiptEftEvent;
+import cl.tenpo.utility.payments.event.SendReceipTransferenciaEvent;
 import cl.tenpo.utility.payments.event.SendReceiptWebpayEvent;
 import cl.tenpo.utility.payments.util.http.SendgridClient;
 
@@ -27,7 +27,7 @@ public class SendReceiptListener
 
 	@Async
 	@EventListener
-	public void onMessageEft(final SendReceiptEftEvent event)
+	public void onMessageEft(final SendReceipTransferenciaEvent event)
 	{
 		sendgrid.sendReceipt(event);
 	}

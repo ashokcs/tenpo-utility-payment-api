@@ -18,6 +18,9 @@ import cl.tenpo.utility.payments.dto.Utility;
 import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.util.http.UtilitiesClient;
 
+/**
+ * @author Carlos Izquierdo
+ */
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class UtilitiesController

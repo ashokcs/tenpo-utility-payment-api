@@ -33,6 +33,9 @@ import cl.tenpo.utility.payments.util.Utils;
 import cl.tenpo.utility.payments.util.http.UtilitiesClient;
 import cl.tenpo.utility.payments.util.http.WebpayClient;
 
+/**
+ * @author Carlos Izquierdo
+ */
 @RestController
 public class WebpayController
 {
@@ -126,7 +129,7 @@ public class WebpayController
 					transactionService.save(transaction);
 
 					// publish send receipt
-					eventPublisher.publishEvent(new SendReceiptWebpayEvent(transaction, bill, webpay));
+					eventPublisher.publishEvent(new SendReceiptWebpayEvent(bill, transaction, webpay));
 
 				} else {
 					// update bill
@@ -220,10 +223,10 @@ public class WebpayController
 		return false;
 	}
 
-	private String getRedirectErrorUrl(final String utilityPaymentPublicId)
+	private String getRedirectErrorUrl(final String transactionPublicId)
 	{
-		if ((utilityPaymentPublicId != null) && !utilityPaymentPublicId.isEmpty()) {
-			return properties.webpayFrontErrorOrder.replaceAll("\\{id\\}", utilityPaymentPublicId);
+		if ((transactionPublicId != null) && !transactionPublicId.isEmpty()) {
+			return properties.webpayFrontErrorOrder.replaceAll("\\{id\\}", transactionPublicId);
 		}
 		return properties.webpayFrontError;
 	}

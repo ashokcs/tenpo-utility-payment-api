@@ -16,7 +16,7 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 
-import cl.tenpo.utility.payments.event.SendReceiptEftEvent;
+import cl.tenpo.utility.payments.event.SendReceipTransferenciaEvent;
 import cl.tenpo.utility.payments.event.SendReceiptWebpayEvent;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
@@ -40,9 +40,9 @@ public class SendgridClient
 	public void sendReceipt(final SendReceiptWebpayEvent event)
 	{
 		try {
-			final Transaction transaction = event.getUtilityPaymentTransaction();
-			final Bill bill = event.getUtilityPaymentBill();
-			final Webpay webpay = event.getUtilityPaymentWebpay();
+			final Transaction transaction = event.getTransaction();
+			final Bill bill = event.getBill();
+			final Webpay webpay = event.getWebpay();
 
 			final Mail mail = getReceiptMail(transaction, properties.mailUtilityPaymentsReceiptWebpayTemplate);
 			final Personalization personalization = mail.getPersonalization().get(0);
@@ -75,7 +75,7 @@ public class SendgridClient
 	    }
 	}
 
-	public void sendReceipt(final SendReceiptEftEvent event)
+	public void sendReceipt(final SendReceipTransferenciaEvent event)
 	{
 		try {
 			final Transaction transaction = event.getTransaction();

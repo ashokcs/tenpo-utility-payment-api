@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.dto.TefGetOrderStatusResponse;
+import cl.tenpo.utility.payments.dto.TransferenciaStatusResponse;
 import cl.tenpo.utility.payments.dto.UtilityConfirmResponse;
-import cl.tenpo.utility.payments.event.SendReceiptEftEvent;
+import cl.tenpo.utility.payments.event.SendReceipTransferenciaEvent;
 import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.exception.UnauthorizedException;
@@ -103,10 +103,10 @@ public class TransferenciaController
 			final Bill bill = billService.getWaitingByTransactionId(transferencia.getTransactionId()).orElseThrow(NotFoundException::new);
 
 			// get eft remote status
-			final TefGetOrderStatusResponse tefGetOrderStatusResponse = transferenciaClient.getOrderStatus(transferencia)
+			final TransferenciaStatusResponse transferenciaStatusResponse = transferenciaClient.getOrderStatus(transferencia)
 					.orElseThrow(ServerErrorException::new);
 
-			switch (tefGetOrderStatusResponse.getOrderStatus()) {
+			switch (transferenciaStatusResponse.getOrderStatus()) {
 			case 101: case 106: case 107: case 109:
 
 				// update transferencia status
@@ -136,7 +136,7 @@ public class TransferenciaController
 					transactionService.save(transaction);
 
 					// publish send receipt
-					applicationEventPublisher.publishEvent(new SendReceiptEftEvent(transaction, bill, transferencia));
+					applicationEventPublisher.publishEvent(new SendReceipTransferenciaEvent(bill, transaction, transferencia));
 
 					// return ok
 					final String response = notifyResponse();
@@ -170,11 +170,11 @@ public class TransferenciaController
 			transactionPublicId = transaction.getPublicId();
 
 			// get transferencia remote status
-			final Optional<TefGetOrderStatusResponse> tgosrOpt = transferenciaClient.getOrderStatus(transferencia);
+			final Optional<TransferenciaStatusResponse> tsrOpt = transferenciaClient.getOrderStatus(transferencia);
 
-			if (tgosrOpt.isPresent()) {
-				final TefGetOrderStatusResponse  tgosr = tgosrOpt.get();
-				switch (tgosr.getOrderStatus()) {
+			if (tsrOpt.isPresent()) {
+				final TransferenciaStatusResponse tsr = tsrOpt.get();
+				switch (tsr.getOrderStatus()) {
 
 				// pending, paid, notified_mc, notified_ecom, notified_con
 				case 100: case 101: case 106: case 107: case 109:
@@ -205,10 +205,10 @@ public class TransferenciaController
 		return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, url).build();
 	}
 
-	private String getRedirectErrorUrl(final String utilityPaymentTransactionPublicId)
+	private String getRedirectErrorUrl(final String transactionPublicId)
 	{
-		if ((utilityPaymentTransactionPublicId != null) && (!utilityPaymentTransactionPublicId.isEmpty())) {
-			return properties.eftFrontErrorOrder.replaceAll("\\{id\\}", utilityPaymentTransactionPublicId);
+		if ((transactionPublicId != null) && (!transactionPublicId.isEmpty())) {
+			return properties.eftFrontErrorOrder.replaceAll("\\{id\\}", transactionPublicId);
 		}
 		return properties.eftFrontError;
 	}

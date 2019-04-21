@@ -1,6 +1,6 @@
 package cl.tenpo.utility.payments.dto;
 
-public class TefGetOrderStatusResponse
+public class TransferenciaStatusResponse
 {
 	private int orderStatus;
 	private String description;

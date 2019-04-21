@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cl.tenpo.utility.payments.dto.TefGetOrderStatusResponse;
+import cl.tenpo.utility.payments.dto.TransferenciaStatusResponse;
 import cl.tenpo.utility.payments.dto.TransferenciaOrderResponse;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Transferencia;
@@ -82,7 +82,7 @@ public class TransferenciaClient
 		return Optional.empty();
 	}
 
-	public Optional<TefGetOrderStatusResponse> getOrderStatus(final Transferencia utilityPaymentEft)
+	public Optional<TransferenciaStatusResponse> getOrderStatus(final Transferencia utilityPaymentEft)
 	{
 		try {
 			final String url = properties.eftGetOrderStatusUrl;
@@ -113,7 +113,7 @@ public class TransferenciaClient
 					final Matcher ecOrderIdMatcher = ecOrderIdPattern.matcher(body);
 
 					if (orderStatusMatcher.find() && ecOrderIdMatcher.find() && descriptionMatcher.find()) {
-						final TefGetOrderStatusResponse tefGetOrderStatusResponse = new TefGetOrderStatusResponse();
+						final TransferenciaStatusResponse tefGetOrderStatusResponse = new TransferenciaStatusResponse();
 						tefGetOrderStatusResponse.setOrderStatus(Integer.parseInt(orderStatusMatcher.group(1)));
 						tefGetOrderStatusResponse.setDescription(descriptionMatcher.group(1));
 						tefGetOrderStatusResponse.setEcoOrderId(ecOrderIdMatcher.group(1));

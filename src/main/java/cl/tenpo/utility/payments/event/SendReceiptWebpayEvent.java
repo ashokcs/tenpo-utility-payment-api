@@ -6,30 +6,32 @@ import cl.tenpo.utility.payments.jpa.entity.Webpay;
 
 public class SendReceiptWebpayEvent
 {
-	private final Transaction utilityPaymentTransaction;
-	private final Bill utilityPaymentBill;
-	private final Webpay utilityPaymentWebpay;
+	private final Bill bill;
+	private final Transaction transaction;
+	private final Webpay webpay;
 
-	public SendReceiptWebpayEvent(final Transaction utilityPaymentTransaction,
-		final Bill utilityPaymentBill, final Webpay utilityPaymentWebpay)
+	public SendReceiptWebpayEvent(
+		final Bill bill,
+		final Transaction transaction,
+		final Webpay webpay)
 	{
-		this.utilityPaymentTransaction = utilityPaymentTransaction;
-		this.utilityPaymentBill = utilityPaymentBill;
-		this.utilityPaymentWebpay = utilityPaymentWebpay;
+		this.transaction = transaction;
+		this.bill = bill;
+		this.webpay = webpay;
 	}
 
-	public Transaction getUtilityPaymentTransaction()
+	public Transaction getTransaction()
 	{
-		return utilityPaymentTransaction;
+		return transaction;
 	}
 
-	public Bill getUtilityPaymentBill()
+	public Bill getBill()
 	{
-		return utilityPaymentBill;
+		return bill;
 	}
 
-	public Webpay getUtilityPaymentWebpay()
+	public Webpay getWebpay()
 	{
-		return utilityPaymentWebpay;
+		return webpay;
 	}
 }

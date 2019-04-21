@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,7 @@ import cl.tenpo.utility.payments.dto.ReceiptRequest;
 import cl.tenpo.utility.payments.dto.TransactionRequest;
 import cl.tenpo.utility.payments.dto.TransferenciaOrderResponse;
 import cl.tenpo.utility.payments.dto.WebpayInitResponse;
-import cl.tenpo.utility.payments.event.SendReceiptEftEvent;
+import cl.tenpo.utility.payments.event.SendReceipTransferenciaEvent;
 import cl.tenpo.utility.payments.event.SendReceiptWebpayEvent;
 import cl.tenpo.utility.payments.exception.BadRequestException;
 import cl.tenpo.utility.payments.exception.NotFoundException;
@@ -40,7 +39,9 @@ import cl.tenpo.utility.payments.util.http.WebpayClient;
  * @author Carlos Izquierdo
  */
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(
+	produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class TransactionsController
 {
 	private final ApplicationEventPublisher eventPublisher;
@@ -73,11 +74,15 @@ public class TransactionsController
 	}
 
 	@Transactional
-	@RequestMapping(path = "/v1/transactions", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Transaction> create(
+	@RequestMapping(
+		path = "/v1/transactions",
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE
+	)
+	public Transaction create(
 		@RequestBody @Valid final TransactionRequest request
 	){
-		// get bill
+		// get bill by public_id
 		final Bill bill = billService.findWaitingByPublicId(request.getBill()).orElseThrow(NotFoundException::new);
 
 		// create transaction
@@ -130,7 +135,7 @@ public class TransactionsController
 			transaction.setTransferencia(transferencia);
 		}
 
-		return ResponseEntity.ok(transaction);
+		return transaction;
 	}
 
 	@GetMapping("/v1/transactions/{id:[0-9a-f\\-]{36}}")
@@ -139,15 +144,11 @@ public class TransactionsController
 		final Transaction transaction = transactionService.findByPublicId(publicId).orElseThrow(NotFoundException::new);
 		transaction.setBill(billService.findByTransactionId(transaction.getId()).orElse(null));
 
-		switch (transaction.getPaymentMethod()) {
-		case Transaction.WEBPAY:
+		if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {
 			transaction.setWebpay(webpayService.findByTransactionId(transaction.getId()).orElse(null));
-			break;
-		case Transaction.TRANSFERENCIA:
+		} else if (transaction.getPaymentMethod().equals(Transaction.TRANSFERENCIA)) {
 			transaction.setTransferencia(transferenciaService.findByTransactionId(transaction.getId()).orElse(null));
-			break;
 		}
-
 		return transaction;
 	}
 
@@ -166,11 +167,11 @@ public class TransactionsController
 
 		if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {
 			final Webpay webpay = webpayService.findByTransactionId(transaction.getId()).orElseThrow(NotFoundException::new);
-			eventPublisher.publishEvent(new SendReceiptWebpayEvent(transaction, bill, webpay));
+			eventPublisher.publishEvent(new SendReceiptWebpayEvent(bill, transaction, webpay));
 
 		} else if (transaction.getPaymentMethod().equals(Transaction.TRANSFERENCIA)) {
 			final Transferencia transferencia = transferenciaService.findByTransactionId(transaction.getId()).orElseThrow(NotFoundException::new);
-			eventPublisher.publishEvent(new SendReceiptEftEvent(transaction, bill, transferencia));
+			eventPublisher.publishEvent(new SendReceipTransferenciaEvent(bill, transaction, transferencia));
 		}
 	}
 }
