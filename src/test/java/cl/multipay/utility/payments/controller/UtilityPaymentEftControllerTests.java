@@ -23,17 +23,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cl.multipay.utility.payments.dto.MulticajaPayBillResponse;
-import cl.multipay.utility.payments.entity.UtilityPaymentBill;
-import cl.multipay.utility.payments.entity.UtilityPaymentEft;
-import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
-import cl.multipay.utility.payments.http.UtilityPaymentClient;
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.multipay.utility.payments.service.UtilityPaymentBillService;
-import cl.multipay.utility.payments.service.UtilityPaymentEftService;
-import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
-import cl.multipay.utility.payments.util.Properties;
-import cl.multipay.utility.payments.util.Utils;
+import cl.tenpo.utility.payments.dto.UtilityConfirmResponse;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Transaction;
+import cl.tenpo.utility.payments.jpa.entity.Transferencia;
+import cl.tenpo.utility.payments.service.BillService;
+import cl.tenpo.utility.payments.service.TransactionService;
+import cl.tenpo.utility.payments.service.TransferenciaService;
+import cl.tenpo.utility.payments.util.Properties;
+import cl.tenpo.utility.payments.util.Utils;
+import cl.tenpo.utility.payments.util.http.UtilitiesClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -46,13 +46,13 @@ public class UtilityPaymentEftControllerTests
 	private MockMvc mockMvc;
 
 	@Autowired
-	private UtilityPaymentEftService utilityPaymentEftService;
+	private TransferenciaService utilityPaymentEftService;
 
 	@Autowired
-	private UtilityPaymentTransactionService utilityPaymentTransactionService;
+	private TransactionService utilityPaymentTransactionService;
 
 	@Autowired
-	private UtilityPaymentBillService utilityPaymentBillService;
+	private BillService utilityPaymentBillService;
 
 	@Autowired
 	private Utils utils;
@@ -64,7 +64,7 @@ public class UtilityPaymentEftControllerTests
 	private CloseableHttpClient client;
 
 	@MockBean
-	private UtilityPaymentClient utilityPaymentClient;
+	private UtilitiesClient utilityPaymentClient;
 
 	@Test
 	public void tefReturn_shouldReturnNotFound_withInvalidParameters1() throws Exception
@@ -87,11 +87,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a1";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d1";
 		final String mcOrderId = "526415205094961";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>105</orderStatus><description>CANCELLED</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
@@ -106,11 +106,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a2";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d2";
 		final String mcOrderId = "526415205094962";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
@@ -125,11 +125,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a3";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d3";
 		final String mcOrderId = "526415205094963";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
@@ -144,11 +144,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a4";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d4";
 		final String mcOrderId = "526415205094963";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
@@ -187,11 +187,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a5";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d5";
 		final String mcOrderId = "526415205094964";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", "738b0aa174544c4a92e511b904ed32a5", "5e0a1eeace5d4708b74c5e9029bae3d5")
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
@@ -204,11 +204,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a6";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d6";
 		final String mcOrderId = "526415205094964";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, "5e0a1eeace5d4708b74c5e9029bae3dd")
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
@@ -221,11 +221,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a7";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d7";
 		final String mcOrderId = "526415205094964";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic asdasdasd"))
@@ -238,11 +238,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.PENDING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.PENDING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a8";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d8";
 		final String mcOrderId = "526415205094964";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.eftNotifyBasicAuth))
@@ -255,15 +255,15 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32a9";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3d9";
 		final String mcOrderId = "526415205094965";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>101</orderStatus><description>PAID</description><ecOrderId>123123</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK, ContentType.TEXT_XML));
-		when(utilityPaymentClient.payBill(any(), any(), any())).thenReturn(Optional.of(new MulticajaPayBillResponse()));
+		when(utilityPaymentClient.payBill(any(), any(), any())).thenReturn(Optional.of(new UtilityConfirmResponse()));
 
 		mockMvc.perform(post("/v1/payments/eft/notify/{id}/{notifyId}", tefPublicId, tefNotifyId)
 				.contentType(MediaType.TEXT_XML).header("Authorization", "Basic " + properties.eftNotifyBasicAuth))
@@ -276,11 +276,11 @@ public class UtilityPaymentEftControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionlMock(Transaction.WAITING, uuid, buyOrder);
 		final String tefPublicId = "738b0aa174544c4a92e511b904ed32f1";
 		final String tefNotifyId = "5e0a1eeace5d4708b74c5e9029bae3f1";
 		final String mcOrderId = "526415205094966";
-		final UtilityPaymentEft utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
+		final Transferencia utilityPaymentEft = createUtilityPaymentEftMock(utilityPaymentTransaction, tefPublicId, tefNotifyId, mcOrderId);
 
 		final String responseEntity = "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><getOrderStatusResponse xmlns=\"http://getorderstatus.ws.boton.multicaja.cl/\"><getOrderStatusResult><orderStatus>100</orderStatus><description>PENDING</description><ecOrderId>1201902141550020021</ecOrderId></getOrderStatusResult></getOrderStatusResponse></S:Body></S:Envelope>";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
@@ -291,9 +291,9 @@ public class UtilityPaymentEftControllerTests
 			.andExpect(status().isInternalServerError());
 	}
 
-	private UtilityPaymentTransaction createUtilityPaymentTransactionlMock(final String status, final String uuid, final Long buyOrder)
+	private Transaction createUtilityPaymentTransactionlMock(final String status, final String uuid, final Long buyOrder)
 	{
-		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
+		final Transaction utilityPaymentTransaction = new Transaction();
 		utilityPaymentTransaction.setPublicId(uuid);
 		utilityPaymentTransaction.setStatus(status);
 		utilityPaymentTransaction.setAmount(1000L);
@@ -302,12 +302,12 @@ public class UtilityPaymentEftControllerTests
 		utilityPaymentTransaction.setBuyOrder(buyOrder);
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
-		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
-		utilityPaymentBill.setStatus(UtilityPaymentBill.PENDING);
+		final Bill utilityPaymentBill = new Bill();
+		utilityPaymentBill.setStatus(Bill.PENDING);
 		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentBill.setUtility("TEST");
-		utilityPaymentBill.setCollector("2");
-		utilityPaymentBill.setCategory("100");
+		utilityPaymentBill.setCollectorId("2");
+		utilityPaymentBill.setCategoryId("100");
 		utilityPaymentBill.setIdentifier("123123");
 		utilityPaymentBill.setMcCode1("12312312321");
 		utilityPaymentBill.setAmount(123123L);
@@ -318,12 +318,12 @@ public class UtilityPaymentEftControllerTests
 		return utilityPaymentTransaction;
 	}
 
-	private UtilityPaymentEft createUtilityPaymentEftMock(final UtilityPaymentTransaction utilityPaymentTransaction, final String tefPublicId,
+	private Transferencia createUtilityPaymentEftMock(final Transaction utilityPaymentTransaction, final String tefPublicId,
 		final String tefNotifyId, final String mcOrderId)
 	{
-		final UtilityPaymentEft utilityPaymentEft = new UtilityPaymentEft();
+		final Transferencia utilityPaymentEft = new Transferencia();
 		utilityPaymentEft.setTransactionId(utilityPaymentTransaction.getId());
-		utilityPaymentEft.setStatus(UtilityPaymentEft.PENDING);
+		utilityPaymentEft.setStatus(Transferencia.PENDING);
 		utilityPaymentEft.setPublicId(tefPublicId);
 		utilityPaymentEft.setNotifyId(tefNotifyId);
 		utilityPaymentEft.setOrder(mcOrderId);

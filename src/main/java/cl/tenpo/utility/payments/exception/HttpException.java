@@ -1,0 +1,16 @@
+package cl.tenpo.utility.payments.exception;
+
+public class HttpException extends RuntimeException
+{
+	private static final long serialVersionUID = 1L;
+
+	public HttpException()
+	{
+
+	}
+
+	public HttpException(final String message)
+	{
+		super(message);
+	}
+}

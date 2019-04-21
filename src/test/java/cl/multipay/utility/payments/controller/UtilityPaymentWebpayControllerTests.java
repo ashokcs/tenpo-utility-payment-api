@@ -22,17 +22,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cl.multipay.utility.payments.dto.WebpayResultResponse;
-import cl.multipay.utility.payments.entity.UtilityPaymentBill;
-import cl.multipay.utility.payments.entity.UtilityPaymentTransaction;
-import cl.multipay.utility.payments.entity.UtilityPaymentWebpay;
-import cl.multipay.utility.payments.http.WebpayClient;
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.multipay.utility.payments.service.UtilityPaymentBillService;
-import cl.multipay.utility.payments.service.UtilityPaymentTransactionService;
-import cl.multipay.utility.payments.service.UtilityPaymentWebpayService;
-import cl.multipay.utility.payments.util.Properties;
-import cl.multipay.utility.payments.util.Utils;
+import cl.tenpo.utility.payments.dto.WebpayResultResponse;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Transaction;
+import cl.tenpo.utility.payments.jpa.entity.Webpay;
+import cl.tenpo.utility.payments.service.BillService;
+import cl.tenpo.utility.payments.service.TransactionService;
+import cl.tenpo.utility.payments.service.WebpayService;
+import cl.tenpo.utility.payments.util.Properties;
+import cl.tenpo.utility.payments.util.Utils;
+import cl.tenpo.utility.payments.util.http.WebpayClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -47,13 +47,13 @@ public class UtilityPaymentWebpayControllerTests
 	private Properties properties;
 
 	@Autowired
-	private UtilityPaymentTransactionService utilityPaymentTransactionService;
+	private TransactionService utilityPaymentTransactionService;
 
 	@Autowired
-	private UtilityPaymentBillService utilityPaymentBillService;
+	private BillService utilityPaymentBillService;
 
 	@Autowired
-	private UtilityPaymentWebpayService utilityPaymentWebpayService;
+	private WebpayService utilityPaymentWebpayService;
 
 	@Autowired
 	private Utils utils;
@@ -87,9 +87,9 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000001L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e1";
-		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.PENDING, token);
+		final Webpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, Webpay.PENDING, token);
 		when(webpayClient.result(any())).thenReturn(Optional.empty());
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", utilityPaymentWebpay.getToken()))
 			.andDo(print())
@@ -101,9 +101,9 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000002L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e2";
-		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.PENDING, token);
+		final Webpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, Webpay.PENDING, token);
 
 		final String responseEntity = "{\"response_code\": 1,\"response_message\": \"APROBADA\",\"data\": {\"authorization_code\": \"1231313\",\"date\": \"06/03/2019\",\"hour\": \"09:25:46\",\"mc_code\": \"799483722\",\"confirm_payment_id\":123,\"tx_state_iso\":\"APROBADO\"}}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(responseEntity, HttpStatus.OK));
@@ -120,9 +120,9 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000003L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.WAITING, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.WAITING, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e3";
-		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.PENDING, token);
+		final Webpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, Webpay.PENDING, token);
 		when(webpayClient.result(any())).thenReturn(createWebpayResultResponseMock(utilityPaymentTransaction, -1));
 		when(webpayClient.ack(any())).thenReturn(Optional.of(true));
 		mockMvc.perform(post("/v1/payments/webpay/return").param("token_ws", utilityPaymentWebpay.getToken()))
@@ -143,9 +143,9 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000004L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.SUCCEEDED, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.SUCCEEDED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e4e4";
-		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.ACKNOWLEDGED, token);
+		final Webpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, Webpay.ACKNOWLEDGED, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("token_ws", utilityPaymentWebpay.getToken()))
 			.andDo(print())
 			.andExpect(status().isFound());
@@ -156,9 +156,9 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000005L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.FAILED, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.FAILED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e454";
-		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.ACKNOWLEDGED, token);
+		final Webpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, Webpay.ACKNOWLEDGED, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("token_ws", utilityPaymentWebpay.getToken()))
 			.andDo(print())
 			.andExpect(status().isFound());
@@ -169,9 +169,9 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000006L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.FAILED, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.FAILED, uuid, buyOrder);
 		final String token = "ecf517e45c7e103b51e532a73183a8b3b003a75075a9347e0895613598d8e456";
-		final UtilityPaymentWebpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, UtilityPaymentWebpay.ACKNOWLEDGED, token);
+		final Webpay utilityPaymentWebpay = createUtilityPaymentWebpayMock(utilityPaymentTransaction, Webpay.ACKNOWLEDGED, token);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("TBK_TOKEN", utilityPaymentWebpay.getToken()))
 			.andDo(print())
 			.andExpect(status().isOk());
@@ -182,15 +182,15 @@ public class UtilityPaymentWebpayControllerTests
 	{
 		final String uuid = utils.uuid();
 		final Long buyOrder = 1201902112113000007L;
-		final UtilityPaymentTransaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(UtilityPaymentTransaction.FAILED, uuid, buyOrder);
+		final Transaction utilityPaymentTransaction = createUtilityPaymentTransactionMock(Transaction.FAILED, uuid, buyOrder);
 		mockMvc.perform(post("/v1/payments/webpay/final").param("TBK_ORDEN_COMPRA", utilityPaymentTransaction.getBuyOrder().toString()))
 			.andDo(print())
 			.andExpect(status().isFound());
 	}
 
-	private UtilityPaymentTransaction createUtilityPaymentTransactionMock(final String status, final String uuid, final Long buyOrder)
+	private Transaction createUtilityPaymentTransactionMock(final String status, final String uuid, final Long buyOrder)
 	{
-		final UtilityPaymentTransaction utilityPaymentTransaction = new UtilityPaymentTransaction();
+		final Transaction utilityPaymentTransaction = new Transaction();
 		utilityPaymentTransaction.setPublicId(uuid);
 		utilityPaymentTransaction.setStatus(status);
 		utilityPaymentTransaction.setAmount(1000L);
@@ -199,12 +199,12 @@ public class UtilityPaymentWebpayControllerTests
 		utilityPaymentTransaction.setBuyOrder(buyOrder);
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
-		final UtilityPaymentBill utilityPaymentBill = new UtilityPaymentBill();
-		utilityPaymentBill.setStatus(UtilityPaymentBill.PENDING);
+		final Bill utilityPaymentBill = new Bill();
+		utilityPaymentBill.setStatus(Bill.PENDING);
 		utilityPaymentBill.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentBill.setUtility("TEST");
-		utilityPaymentBill.setCollector("2");
-		utilityPaymentBill.setCategory("100");
+		utilityPaymentBill.setCollectorId("2");
+		utilityPaymentBill.setCategoryId("100");
 		utilityPaymentBill.setIdentifier("123123");
 		utilityPaymentBill.setMcCode1("12312312321");
 		utilityPaymentBill.setAmount(123123L);
@@ -215,10 +215,10 @@ public class UtilityPaymentWebpayControllerTests
 		return utilityPaymentTransaction;
 	}
 
-	private UtilityPaymentWebpay createUtilityPaymentWebpayMock(final UtilityPaymentTransaction utilityPaymentTransaction,
+	private Webpay createUtilityPaymentWebpayMock(final Transaction utilityPaymentTransaction,
 		final String status, final String token)
 	{
-		final UtilityPaymentWebpay utilityPaymentWebpay = new UtilityPaymentWebpay();
+		final Webpay utilityPaymentWebpay = new Webpay();
 		utilityPaymentWebpay.setTransactionId(utilityPaymentTransaction.getId());
 		utilityPaymentWebpay.setStatus(status);
 		utilityPaymentWebpay.setToken(token);
@@ -227,7 +227,7 @@ public class UtilityPaymentWebpayControllerTests
 		return utilityPaymentWebpay;
 	}
 
-	private Optional<WebpayResultResponse> createWebpayResultResponseMock(final UtilityPaymentTransaction utilityPaymentTransaction,
+	private Optional<WebpayResultResponse> createWebpayResultResponseMock(final Transaction utilityPaymentTransaction,
 		final int code)
 	{
 		final WebpayResultResponse webpayResponse = new WebpayResultResponse();

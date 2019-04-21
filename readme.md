@@ -1,18 +1,6 @@
-## Multipay: Utility Payments API
+## Tenpo: Utility Payments API
 
 # Development
-
-### Docker Compose (for PostgreSQL)
-```bash
-docker-compose -p multipay up
-docker run -it --rm --link multipay_postgres_1:postgres --net multipay_default postgres:9-alpine psql -h postgres -U multipay
-```
-
-### Run migrations
-```bash
-cd multipay-database-migrations
-./dbmate migrate
-```
 
 ### Spring Run & build
 ```bash
@@ -20,24 +8,22 @@ cd multipay-database-migrations
 ./gradlew bootRun
 ```
 
+### Docker Compose
+```bash
+docker-compose -p tenpo up
+docker run -it --rm --link tenpo_postgres_1:postgres --net tenpo_default postgres:9-alpine psql -h postgres -U tenpo
+```
+
 # Azure
 
 ### **Staging PostgreSQL Database**
 
 **Default User**  
-Host: postgres-db-staging.postgres.database.azure.com:5432  
-User: staging@postgres-db-staging  
-Pass: YDVxBXJSLNMjY8bf  
 ```bash
-psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging@postgres-db-staging -d multipay
-```
-
-**Create Multipay database and user**  
-```bash
-create user multipay with password 'multipay';
-grant multipay to prepago;
-create database multipay owner multipay;
-revoke multipay from prepago;
+# Host: postgres-db-staging.postgres.database.azure.com:5432
+# User: staging@postgres-db-staging
+# Pass: YDVxBXJSLNMjY8bf
+psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging@postgres-db-staging -d tenpo
 ```
 
 ### Enviroments
@@ -46,11 +32,6 @@ revoke multipay from prepago;
 **Sandbox**: 40.70.213.215  
 **Atlas**  : 168.61.187.123   
 **Apollo** : 40.70.213.171
-```
-
-### Local Urls
-```md
-- DB: postgres-db.external-svc.svc.cluster.local 5432
 ```
 
 ### **Container Registry**
@@ -67,12 +48,14 @@ Password: hwtF4xp8V2dhxWPCGv=ODCTEWgJTgTVc (docker_password)
 Create Order: https://www.multicaja.cl/bdpcows/CreateOrderWebService   
 Get Order Status: https://www.multicaja.cl/BDPGetOrderStatus/GetOrderStatusWebService   
 ```
+Remote WS
 commerce_id : 76828790
 branch_id   : 142809
 username    : multicaja
 password    : fJLQRFm67QNnbo
 base64      : bXVsdGljYWphOmZKTFFSRm02N1FObmJv
 
+Local WS
 notify_user : xNXxrkMmMxqD77GCn2Fw
 notify_pass : dd73MTANpLMCLMkRaMxN
 notify_auth : eE5YeHJrTW1NeHFENzdHQ24yRnc6ZGQ3M01UQU5wTE1DTE1rUmFNeE4=
@@ -85,6 +68,7 @@ Get Order Status: https://www.mcdesaqa.cl/BDPGetOrderStatus/GetOrderStatusWebSer
 Create Order: https://10.170.1.11:9191/bdpcows/CreateOrderWebService   
 Get Order Status: https://10.170.1.11:9191/BDPGetOrderStatus/GetOrderStatusWebService   
 ```
+Remote WS
 commerce_id : 16086857
 branch_id   : 118890
 username    : EcommerceWebRole
@@ -92,6 +76,7 @@ password    : EcommerceWebRole
 base64      : RWNvbW1lcmNlV2ViUm9sZTpFY29tbWVyY2VXZWJSb2xl
 User        : 10964112-K:1313
 
+Local WS
 notify_user : hyayvu58aK8SSFyHVqfz
 notify_pass : bnykHGZ8rKRZrJvR6H9M
 notify_auth : aHlheXZ1NThhSzhTU0Z5SFZxZno6Ym55a0hHWjhyS1Jackp2UjZIOU0=
@@ -306,18 +291,21 @@ DEUDA VENCIDA
 
 # Git
 ```sh
-git tag -a snapshot-v1.0.8 -m "snapshot-v1.0.8"
-git push bb snapshot-v1.0.8
-git push --delete bb snapshot-v1.0.8
-git tag --delete snapshot-v1.0.8
+git tag -a snapshot-v1.0.0 -m "snapshot-v1.0.0"
+git push bb snapshot-v1.0.0
+git push --delete bb snapshot-v1.0.0
+git tag --delete snapshot-v1.0.0
 
-git tag -a release-v1.0.8 -m "release-v1.0.8"
-git push bb release-v1.0.8
-git push --delete bb release-v1.0.8
-git tag --delete release-v1.0.8
+git tag -a release-v1.0.0 -m "release-v1.0.0"
+git push bb release-v1.0.0
+git push --delete bb release-v1.0.0
+git tag --delete release-v1.0.0
 
-git tag -a oti-v1.0.8 -m "oti-v1.0.8"
-git push bb oti-v1.0.8
-git push --delete bb oti-v1.0.8
-git tag --delete oti-v1.0.8
+git tag -a oti-v1.0.0 -m "oti-v1.0.0"
+git push bb oti-v1.0.0
+git push --delete bb oti-v1.0.0
+git tag --delete oti-v1.0.0
 ```
+
+# TODO 
+- Rename multipay package to tenpo

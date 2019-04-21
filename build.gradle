@@ -44,6 +44,7 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.apache.httpcomponents:httpclient:4.5.7')
 	implementation('com.sendgrid:sendgrid-java:4.3.0')
+	implementation('io.micrometer:micrometer-registry-prometheus:1.1.4')
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	runtimeOnly('org.postgresql:postgresql')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
