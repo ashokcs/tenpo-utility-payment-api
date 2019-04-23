@@ -8,6 +8,7 @@ tags:
   - name: utility payments
     description: Operaciones de pago de cuenta
 paths:
+
   /utility-payments/v1/categories:
     get:
       tags: 
