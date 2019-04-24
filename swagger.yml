@@ -3,7 +3,7 @@ info:
   title: Utility Payments
   version: 1.0.0
 servers:
-  - url: https://multipay.staging.multicajadigital.cloud
+  - url: https://tenpo.staging.multicajadigital.cloud
 tags:
   - name: utility payments
     description: Operaciones de pago de cuenta
@@ -24,6 +24,21 @@ paths:
                 items:
                   $ref: '#/components/schemas/Category'
 
+  /utility-payments/v1/payment-methods:
+    get:
+      tags: 
+        - utility payments
+      summary: Obtiene los métodos de pago disponibles
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentMethod'
+
   /utility-payments/v1/utilities:
     get:
       tags: 
@@ -39,6 +54,27 @@ paths:
                 items:
                   $ref: '#/components/schemas/Utility'
 
+  /utility-payments/v1/bills:
+    post:
+      tags:
+        - utility payments
+      summary: Obtiene las deudas de un identificador de pago de cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BillResponse'
+
   /utility-payments/v1/transactions:
     post:
       tags: 
@@ -49,14 +85,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UtilityPaymentRequest'
+              $ref: '#/components/schemas/TransactionRequest'
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UtilityPaymentTransaction'
+                $ref: '#/components/schemas/TransactionResponse'
 
   /utility-payments/v1/transactions/{id}:
     get:
@@ -76,59 +112,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UtilityPaymentTransaction'
-
-  /utility-payments/v1/transactions/{id}/webpay:
-    post:
-      tags: 
-        - utility payments
-      summary: Paga una transacción de pago de cuenta con Webpay
-      parameters: 
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Id de la transacción de pago de cuenta
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UtilityPaymentEmailRequest'
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UtilityPaymentWebpayResponse'
-
-  /utility-payments/v1/transactions/{id}/eft:
-    post:
-      tags: 
-        - utility payments
-      summary: Paga una transacción de pago de cuenta con Transferencia
-      parameters: 
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Id de la transacción de pago de cuenta
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UtilityPaymentEmailRequest'
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UtilityPaymentEftResponse'
+                $ref: '#/components/schemas/TransactionResponse'
 
   /utility-payments/v1/transactions/{id}/receipt:
     post:
@@ -147,145 +131,181 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UtilityPaymentReceiptRequest'
+              $ref: '#/components/schemas/ReceiptRequest'
       responses:
         200:
           description: successful operation
           
 components:
   schemas:
+    
     Utility:
       type: object
       properties:
-        friendly_name:
-          type: string
-          example: MUNDO PACIFICO
-        utility:
+        utility_code:
           type: string
           example: MUNDO_PACIFICO
-        collector:
+        utility_name:
+          type: string
+          example: Mundo Pacífico
+        collector_id:
           type: string
           example: 1
-        category:
+        collector_name:
           type: string
-          example: 300
+          example: "OTRO"
+        category_id:
+          type: string
+          example: 100
+        category_name:
+          type: string
+          example: AGUA
         identifiers:
           type: array
           items:
             type: string
           example: ["RUT", "CON DIGITO VERIFICADOR"]
+    
     Category:
       type: object
       properties:
-        id:
+        category_id:
           type: string
           example: 100
-        name:
+        category_name:
           type: string
           example: AGUA
-    UtilityPaymentRequest:
+    
+    PaymentMethod:
       type: object
       properties:
-        utility:
+        payment_method_code:
+          type: string
+          example: webpay
+        payment_method_name:
+          type: string
+          example: Webpay
+    
+    BillRequest:
+      type: object
+      properties:
+        utility_code:
           type: string
           example: MUNDO_PACIFICO
-        collector:
+        collector_id:
           type: string
           example: 1
-        category:
+        category_id:
           type: string
-          example: 300
+          example: 100
         identifier:
           type: string
-          example: 0106849927
-    UtilityPaymentTransaction:
+          example: 66823334
+
+    BillResponse:
       type: object
       properties:
         id:
           type: string
-          example: eaa7f715372d4b71a7fe00402d391df1
+          example: "fb7c3a5f-1db0-4ba0-ab72-a58db5f55f10"
         status:
           type: string
           example: WAITING
-        buy_order:
+        utility_code:
+          type: string
+          example: MUNDO_PACIFICO
+        utility_name:
+          type: string
+          example: Mundo Pacífico
+        collector_id:
+          type: string
+          example: 1
+        collector_name:
+          type: string
+          example: "OTRO"
+        category_id:
+          type: string
+          example: 100
+        category_name:
+          type: string
+          example: AGUA
+        identifier:
+          type: string
+          example: 66823334
+        amount: 
           type: integer
-          format: int64
-          example: 20190223214030002
-        amount:
-          type: integer
-          example: 94290
+          example: 5467
+        due_date:
+          type: string
+          example: No disponible
+        description:
+          type: string
+          example: Deuda Total
+    
+    TransactionRequest:
+      type: object
+      properties:
+        bill:
+          type: string
+          example: "fb7c3a5f-1db0-4ba0-ab72-a58db5f55f10"
+        email:
+          type: string
+          example: correo@ejemplo.cl
         payment_method:
           type: string
-          example: EFT
+          example: webpay
+    
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 51d95fc6-58e9-4bb0-a622-031cf08edc9c
+        status:
+          type: string
+          example: WAITING
+        order:
+          type: string
+          example: 120190424105826006
+        payment_method:
+          type: string
+          example: WEBPAY
+        amount:
+          type: integer
+          example: 7639
         email:
           type: string
-          example: carlos.izquierdo@multicaja.cl
+          example: correo@ejemplo.cl
         created:
           type: string
-          example: "2019-02-23T21:40:30.362763-03:00"
+          example: "2019-04-24T10:58:26.140605-04:00"
         updated:
           type: string
-          example: "2019-02-23T21:41:19.216-03:00"
+          example: "2019-04-24T10:58:26.140605-04:00"
         bill:
+          $ref: '#/components/schemas/BillResponse'
+        webpay:
           type: object
           properties:
-            status: 
+            id:
               type: string
-              example: PENDING
-            utility:
-              type: string
-              example: ENTEL PCS
-            collector:
-              type: string
-              example: 2
-            identifier:
-              type: string
-              example: 171379695
-            mc_code:
-              type: string
-              example: 799378736
-            amount:
-              type: integer
-              example: 94290
-            due_date:
-              type: string
-              example: "2015-02-23"
-        eft:
-          type: object
-          properties:
+              example: "1e97647a-e380-4cc8-ba71-6bbd85b5ed07"
             status:
               type: string
-              example: PENDING
-            order:
+              example: WAITING
+            url:
               type: string
-              example: 853121364954859
-    UtilityPaymentEmailRequest:
+              example: https://webpay3gint.transbank.cl/webpayserver/initTransaction
+            token:
+              type: string
+              example: e47d8c3c2707730fda36fc15d4418a556e3a1f2bbb7e8cacfff56c0d0bb2d2d0
+    
+    ReceiptRequest:
       type: object
       properties:
         email:
           type: string
-          example: carlos.izquierdo@multicaja.cl
-    UtilityPaymentWebpayResponse:
-      type: object
-      properties:
-        token:
-          type: string
-          example: e8863e2f2d9e4d83b09d978c18403d6a20f1a6febb40c22d8342b2ae173f1d5b
-        url:
-          type: string
-          example: "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
-    UtilityPaymentEftResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          example: "https://10.170.1.11:9191/bdp/order.xhtml?id=853121364954859"
-    UtilityPaymentReceiptRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          example: carlos.izquierdo@multicaja.cl
+          example: correo@ejemplo.cl
         recaptcha:
           type: string
           example: "03AOLTBLTVBtniCIGwS_N4XFQAQ3d5vXsQJp8kYLRsDcqhBUEf2mh8onvgXDOJ"
