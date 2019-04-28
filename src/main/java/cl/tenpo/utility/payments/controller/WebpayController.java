@@ -16,21 +16,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.dto.UtilityConfirmResponse;
-import cl.tenpo.utility.payments.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.event.SendReceiptWebpayEvent;
 import cl.tenpo.utility.payments.exception.HttpException;
 import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
+import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
+import cl.tenpo.utility.payments.object.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.TransactionService;
+import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.service.WebpayService;
 import cl.tenpo.utility.payments.util.Properties;
 import cl.tenpo.utility.payments.util.Utils;
-import cl.tenpo.utility.payments.util.http.UtilitiesClient;
+import cl.tenpo.utility.payments.util.http.UtilityClient;
 import cl.tenpo.utility.payments.util.http.WebpayClient;
 
 /**
@@ -45,7 +47,8 @@ public class WebpayController
 	private final BillService billService;
 	private final Properties properties;
 	private final TransactionService transactionService;
-	private final UtilitiesClient utilitiesClient;
+	private final UtilityClient utilitiesClient;
+	private final UtilityService utilityService;
 	private final WebpayService webpayService;
 	private final WebpayClient webpayClient;
 
@@ -54,7 +57,8 @@ public class WebpayController
 		final BillService billService,
 		final Properties properties,
 		final TransactionService transactionService,
-		final UtilitiesClient utilitiesClient,
+		final UtilityClient utilitiesClient,
+		final UtilityService utilityService,
 		final WebpayService webpayService,
 		final WebpayClient webpayClient
 	){
@@ -63,6 +67,7 @@ public class WebpayController
 		this.properties = properties;
 		this.transactionService = transactionService;
 		this.utilitiesClient = utilitiesClient;
+		this.utilityService = utilityService;
 		this.webpayService = webpayService;
 		this.webpayClient = webpayClient;
 	}
@@ -83,6 +88,8 @@ public class WebpayController
 			final Webpay webpay = webpayService.getWaitingByPublicIdAndToken(publicId, tokenWs).orElseThrow(NotFoundException::new);
 			final Transaction transaction = transactionService.getWaitingById(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			final Bill bill = billService.getWaitingByTransactionId(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
+			final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+			bill.setUtility(utility);
 			transactionPublicId = transaction.getPublicId();
 
 			// webpay get result

@@ -24,16 +24,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.tenpo.utility.payments.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Transferencia;
+import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.service.TransferenciaService;
 import cl.tenpo.utility.payments.util.Properties;
 import cl.tenpo.utility.payments.util.Utils;
-import cl.tenpo.utility.payments.util.http.UtilitiesClient;
+import cl.tenpo.utility.payments.util.http.UtilityClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -64,7 +64,7 @@ public class UtilityPaymentEftControllerTests
 	private CloseableHttpClient client;
 
 	@MockBean
-	private UtilitiesClient utilityPaymentClient;
+	private UtilityClient utilityPaymentClient;
 
 	@Test
 	public void tefReturn_shouldReturnNotFound_withInvalidParameters1() throws Exception

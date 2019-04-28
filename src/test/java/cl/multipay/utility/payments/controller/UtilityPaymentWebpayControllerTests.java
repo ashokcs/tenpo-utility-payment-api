@@ -23,10 +23,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.tenpo.utility.payments.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
+import cl.tenpo.utility.payments.object.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.service.WebpayService;

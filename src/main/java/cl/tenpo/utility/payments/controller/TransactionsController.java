@@ -13,10 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.dto.ReceiptRequest;
-import cl.tenpo.utility.payments.dto.TransactionRequest;
-import cl.tenpo.utility.payments.dto.TransferenciaOrderResponse;
-import cl.tenpo.utility.payments.dto.WebpayInitResponse;
 import cl.tenpo.utility.payments.event.SendReceipTransferenciaEvent;
 import cl.tenpo.utility.payments.event.SendReceiptWebpayEvent;
 import cl.tenpo.utility.payments.exception.BadRequestException;
@@ -25,10 +21,16 @@ import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Transferencia;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
+import cl.tenpo.utility.payments.object.dto.ReceiptRequest;
+import cl.tenpo.utility.payments.object.dto.TransactionRequest;
+import cl.tenpo.utility.payments.object.dto.TransferenciaOrderResponse;
+import cl.tenpo.utility.payments.object.dto.WebpayInitResponse;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.service.TransferenciaService;
+import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.service.WebpayService;
 import cl.tenpo.utility.payments.util.Utils;
 import cl.tenpo.utility.payments.util.http.RecaptchaClient;
@@ -50,6 +52,7 @@ public class TransactionsController
 	private final TransactionService transactionService;
 	private final TransferenciaClient transferenciaClient;
 	private final TransferenciaService transferenciaService;
+	private final UtilityService utilityService;
 	private final WebpayClient webpayClient;
 	private final WebpayService webpayService;
 
@@ -60,6 +63,7 @@ public class TransactionsController
 		final TransactionService transactionService,
 		final TransferenciaClient transferenciaClient,
 		final TransferenciaService transferenciaService,
+		final UtilityService utilityService,
 		final WebpayService webpayService,
 		final WebpayClient webpayClient
 	){
@@ -69,6 +73,7 @@ public class TransactionsController
 		this.transactionService = transactionService;
 		this.transferenciaClient = transferenciaClient;
 		this.transferenciaService = transferenciaService;
+		this.utilityService = utilityService;
 		this.webpayService = webpayService;
 		this.webpayClient = webpayClient;
 	}
@@ -82,12 +87,14 @@ public class TransactionsController
 	public Transaction create(
 		@RequestBody @Valid final TransactionRequest request
 	){
-		// get bill by public_id
+		// get bill
 		final Bill bill = billService.findWaitingByPublicId(request.getBill()).orElseThrow(NotFoundException::new);
+		final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+		bill.setUtility(utility);
 
 		// create transaction
-		final String id = Utils.uuid();
 		final String status = Transaction.WAITING;
+		final String id = Utils.uuid();
 		final String paymentMethod = Utils.getPaymentMethodName(request.getPaymentMethod());
 		final Long amount = bill.getAmount();
 		final String email = request.getEmail();
@@ -100,7 +107,7 @@ public class TransactionsController
 		transaction.setEmail(email);
 		transactionService.saveAndRefresh(transaction).orElseThrow(ServerErrorException::new);
 
-		// update bills
+		// update bill
 		bill.setTransactionId(transaction.getId());
 		billService.save(bill).orElseThrow(ServerErrorException::new);
 		transaction.setBill(bill);
@@ -142,7 +149,12 @@ public class TransactionsController
 	public Transaction get(@PathVariable("id") final String publicId)
 	{
 		final Transaction transaction = transactionService.findByPublicId(publicId).orElseThrow(NotFoundException::new);
-		transaction.setBill(billService.findByTransactionId(transaction.getId()).orElse(null));
+		final Bill bill = billService.findByTransactionId(transaction.getId()).orElse(null);
+		transaction.setBill(bill);
+
+		if (bill != null) {
+			bill.setUtility(utilityService.findById(bill.getUtilityId()).orElse(null));
+		}
 
 		if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {
 			transaction.setWebpay(webpayService.findByTransactionId(transaction.getId()).orElse(null));
@@ -163,6 +175,8 @@ public class TransactionsController
 		// get transaction by id and status
 		final Transaction transaction = transactionService.getSucceedByPublicId(publicId).orElseThrow(NotFoundException::new);
 		final Bill bill = billService.findByTransactionId(transaction.getId()).orElseThrow(NotFoundException::new);
+		final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+		bill.setUtility(utility);
 		transaction.setEmail(receiptRequest.getEmail());
 
 		if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {

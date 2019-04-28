@@ -1,7 +1,6 @@
 package cl.tenpo.utility.payments.util.http;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,21 +19,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cl.tenpo.utility.payments.dto.MulticajaBill;
-import cl.tenpo.utility.payments.dto.Utility;
-import cl.tenpo.utility.payments.dto.UtilityConfirmResponse;
+import cl.tenpo.utility.payments.object.dto.MCBill;
+import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.util.Properties;
-import cl.tenpo.utility.payments.util.Utils;
 
 @Component
-public class UtilitiesClient
+public class UtilityClient
 {
-	private static final Logger logger = LoggerFactory.getLogger(UtilitiesClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilityClient.class);
 
 	private final CloseableHttpClient client;
 	private final Properties properties;
 
-	public UtilitiesClient(final CloseableHttpClient client, final Properties properties)
+	public UtilityClient(final CloseableHttpClient client, final Properties properties)
 	{
 		this.client = client;
 		this.properties = properties;
@@ -64,7 +61,7 @@ public class UtilitiesClient
 		return Optional.empty();
 	}
 
-	public Optional<List<Utility>> getUtilities()
+	/*public Optional<List<Utility>> getUtilities()
 	{
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
@@ -139,11 +136,11 @@ public class UtilitiesClient
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
-	}
+	}*/
 
-	public List<MulticajaBill> getBills(final String utility, final String identifier, final String collector)
+	public List<MCBill> getBills(final String utility, final String identifier, final String collector)
 	{
-		final List<MulticajaBill> bills = new ArrayList<>();
+		final List<MCBill> bills = new ArrayList<>();
 		try {
 			final String url = properties.multicajaUtlitiesBillUrl;
 
@@ -178,7 +175,7 @@ public class UtilitiesClient
 						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
 						int number = 1;
 						for(final JsonNode bill : debtsJsonNode) {
-							final MulticajaBill tmp = new MulticajaBill();
+							final MCBill tmp = new MCBill();
 							tmp.setOrder(number);
 							tmp.setMcCode(dataJsonNode.get("mc_code").asText());
 							tmp.setDebtDataId(dataJsonNode.get("debt_data_id").asLong());

@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.dto;
+package cl.tenpo.utility.payments.object.dto;
 
 import java.time.LocalDateTime;
 

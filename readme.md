@@ -16,24 +16,6 @@ docker run -it --rm --link tenpo_postgres_1:postgres --net tenpo_default postgre
 
 # Azure
 
-### **Staging PostgreSQL Database**
-
-**Default User**  
-```bash
-# Host: postgres-db-staging.postgres.database.azure.com:5432
-# User: staging@postgres-db-staging
-# Pass: YDVxBXJSLNMjY8bf
-psql -h postgres-db-staging.postgres.database.azure.com -p 5432 -U staging@postgres-db-staging -d tenpo
-```
-
-### Enviroments
-```md
-**Staging**: 104.210.0.151  
-**Sandbox**: 40.70.213.215  
-**Atlas**  : 168.61.187.123   
-**Apollo** : 40.70.213.171
-```
-
 ### **Container Registry**
 ```
 Username: McContainerRegistry (docker_username)
@@ -59,27 +41,6 @@ Local WS
 notify_user : xNXxrkMmMxqD77GCn2Fw
 notify_pass : dd73MTANpLMCLMkRaMxN
 notify_auth : eE5YeHJrTW1NeHFENzdHQ24yRnc6ZGQ3M01UQU5wTE1DTE1rUmFNeE4=
-```
-## Integration
-Create Order: https://www.mcdesaqa.cl/bdpcows/CreateOrderWebService  
-Get Order Status: https://www.mcdesaqa.cl/BDPGetOrderStatus/GetOrderStatusWebService     
-
-## Development
-Create Order: https://10.170.1.11:9191/bdpcows/CreateOrderWebService   
-Get Order Status: https://10.170.1.11:9191/BDPGetOrderStatus/GetOrderStatusWebService   
-```
-Remote WS
-commerce_id : 16086857
-branch_id   : 118890
-username    : EcommerceWebRole
-password    : EcommerceWebRole
-base64      : RWNvbW1lcmNlV2ViUm9sZTpFY29tbWVyY2VXZWJSb2xl
-User        : 10964112-K:1313
-
-Local WS
-notify_user : hyayvu58aK8SSFyHVqfz
-notify_pass : bnykHGZ8rKRZrJvR6H9M
-notify_auth : aHlheXZ1NThhSzhTU0Z5SFZxZno6Ym55a0hHWjhyS1Jackp2UjZIOU0=
 ```
 
 ## Categories
@@ -308,4 +269,4 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
-- Rename multipay package to tenpo
+- Receipt email look and feel

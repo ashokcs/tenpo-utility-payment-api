@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
-@Table(name = "utility_payment_transactions")
+@Table(name = "transactions")
 @JsonPropertyOrder({
 	"id",
     "status",

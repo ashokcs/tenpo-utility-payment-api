@@ -18,10 +18,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cl.tenpo.utility.payments.dto.WebpayInitResponse;
-import cl.tenpo.utility.payments.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
+import cl.tenpo.utility.payments.object.dto.WebpayInitResponse;
+import cl.tenpo.utility.payments.object.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.util.Properties;
 
 @Component

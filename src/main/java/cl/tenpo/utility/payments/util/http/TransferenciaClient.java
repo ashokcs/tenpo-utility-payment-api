@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cl.tenpo.utility.payments.dto.TransferenciaStatusResponse;
-import cl.tenpo.utility.payments.dto.TransferenciaOrderResponse;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Transferencia;
+import cl.tenpo.utility.payments.object.dto.TransferenciaOrderResponse;
+import cl.tenpo.utility.payments.object.dto.TransferenciaStatusResponse;
 import cl.tenpo.utility.payments.util.Properties;
 
 @Service

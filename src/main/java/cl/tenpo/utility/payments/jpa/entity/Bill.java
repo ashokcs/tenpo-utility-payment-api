@@ -9,32 +9,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import cl.tenpo.utility.payments.util.Utils;
-
 @Entity
-@Table(name = "utility_payment_bills")
+@Table(name = "bills")
 @JsonPropertyOrder({
 	"id",
     "status",
-    "utility_code",
-    "utility_name",
-    "collector_id",
-    "collector_name",
-    "category_id",
-    "category_name",
     "identifier",
     "amount",
     "due_date",
-    "description"
+    "description",
+    "authorization_code",
+    "utility"
 })
 public class Bill
 {
-	//public static final String PENDING   = "PENDING";
 	public static final String WAITING 	 = "WAITING";
 	public static final String CONFIRMED = "CONFIRMED";
 	public static final String FAILED 	 = "FAILED";
@@ -47,13 +41,9 @@ public class Bill
 	@JsonProperty("id")
 	private String publicId;
 	@JsonIgnore
+	private Long utilityId;
+	@JsonIgnore
 	private Long transactionId;
-	@JsonProperty("utility_code")
-	private String utility;
-	private String collectorId;
-	private String collectorName;
-	private String categoryId;
-	private String categoryName;
 	private String identifier;
 	private String dueDate;
 	private String description;
@@ -64,24 +54,35 @@ public class Bill
 	private Long queryId;
 	@JsonIgnore
 	private String queryTransactionId;
+	@JsonIgnore
 	private Long confirmId;
+	@JsonIgnore
 	private String confirmTransactionId;
+	@JsonIgnore
 	private String confirmState;
+	@JsonIgnore
 	private String confirmAuthCode;
+	@JsonIgnore
 	private String confirmDate;
+	@JsonIgnore
 	private String confirmHour;
 	@JsonIgnore @Column(insertable = false)
 	private OffsetDateTime created;
 	@JsonIgnore @Column(insertable = false)
 	private OffsetDateTime updated;
 
-	@JsonProperty("utility_name")
-	public String utilityName()
+	@Transient
+	private Utility utility;
+
+	@JsonProperty("authorization_code")
+	public String authorizationCode()
 	{
-		if (utility != null) {
-			return Utils.utilityFriendlyName(utility);
+		if (confirmAuthCode != null && !confirmAuthCode.isEmpty()) {
+			return confirmAuthCode;
+		} else if (confirmTransactionId != null && !confirmTransactionId.isEmpty()) {
+			return confirmTransactionId;
 		}
-	    return null;
+		return null;
 	}
 
 	@PreUpdate
@@ -114,44 +115,12 @@ public class Bill
 		this.publicId = publicId;
 	}
 
-	public String getUtility() {
-		return utility;
+	public Long getUtilityId() {
+		return utilityId;
 	}
 
-	public void setUtility(final String utility) {
-		this.utility = utility;
-	}
-
-	public String getCollectorId() {
-		return collectorId;
-	}
-
-	public void setCollectorId(final String collectorId) {
-		this.collectorId = collectorId;
-	}
-
-	public String getCollectorName() {
-		return collectorName;
-	}
-
-	public void setCollectorName(final String collectorName) {
-		this.collectorName = collectorName;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(final String categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public String getCategoryName() {
-		return categoryName;
-	}
-
-	public void setCategoryName(final String categoryName) {
-		this.categoryName = categoryName;
+	public void setUtilityId(final Long utilityId) {
+		this.utilityId = utilityId;
 	}
 
 	public String getIdentifier() {
@@ -280,5 +249,13 @@ public class Bill
 
 	public void setTransactionId(final Long transactionId) {
 		this.transactionId = transactionId;
+	}
+
+	public Utility getUtility() {
+		return utility;
+	}
+
+	public void setUtility(final Utility utility) {
+		this.utility = utility;
 	}
 }

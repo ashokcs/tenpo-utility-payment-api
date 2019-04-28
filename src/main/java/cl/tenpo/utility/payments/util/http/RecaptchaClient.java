@@ -21,7 +21,7 @@ import cl.tenpo.utility.payments.util.Properties;
 @Service
 public class RecaptchaClient
 {
-	private static final Logger logger = LoggerFactory.getLogger(UtilitiesClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilityClient.class);
 
 	private final CloseableHttpClient client;
 	private final Properties properties;

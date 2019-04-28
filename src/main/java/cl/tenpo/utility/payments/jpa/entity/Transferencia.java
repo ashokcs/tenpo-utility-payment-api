@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
-@Table(name = "utility_payment_transferencia")
+@Table(name = "transferencia")
 @JsonPropertyOrder({
 	"id",
 	"status",

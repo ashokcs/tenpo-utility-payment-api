@@ -1,6 +1,6 @@
-package cl.tenpo.utility.payments.dto;
+package cl.tenpo.utility.payments.object.dto;
 
-public class MulticajaBill
+public class MCBill
 {
 	private String mcCode;
 	private Long debtDataId;

@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.dto.TransferenciaStatusResponse;
-import cl.tenpo.utility.payments.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.event.SendReceipTransferenciaEvent;
 import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.exception.ServerErrorException;
@@ -27,13 +25,17 @@ import cl.tenpo.utility.payments.exception.UnauthorizedException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Transferencia;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.object.dto.TransferenciaStatusResponse;
+import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.service.TransferenciaService;
+import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Properties;
 import cl.tenpo.utility.payments.util.Utils;
 import cl.tenpo.utility.payments.util.http.TransferenciaClient;
-import cl.tenpo.utility.payments.util.http.UtilitiesClient;
+import cl.tenpo.utility.payments.util.http.UtilityClient;
 
 /**
  * @author Carlos Izquierdo
@@ -49,7 +51,8 @@ public class TransferenciaController
 	private final TransactionService transactionService;
 	private final TransferenciaService transferenciaService;
 	private final TransferenciaClient transferenciaClient;
-	private final UtilitiesClient utilititesClient;
+	private final UtilityClient utilititesClient;
+	private final UtilityService utilityService;
 
 	public TransferenciaController(
 		final ApplicationEventPublisher applicationEventPublisher,
@@ -58,7 +61,8 @@ public class TransferenciaController
 		final TransactionService transactionService,
 		final TransferenciaService transferenciaService,
 		final TransferenciaClient transferenciaClient,
-		final UtilitiesClient utilitiesClient
+		final UtilityClient utilitiesClient,
+		final UtilityService utilityService
 	){
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.billService = billService;
@@ -67,6 +71,7 @@ public class TransferenciaController
 		this.transferenciaService = transferenciaService;
 		this.transferenciaClient = transferenciaClient;
 		this.utilititesClient = utilitiesClient;
+		this.utilityService = utilityService;
 	}
 
 	/**
@@ -101,6 +106,8 @@ public class TransferenciaController
 			final Transferencia transferencia = transferenciaService.getWaitingOrPaidByPublicIdAndNotifyId(id, notifyId).orElseThrow(NotFoundException::new);
 			final Transaction transaction = transactionService.getWaitingById(transferencia.getTransactionId()).orElseThrow(NotFoundException::new);
 			final Bill bill = billService.getWaitingByTransactionId(transferencia.getTransactionId()).orElseThrow(NotFoundException::new);
+			final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+			bill.setUtility(utility);
 
 			// get eft remote status
 			final TransferenciaStatusResponse transferenciaStatusResponse = transferenciaClient.getOrderStatus(transferencia)

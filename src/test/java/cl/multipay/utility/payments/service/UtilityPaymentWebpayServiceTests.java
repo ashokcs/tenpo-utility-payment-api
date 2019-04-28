@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 import cl.multipay.utility.payments.mock.CloseableHttpResponseMock;
-import cl.tenpo.utility.payments.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
+import cl.tenpo.utility.payments.object.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.util.http.WebpayClient;
 
 @RunWith(SpringRunner.class)
