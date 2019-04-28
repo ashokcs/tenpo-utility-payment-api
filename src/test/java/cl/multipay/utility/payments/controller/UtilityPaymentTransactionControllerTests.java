@@ -384,7 +384,7 @@ public class UtilityPaymentTransactionControllerTests
 		utilityPaymentEftService.save(utilityPaymentEft);
 
 		utilityPaymentTransaction.setStatus(Transaction.WAITING);
-		utilityPaymentTransaction.setPaymentMethod(Transaction.TEF);
+		utilityPaymentTransaction.setPaymentMethodCode(Transaction.TEF);
 		utilityPaymentTransaction.setEmail("test@multicaja.cl");
 		utilityPaymentTransactionService.save(utilityPaymentTransaction);
 
@@ -398,7 +398,7 @@ public class UtilityPaymentTransactionControllerTests
 		utilityPaymentTransaction.setPublicId(uuid);
 		utilityPaymentTransaction.setStatus(Transaction.SUCCEEDED);
 		utilityPaymentTransaction.setAmount(1000L);
-		utilityPaymentTransaction.setPaymentMethod(Transaction.TEF);
+		utilityPaymentTransaction.setPaymentMethodCode(Transaction.TEF);
 		utilityPaymentTransaction.setEmail("test@multicaja.cl");
 		utilityPaymentTransactionService.saveAndRefresh(utilityPaymentTransaction);
 

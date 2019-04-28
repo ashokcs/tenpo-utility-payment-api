@@ -15,9 +15,9 @@ import cl.tenpo.utility.payments.util.Utils;
 @Entity
 @Table(name = "utilities")
 @JsonPropertyOrder({
-    "utility_id",
-    "utility_name",
-    "utility_identifier",
+    "id",
+    "name",
+    "identifier",
     "category_id",
     "category_name"
 })
@@ -25,7 +25,7 @@ public class Utility
 {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty("utility_id")
+	@JsonProperty("id")
 	private Long id;
 	@JsonIgnore
 	private String status;
@@ -43,10 +43,10 @@ public class Utility
 	private String collectorName;
 	@JsonIgnore
 	private String glossIds;
-	@JsonProperty("utility_identifier")
+	@JsonProperty("identifier")
 	private String glossNames;
 
-	@JsonProperty("utility_name")
+	@JsonProperty("name")
 	public String friendlyName()
 	{
 		if (name != null && !name.isEmpty()) {

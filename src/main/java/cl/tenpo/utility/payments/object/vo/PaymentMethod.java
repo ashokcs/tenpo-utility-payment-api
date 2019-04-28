@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PaymentMethod
 {
-	@JsonProperty("payment_method_code")
+	@JsonProperty("code")
 	private final String code;
-	@JsonProperty("payment_method_name")
+	@JsonProperty("name")
 	private final String name;
 	@JsonProperty("private")
 	private final boolean privateMode;

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Category
 {
-	@JsonProperty("category_id")
+	@JsonProperty("id")
 	private final String id;
-	@JsonProperty("category_name")
+	@JsonProperty("name")
 	private final String name;
 
 	public Category(final String id, final String name)

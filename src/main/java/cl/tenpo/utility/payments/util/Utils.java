@@ -106,10 +106,10 @@ public class Utils
 		return "";
 	}
 
-	public static String getPaymentMethodName(final String paymentMethod)
+	public static String getPaymentMethodName(final String paymentCodeMethod)
 	{
-		if (Transaction.WEBPAY.toLowerCase().equals(paymentMethod)) {return Transaction.WEBPAY;}
-		else if (Transaction.TRANSFERENCIA.toLowerCase().equals(paymentMethod)) {return Transaction.TRANSFERENCIA;}
+		if (Transaction.WEBPAY.toLowerCase().equals(paymentCodeMethod)) {return Transaction.WEBPAY;}
+		else if (Transaction.TRANSFERENCIA.toLowerCase().equals(paymentCodeMethod)) {return Transaction.TRANSFERENCIA;}
 		return null;
 	}
 

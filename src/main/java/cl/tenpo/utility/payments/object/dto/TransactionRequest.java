@@ -8,7 +8,7 @@ public class TransactionRequest
 {
 	@NotBlank
 	@Pattern(regexp = "webpay|transferencia")
-	private String paymentMethod;
+	private String paymentMethodCode;
 
 	@NotBlank
 	@Email
@@ -16,22 +16,22 @@ public class TransactionRequest
 
 	@NotBlank
 	@Pattern(regexp = "[a-f0-9\\-]{36}")
-	private String bill;
+	private String billId;
 
-	public String getBill() {
-		return bill;
+	public String getBillId() {
+		return billId;
 	}
 
-	public void setBill(final String bill) {
-		this.bill = bill;
+	public void setBillId(final String billId) {
+		this.billId = billId;
 	}
 
-	public String getPaymentMethod() {
-		return paymentMethod;
+	public String getPaymentMethodCode() {
+		return paymentMethodCode;
 	}
 
-	public void setPaymentMethod(final String paymentMethod) {
-		this.paymentMethod = paymentMethod;
+	public void setPaymentMethodCode(final String paymentMethodCode) {
+		this.paymentMethodCode = paymentMethodCode;
 	}
 
 	public String getEmail() {

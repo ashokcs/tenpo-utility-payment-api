@@ -22,13 +22,11 @@ import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
-import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
 import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.object.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.TransactionService;
-import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.service.WebpayService;
 import cl.tenpo.utility.payments.util.Properties;
 import cl.tenpo.utility.payments.util.Utils;
@@ -48,7 +46,6 @@ public class WebpayController
 	private final Properties properties;
 	private final TransactionService transactionService;
 	private final UtilityClient utilitiesClient;
-	private final UtilityService utilityService;
 	private final WebpayService webpayService;
 	private final WebpayClient webpayClient;
 
@@ -58,7 +55,6 @@ public class WebpayController
 		final Properties properties,
 		final TransactionService transactionService,
 		final UtilityClient utilitiesClient,
-		final UtilityService utilityService,
 		final WebpayService webpayService,
 		final WebpayClient webpayClient
 	){
@@ -67,7 +63,6 @@ public class WebpayController
 		this.properties = properties;
 		this.transactionService = transactionService;
 		this.utilitiesClient = utilitiesClient;
-		this.utilityService = utilityService;
 		this.webpayService = webpayService;
 		this.webpayClient = webpayClient;
 	}
@@ -88,8 +83,6 @@ public class WebpayController
 			final Webpay webpay = webpayService.getWaitingByPublicIdAndToken(publicId, tokenWs).orElseThrow(NotFoundException::new);
 			final Transaction transaction = transactionService.getWaitingById(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
 			final Bill bill = billService.getWaitingByTransactionId(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
-			final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
-			bill.setUtility(utility);
 			transactionPublicId = transaction.getPublicId();
 
 			// webpay get result

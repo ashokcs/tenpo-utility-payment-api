@@ -27,12 +27,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Category'
               example: 
-                - category_id: "100"
-                  category_name: "AGUA"
-                - category_id: "500"
-                  category_name: AUTOPISTAS
-                - category_id: "700"
-                  category_name: RETAIL
+                - id: "100"
+                  name: "AGUA"
+                - id: "500"
+                  name: AUTOPISTAS
+                - id: "700"
+                  name: RETAIL
 
   /utility-payments/v1/payment-methods:
     get:
@@ -49,16 +49,16 @@ paths:
                 items:
                   $ref: '#/components/schemas/PaymentMethod'
               example:
-                - "payment_method_code": "webpay"
-                  "payment_method_name": "Webpay"
+                - "code": "webpay"
+                  "name": "Webpay"
                   "private": false
                   "public": true
-                - "payment_method_code": "transferencia"
-                  "payment_method_name": "Transferencia"
+                - "code": "transferencia"
+                  "name": "Transferencia"
                   "private": false
                   "public": true
-                - "payment_method_code": "prepaid"
-                  "payment_method_name": "Prepago"
+                - "code": "prepaid"
+                  "name": "Prepago"
                   "private": true
                   "public": false
 
@@ -77,26 +77,28 @@ paths:
                 items:
                   $ref: '#/components/schemas/Utility'
               example:
-                - "utility_id": 1
-                  "utility_name": "Aguas Andinas"
-                  "utility_identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+                - "id": 1
+                  "name": "Aguas Andinas"
+                  "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
                   "category_id": "100"
                   "category_name": "AGUA"
-                - "utility_id": 2
-                  "utility_name": "ESSBIO"
-                  "utility_identifier": "NRO SERVICIO, SIN DIGITO VERIFICADOR"
+                - "id": 2
+                  "name": "ESSBIO"
+                  "identifier": "NRO SERVICIO, SIN DIGITO VERIFICADOR"
                   "category_id": "100"
                   "category_name": "AGUA"
-                - "utility_id": 15
-                  "utility_name": "ENEL DISTRIBUCION"
-                  "utility_identifier": "NRO CLIENTE, CON DIGITO VERIFICADOR"
+                - "id": 15
+                  "name": "ENEL DISTRIBUCION"
+                  "identifier": "NRO CLIENTE, CON DIGITO VERIFICADOR"
                   "category_id": "200"
                   "category_name": "LUZ"
-                - "utility_id": 33
-                  "utility_name": "Movistar Hogar"
-                  "utility_identifier": "NRO TELEFONO, CON CODIGO DE AREA"
+                - "id": 33
+                  "name": "Movistar Hogar"
+                  "identifier": "NRO TELEFONO, CON CODIGO DE AREA"
                   "category_id": "300"
                   "category_name": "TELEF-TV-INTERNET"
+        500:
+          description: internal server error
 
   /utility-payments/v1/utilities/{id}/bills:
     post:
@@ -135,9 +137,9 @@ paths:
                   "due_date": "No disponible"
                   "description": "Deuda total"
                   "utility":
-                      "utility_id": 71
-                      "utility_name": "Vespucio Sur"
-                      "utility_identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                       "category_id": "500"
                       "category_name": "AUTOPISTAS"
                 - "id": "56f31b96-1da2-4372-923d-07b8782f2207"
@@ -147,9 +149,9 @@ paths:
                   "due_date": "No disponible"
                   "description": "Deuda vencida"
                   "utility":
-                      "utility_id": 71
-                      "utility_name": "Vespucio Sur"
-                      "utility_identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                       "category_id": "500"
                       "category_name": "AUTOPISTAS"
         400:
@@ -178,7 +180,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransactionResponse'
         400:
-          description: invalid parameteres
+          description: invalid parameters
         404:
           description: resource not found
         500:
@@ -205,6 +207,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         404:
           description: resource not found
+        500:
+          description: internal server error
 
   /utility-payments/v1/transactions/{id}/receipt:
     post:
@@ -227,8 +231,12 @@ paths:
       responses:
         200:
           description: successful operation
+        400:
+          description: invalid parameters
         404:
           description: resource not found
+        500:
+          description: internal server error
           
 components:
   schemas:
@@ -236,14 +244,14 @@ components:
     Utility:
       type: object
       properties:
-        utility_id:
+        id:
           type: integer
           format: int64
           example: 1
-        utility_name:
+        name:
           type: string
           example: Mundo Pacífico
-        utility_identifier:
+        identifier:
           type: string
           example: "RUT, CON DIGITO VERIFICADOR"
         category_id:
@@ -256,20 +264,20 @@ components:
     Category:
       type: object
       properties:
-        category_id:
+        id:
           type: string
           example: 100
-        category_name:
+        name:
           type: string
           example: AGUA
     
     PaymentMethod:
       type: object
       properties:
-        payment_method_code:
+        code:
           type: string
           example: webpay
-        payment_method_name:
+        name:
           type: string
           example: Webpay
         private:
@@ -313,13 +321,13 @@ components:
     TransactionRequest:
       type: object
       properties:
-        bill:
+        bill_id:
           type: string
           example: "fb7c3a5f-1db0-4ba0-ab72-a58db5f55f10"
         email:
           type: string
           example: correo@ejemplo.cl
-        payment_method:
+        payment_method_code:
           type: string
           example: webpay
     
