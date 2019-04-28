@@ -8,15 +8,19 @@ servers:
   - url: https://tenpo.uat.multicajadigital.cloud
     description: UAT Environment
 tags:
-  - name: utility payments
-    description: Operaciones de pago de cuenta
+  - name: General
+    description: Operaciones generales
+  - name: Utilities
+    description: Operaciones de los convenios de pago de cuenta
+  - name: Transactions
+    description: Operaciones de transacciones de pago de cuenta
 paths:
 
   /utility-payments/v1/categories:
     get:
       tags: 
-        - utility payments
-      summary: Obtiene las categorías de los convenios pagos de cuenta
+        - General
+      summary: Lista las categorías de los convenios de pagos de cuenta
       responses:
         200:
           description: successful operation
@@ -37,8 +41,8 @@ paths:
   /utility-payments/v1/payment-methods:
     get:
       tags: 
-        - utility payments
-      summary: Obtiene los métodos de pago disponibles
+        - General
+      summary: Lista los métodos de pago disponibles
       responses:
         200:
           description: successful operation
@@ -65,8 +69,8 @@ paths:
   /utility-payments/v1/utilities:
     get:
       tags: 
-        - utility payments
-      summary: Obtiene los convenios de pago de cuenta
+        - Utilities
+      summary: Lista los convenios de pago de cuenta
       responses:
         200:
           description: successful operation
@@ -103,7 +107,7 @@ paths:
   /utility-payments/v1/utilities/{id}/bills:
     post:
       tags:
-        - utility payments
+        - Utilities
       summary: Obtiene las deudas de un convenio para un determinado identificador
       parameters:
         - in: path
@@ -164,7 +168,7 @@ paths:
   /utility-payments/v1/transactions:
     post:
       tags: 
-        - utility payments
+        - Transactions
       summary: Crea una transacción de pago de cuenta
       requestBody:
         required: true
@@ -189,7 +193,7 @@ paths:
   /utility-payments/v1/transactions/{id}:
     get:
       tags: 
-        - utility payments
+        - Transactions
       summary: Obtiene los detalles de una transacción de pago de cuenta
       parameters: 
         - in: path
@@ -213,7 +217,7 @@ paths:
   /utility-payments/v1/transactions/{id}/receipt:
     post:
       tags: 
-        - utility payments
+        - Transactions
       summary: Reenvía el comprobante de una transacción de pago de cuenta
       parameters: 
         - in: path
