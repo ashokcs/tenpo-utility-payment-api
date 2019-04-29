@@ -38,10 +38,20 @@ public class BillService
 		return Optional.empty();
 	}
 
+	public Optional<Bill> findPendingByPublicId(final String publicId)
+	{
+		return findByPublicIdAndStatus(publicId, Bill.PENDING);
+	}
+
 	public Optional<Bill> findWaitingByPublicId(final String publicId)
 	{
+		return findByPublicIdAndStatus(publicId, Bill.WAITING);
+	}
+
+	public Optional<Bill> findByPublicIdAndStatus(final String publicId, final String status)
+	{
 		try {
-			final Optional<Bill> opt = billRepository.findByPublicIdAndStatus(publicId, Bill.WAITING);
+			final Optional<Bill> opt = billRepository.findByPublicIdAndStatus(publicId, status);
 			if (opt.isPresent()) {
 				final Bill bill = opt.get();
 				final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);

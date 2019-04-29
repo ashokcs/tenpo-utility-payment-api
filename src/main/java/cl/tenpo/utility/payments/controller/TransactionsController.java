@@ -83,7 +83,7 @@ public class TransactionsController
 		@RequestBody @Valid final TransactionRequest request
 	){
 		// get bill
-		final Bill bill = billService.findWaitingByPublicId(request.getBillId()).orElseThrow(NotFoundException::new);
+		final Bill bill = billService.findPendingByPublicId(request.getBillId()).orElseThrow(NotFoundException::new);
 
 		// create transaction
 		final String status = Transaction.WAITING;
@@ -102,6 +102,7 @@ public class TransactionsController
 
 		// update bill
 		bill.setTransactionId(transaction.getId());
+		bill.setStatus(Bill.WAITING);
 		billService.save(bill).orElseThrow(ServerErrorException::new);
 		transaction.setBill(bill);
 

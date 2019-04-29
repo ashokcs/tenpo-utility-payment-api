@@ -85,7 +85,7 @@ public class UtilitiesController
 		final List<Bill> result = new ArrayList<>();
 		for (final MCBill mcb : utilityClient.getBills(utilityCode, identifier, collector)) {
 			final Bill bill = new Bill();
-			bill.setStatus(Bill.WAITING);
+			bill.setStatus(Bill.PENDING);
 			bill.setPublicId(Utils.uuid());
 			bill.setUtilityId(utility.getId());
 			bill.setIdentifier(identifier);

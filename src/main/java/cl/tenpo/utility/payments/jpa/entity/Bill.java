@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Bill
 {
+	public static final String PENDING 	 = "PENDING";
 	public static final String WAITING 	 = "WAITING";
 	public static final String CONFIRMED = "CONFIRMED";
 	public static final String FAILED 	 = "FAILED";
