@@ -270,3 +270,30 @@ git tag --delete oti-v1.0.0
 
 # TODO 
 - Receipt email look and feel
+
+# Cart Feature
+```
+GET   /categories
+GET   /payment-methods
+GET   /utilities
+POST  /utilities/{id}/bills
+POST  /transactions
+GET   /transactions/{id}
+POST  /transactions/{id}/receipt
+```
+
+```
+POST  /transactions
+GET   /transactions/{id}
+POST  /transactions/{id}
+POST  /transactions/{id}/checkout
+POST  /transactions/{id}/checkout/next
+POST  /transactions/{id}/receipt
+```
+
+```
+POST  /cart                     Create cart
+POST  /cart/{cart_id}           Put a product in the cart
+GET   /cart/{cart_id}           Get cart content
+POST  /cart/{cart_id}/checkout  Checkout
+```

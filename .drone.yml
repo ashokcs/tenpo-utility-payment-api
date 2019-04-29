@@ -22,7 +22,7 @@ pipeline:
         - push
         - pull_request
         - tag
-        
+
   slack:
     image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
     channel: multipay-ci
