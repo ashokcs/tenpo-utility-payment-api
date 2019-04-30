@@ -44,6 +44,8 @@ pipeline:
       - tar xvf consul-template_0.19.5_linux_amd64.tgz
       - ./consul-template -template "kube/secrets.yml.tmpl:kube/secrets.yml" -once
       - cat kube/secrets.yml
+    environment:
+      - ENVIRONMENT=staging
     secrets:
       - source: consul_http_addr
         target: CONSUL_HTTP_ADDR
@@ -58,8 +60,6 @@ pipeline:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
     template: kube/secrets.yml
-    environment:
-      - ENVIRONMENT=staging
     when:
       branch: master
       event: 
