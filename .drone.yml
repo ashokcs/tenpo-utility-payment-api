@@ -43,7 +43,6 @@ pipeline:
       - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
       - tar xvf consul-template_0.19.5_linux_amd64.tgz
       - ./consul-template -template "kube/secrets.yml.tmpl:kube/secrets.yml" -once
-      - cat kube/secrets.yml
     environment:
       - ENVIRONMENT=staging
     secrets:
@@ -68,7 +67,7 @@ pipeline:
   staging_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
-    template: kube/.kube.yml
+    template: ./kube/.kube.yml
     vars:
       - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-api:${DRONE_COMMIT_SHA}
       - ENVIRONMENT=staging
