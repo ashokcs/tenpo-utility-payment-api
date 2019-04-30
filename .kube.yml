@@ -54,3 +54,63 @@ spec:
           imagePullPolicy: Always
       imagePullSecrets:
         - name: container-reg-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenpo-utility-payments-api-svc
+  namespace: tenpo
+  labels:
+    app: tenpo-utility-payments-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: tenpo-utility-payments-api
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: tenpo-utility-payments-api-se-mail
+  namespace: tenpo
+spec:
+  hosts:
+    - smtp.sendgrid.net
+  location: MESH_EXTERNAL
+  ports:
+    - number: 587
+      name: tcp-smtp
+      protocol: TCP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: tenpo-utility-payments-api-se-db
+  namespace: tenpo
+spec:
+  hosts:
+    - "*.database.azure.com"
+  location: MESH_EXTERNAL
+  ports:
+    - number: 5432
+      name: tcp-db
+      protocol: TCP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: tenpo-utility-payments-api-pdc
+  namespace: tenpo
+spec:
+  hosts:
+    - "*.multicaja.cl"
+    - "*.mcdesaqa.cl"
+  location: MESH_EXTERNAL
+  ports:
+    - number: 443
+      name: tcp-pdc
+      protocol: TCP

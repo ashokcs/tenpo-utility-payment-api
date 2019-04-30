@@ -64,6 +64,15 @@ pipeline:
       event: 
         - push
 
+  staging_virtual_service:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: staging
+    template: virtual-service.yml
+    when:
+      branch: master
+      event: 
+        - push
+
   staging_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
