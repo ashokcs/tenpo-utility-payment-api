@@ -270,6 +270,7 @@ git tag --delete oti-v1.0.0
 
 # TODO 
 - Receipt email look and feel
+- Proceso clean bills table
 
 # Cart Feature
 ```

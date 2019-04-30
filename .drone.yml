@@ -37,6 +37,46 @@ pipeline:
       event: 
         - push
 
+  staging_consul:
+    image: alpine:3.8
+    commands:
+      - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
+      - tar xvf consul-template_0.19.5_linux_amd64.tgz
+      - ./consul-template -template "kube/secrets.yml.tmpl:kube/secrets.yml" -once
+      - cat kube/secrets.yml
+    secrets:
+      - source: consul_http_addr
+        target: CONSUL_HTTP_ADDR
+      - source: consul_http_token
+        target: CONSUL_HTTP_TOKEN
+    when:
+      branch: master
+      event: 
+        - push
+
+  staging_secrets:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: staging
+    template: kube/secrets.yml
+    environment:
+      - ENVIRONMENT=staging
+    when:
+      branch: master
+      event: 
+        - push
+
+  staging_deployment:
+    image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
+    cluster: staging
+    template: kube/.kube.yml
+    vars:
+      - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-api:${DRONE_COMMIT_SHA}
+      - ENVIRONMENT=staging
+    when:
+      branch: master
+      event:
+        - push
+
   slack:
     image: mccontainerregistry.azurecr.io/tools/drone-slack:1.0.0
     channel: tenpo-ci

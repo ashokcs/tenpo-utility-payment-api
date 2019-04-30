@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenpo
+  labels:
+    istio-injection: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenpo-utility-payments-api
+  namespace: tenpo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenpo-utility-payments-api
+  template:
+    metadata:
+      namespace: tenpo
+      labels:
+        app: tenpo-utility-payments-api
+        version: v1
+    spec:
+      containers:
+        - name: tenpo-utility-payments-api
+          image: ${IMAGE}
+          ports:
+            - containerPort: 80
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: ${ENVIRONMENT}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-api-secrets
+                  key: pg_login
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-api-secrets
+                  key: pg_password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-api-secrets
+                  key: pg_name
+            - name: DB_FQDN
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-api-secrets
+                  key: pg_fqdn
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: container-reg-credentials
