@@ -58,7 +58,7 @@ pipeline:
   staging_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
-    template: kube/secrets.yml
+    template: ./kube/secrets.yml
     when:
       branch: master
       event: 
