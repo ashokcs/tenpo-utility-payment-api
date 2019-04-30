@@ -28,9 +28,7 @@ pipeline:
     image: plugins/docker
     target: staging
     repo: mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-api
-    secrets: 
-      - docker_username
-      - docker_password
+    secrets: [docker_username, docker_password]
     tags:
       - ${DRONE_COMMIT_SHA}
     when:
