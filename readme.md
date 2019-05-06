@@ -270,27 +270,35 @@ git tag --delete oti-v1.0.0
 
 # TODO 
 - Receipt email look and feel
-- Proceso clean bills table
+- Proceso clean bills table (orphans, created)
+- Proceso clean transactions table (created, no childs)
 - Testing
+- We need an endpoint from multicaja to check the transaction status
 
 # Cart Feature
 ```
+# General
 GET   /categories
 GET   /payment-methods
+
+# Utilities
 GET   /utilities
 POST  /utilities/{id}/bills
+
+# Transactions
 POST  /transactions
 GET   /transactions/{id}
 POST  /transactions/{id}/receipt
 ```
 
 ```
-POST  /transactions
-GET   /transactions/{id}
-POST  /transactions/{id}
-POST  /transactions/{id}/checkout
-POST  /transactions/{id}/checkout/next
-POST  /transactions/{id}/receipt
+POST    /transactions                       Create transaction
+GET     /transactions/{id}                  Get transaction
+POST    /transactions/{id}                  Add elements to an existing transaction
+DELETE  /transactions/{id}                  Delete elements from an existing transaction
+POST    /transactions/{id}/checkout         Set the checkout
+POST    /transactions/{id}/checkout/next    Redirect 
+POST    /transactions/{id}/receipt          Receipt
 ```
 
 ```

@@ -186,6 +186,7 @@ public class UtilityClient
 							} else {
 								tmp.setOrder(number);
 							}
+							tmp.setDesc("Deuda vencida");
 							if ("D.TOTAL".equals(tmp.getDueDate())) {
 								tmp.setDesc("Deuda total");
 								tmp.setDueDate("No disponible");

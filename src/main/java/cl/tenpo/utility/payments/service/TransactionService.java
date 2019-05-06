@@ -70,4 +70,15 @@ public class TransactionService
 	{
 		return transactionRepository.findByPublicIdAndStatus(publicId, Transaction.SUCCEEDED);
 	}
+
+	public Optional<Transaction> getPendingByPublicId(final String publicId)
+	{
+		return transactionRepository.findByPublicIdAndStatus(publicId, Transaction.PENDING);
+	}
+
+	public Optional<Transaction> getCreatedOrPendingByPublicId(final String publicId)
+	{
+		final Optional<Transaction> opt = transactionRepository.findByPublicIdAndStatus(publicId, Transaction.CREATED);
+		return opt.isPresent() ? opt : transactionRepository.findByPublicIdAndStatus(publicId, Transaction.PENDING);
+	}
 }

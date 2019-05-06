@@ -3,6 +3,7 @@ package cl.tenpo.utility.payments.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
@@ -65,6 +66,7 @@ public class UtilitiesController
 		return utilityService.findAll();
 	}
 
+	@Transactional
 	@RequestMapping(
 		consumes = MediaType.APPLICATION_JSON_VALUE,
 		produces = MediaType.APPLICATION_JSON_VALUE,
@@ -85,7 +87,7 @@ public class UtilitiesController
 		final List<Bill> result = new ArrayList<>();
 		for (final MCBill mcb : utilityClient.getBills(utilityCode, identifier, collector)) {
 			final Bill bill = new Bill();
-			bill.setStatus(Bill.PENDING);
+			bill.setStatus(Bill.CREATED);
 			bill.setPublicId(Utils.uuid());
 			bill.setUtilityId(utility.getId());
 			bill.setIdentifier(identifier);

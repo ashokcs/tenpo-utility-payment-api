@@ -1,6 +1,7 @@
 package cl.tenpo.utility.payments.jpa.entity;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +15,6 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
 @Table(name = "transactions")
@@ -23,17 +22,23 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 	"id",
     "status",
     "order",
-    "payment_method",
     "amount",
+    "payment_method",
     "email",
+    "bills",
+    "webpay",
+    "transferencia",
     "created",
     "updated",
 })
 public class Transaction
 {
-	public static final String WAITING = "WAITING";
-	public static final String SUCCEEDED = "SUCCEEDED";
-	public static final String FAILED = "FAILED";
+	public static final String CREATED 	  = "CREATED";
+	public static final String PENDING 	  = "PENDING";
+	public static final String WAITING 	  = "WAITING";
+	public static final String PROCESSING = "PROCESSING";
+	public static final String SUCCEEDED  = "SUCCEEDED";
+	public static final String FAILED     = "FAILED";
 
 	public static final String WEBPAY = "WEBPAY";
 	public static final String TRANSFERENCIA = "TRANSFERENCIA";
@@ -47,8 +52,7 @@ public class Transaction
 	@JsonProperty("id")
 	private String publicId;
 	@Column(name = "\"order\"", insertable = false)
-	@JsonSerialize(using = ToStringSerializer.class)
-	private Long order;
+	private String order;
 	private String paymentMethod;
 	private Long amount;
 	private String email;
@@ -58,7 +62,7 @@ public class Transaction
 	private OffsetDateTime updated;
 
 	@Transient
-    private Bill bill;
+    private List<Bill> bills;
 	@Transient
     private Webpay webpay;
 	@Transient
@@ -94,11 +98,11 @@ public class Transaction
 		this.publicId = publicId;
 	}
 
-	public Long getOrder() {
+	public String getOrder() {
 		return order;
 	}
 
-	public void setOrder(final Long order) {
+	public void setOrder(final String order) {
 		this.order = order;
 	}
 
@@ -142,14 +146,6 @@ public class Transaction
 		this.updated = updated;
 	}
 
-	public Bill getBill() {
-		return bill;
-	}
-
-	public void setBill(final Bill bill) {
-		this.bill = bill;
-	}
-
 	public Webpay getWebpay() {
 		return webpay;
 	}
@@ -164,5 +160,13 @@ public class Transaction
 
 	public void setTransferencia(final Transferencia transferencia) {
 		this.transferencia = transferencia;
+	}
+
+	public List<Bill> getBills() {
+		return bills;
+	}
+
+	public void setBills(final List<Bill> bills) {
+		this.bills = bills;
 	}
 }

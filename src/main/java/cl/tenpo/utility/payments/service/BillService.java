@@ -1,5 +1,6 @@
 package cl.tenpo.utility.payments.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +39,30 @@ public class BillService
 		return Optional.empty();
 	}
 
+	public Optional<Bill> findCreatedByPublicId(final String publicId)
+	{
+		return findByPublicIdAndStatus(publicId, Bill.CREATED);
+	}
+
 	public Optional<Bill> findPendingByPublicId(final String publicId)
 	{
 		return findByPublicIdAndStatus(publicId, Bill.PENDING);
+	}
+
+	public Optional<Bill> findPendingByPublicIdAndTransactionId(final String publicId, final Long transactionId)
+	{
+		try {
+			final Optional<Bill> opt = billRepository.findByPublicIdAndTransactionIdAndStatus(publicId, transactionId, Bill.PENDING);
+			if (opt.isPresent()) {
+				final Bill bill = opt.get();
+				final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+				bill.setUtility(utility);
+				return Optional.of(bill);
+			}
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<Bill> findWaitingByPublicId(final String publicId)
@@ -64,39 +86,37 @@ public class BillService
 		return Optional.empty();
 	}
 
-	public Optional<Bill> findByTransactionId(final Long transactionId)
+	public List<Bill> findByTransactionId(final Long transactionId)
 	{
 		try {
 			final List<Bill> res = billRepository.findByTransactionId(transactionId);
-			if (res.size() == 1) {
-				final Bill bill = res.get(0);
+			for (final Bill bill : res) {
 				final Utility utility = utilityService.findById(bill.getUtilityId()).orElse(null);
 				if (utility != null) {
 					bill.setUtility(utility);
-					return Optional.of(res.get(0));
 				}
 			}
+			return res;
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return Optional.empty();
+		return new ArrayList<>();
 	}
 
-	public Optional<Bill> getWaitingByTransactionId(final Long transactionId)
+	public List<Bill> getWaitingByTransactionId(final Long transactionId)
 	{
 		try {
 			final List<Bill> res = billRepository.findByTransactionIdAndStatus(transactionId, Bill.WAITING);
-			if (res.size() == 1) {
-				final Bill bill = res.get(0);
+			for (final Bill bill : res) {
 				final Utility utility = utilityService.findById(bill.getUtilityId()).orElse(null);
 				if (utility != null) {
 					bill.setUtility(utility);
-					return Optional.of(res.get(0));
 				}
 			}
+			return res;
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return Optional.empty();
+		return new ArrayList<>();
 	}
 }

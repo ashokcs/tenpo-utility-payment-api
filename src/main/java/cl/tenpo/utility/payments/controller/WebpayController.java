@@ -1,12 +1,12 @@
 package cl.tenpo.utility.payments.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,21 +16,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.event.SendReceiptWebpayEvent;
-import cl.tenpo.utility.payments.exception.HttpException;
 import cl.tenpo.utility.payments.exception.NotFoundException;
-import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Job;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
 import cl.tenpo.utility.payments.jpa.entity.Webpay;
-import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.object.dto.WebpayResultResponse;
 import cl.tenpo.utility.payments.service.BillService;
+import cl.tenpo.utility.payments.service.JobService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.service.WebpayService;
+import cl.tenpo.utility.payments.util.Http;
 import cl.tenpo.utility.payments.util.Properties;
 import cl.tenpo.utility.payments.util.Utils;
-import cl.tenpo.utility.payments.util.http.UtilityClient;
 import cl.tenpo.utility.payments.util.http.WebpayClient;
 
 /**
@@ -41,28 +39,25 @@ public class WebpayController
 {
 	private static final Logger logger = LoggerFactory.getLogger(WebpayController.class);
 
-	private final ApplicationEventPublisher eventPublisher;
 	private final BillService billService;
+	private final JobService jobService;
 	private final Properties properties;
 	private final TransactionService transactionService;
-	private final UtilityClient utilitiesClient;
 	private final WebpayService webpayService;
 	private final WebpayClient webpayClient;
 
 	public WebpayController(
-		final ApplicationEventPublisher eventPublisher,
 		final BillService billService,
+		final JobService jobService,
 		final Properties properties,
 		final TransactionService transactionService,
-		final UtilityClient utilitiesClient,
 		final WebpayService webpayService,
 		final WebpayClient webpayClient
 	){
-		this.eventPublisher = eventPublisher;
 		this.billService = billService;
+		this.jobService = jobService;
 		this.properties = properties;
 		this.transactionService = transactionService;
-		this.utilitiesClient = utilitiesClient;
 		this.webpayService = webpayService;
 		this.webpayClient = webpayClient;
 	}
@@ -76,34 +71,87 @@ public class WebpayController
 		logger.info("-> " + request.getRequestURL() + "?token_ws=" + requestTokenWs);
 		String transactionPublicId = null;
 		try {
-			// get transaction and webpay
-			final String publicId = Utils.getValidParam(requestId, "[0-9a-f\\-]{36}").orElseThrow(NotFoundException::new);;
-			final String tokenWs = Utils.getValidParam(requestTokenWs, "[0-9a-f]{64}").orElseThrow(NotFoundException::new);
+			// get params
+			final String publicId = Utils.getValidParam(requestId, "[0-9a-f\\-]{36}").orElseThrow(Http::BadRequest);
+			final String tokenWs = Utils.getValidParam(requestTokenWs, "[0-9a-f]{64}").orElseThrow(Http::BadRequest);
 
-			final Webpay webpay = webpayService.getWaitingByPublicIdAndToken(publicId, tokenWs).orElseThrow(NotFoundException::new);
-			final Transaction transaction = transactionService.getWaitingById(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
-			final Bill bill = billService.getWaitingByTransactionId(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
+			// get resources
+			final Webpay webpay = webpayService.getWaitingByPublicIdAndToken(publicId, tokenWs).orElseThrow(Http::WebpayNotFound);
+			final Transaction transaction = transactionService.getWaitingById(webpay.getTransactionId()).orElseThrow(Http::TransactionNotFound);
+			final List<Bill> bills = billService.getWaitingByTransactionId(webpay.getTransactionId());
 			transactionPublicId = transaction.getPublicId();
+
+			// sanity checks
+			if (bills == null || bills.size() <= 0) throw Http.BillNotFound();
+			if (bills.stream().mapToLong(b -> b.getAmount()).sum() != transaction.getAmount().longValue()) throw Http.BillNotFound();
 
 			// webpay get result
 			final Optional<WebpayResultResponse> webpayResultResponseOpt = webpayClient.result(webpay);
-			if (!webpayResultResponseOpt.isPresent()) {
+			if (webpayResultResponseOpt.isPresent()) {
+
+				// save webpay response
+				final WebpayResultResponse webpayResultResponse = webpayResultResponseOpt.get();
+				webpay.setCode(webpayResultResponse.getDetailResponseCode());
+				webpay.setAuthCode(webpayResultResponse.getDetailAuthorizationCode());
+				webpay.setCardNumber(webpayResultResponse.getCardNumber());
+				webpay.setPaymentType(webpayResultResponse.getDetailPaymentTypeCode());
+				webpay.setSharesNumber(webpayResultResponse.getDetailSharesNumber());
+				webpay.setStatus(Webpay.RESULTED);
+				webpayService.save(webpay).orElseThrow(Http::ServerError);
+
+				// webpay ack
+				if (webpayClient.ack(webpay).isPresent()) {
+
+					// update webpay response
+					webpay.setStatus(Webpay.ACKNOWLEDGED);
+					webpayService.save(webpay);
+
+					// check if payment was approved
+					if (isWebpayPaymentApproved(webpayResultResponse) == true) {
+
+						// update transaction
+						transaction.setStatus(Transaction.PROCESSING);
+						transactionService.save(transaction);
+
+						// update bills
+						for (final Bill bill : bills) {
+							bill.setStatus(Bill.PROCESSING);
+							billService.save(bill);
+						}
+
+						// save job
+						final Job job = new Job();
+						job.setStatus(Job.RUNNING);
+						job.setTransactionId(transaction.getId());
+						jobService.save(job);
+
+						// send receipt
+						// ... TODO
+
+						// redirect to webpay
+						return postRedirectEntity(webpayResultResponse.getUrlRedirection(), tokenWs);
+
+					} else {
+						// webpay payment not approved
+						transaction.setStatus(Transaction.FAILED);
+						transactionService.save(transaction);
+					}
+				} else {
+					// webpay ack failed
+					webpay.setStatus(Webpay.FAILED_ACK);
+					webpayService.save(webpay);
+					transaction.setStatus(Transaction.FAILED);
+					transactionService.save(transaction);
+				}
+			} else {
+				// webpay get result failed
 				webpay.setStatus(Webpay.FAILED_RESULT);
 				webpayService.save(webpay);
 				transaction.setStatus(Transaction.FAILED);
 				transactionService.save(transaction);
-				throw new ServerErrorException();
 			}
 
-			final WebpayResultResponse webpayResultResponse = webpayResultResponseOpt.get();
-			webpay.setCode(webpayResultResponse.getDetailResponseCode());
-			webpay.setAuthCode(webpayResultResponse.getDetailAuthorizationCode());
-			webpay.setCardNumber(webpayResultResponse.getCardNumber());
-			webpay.setPaymentType(webpayResultResponse.getDetailPaymentTypeCode());
-			webpay.setSharesNumber(webpayResultResponse.getDetailSharesNumber());
-			webpay.setStatus(Webpay.RESULTED);
-			webpayService.save(webpay).orElseThrow(ServerErrorException::new);
-
+			/*
 			// if payment approved
 			if (isWebpayPaymentApproved(webpayResultResponse) == true) {
 
@@ -130,44 +178,10 @@ public class WebpayController
 
 					// publish send receipt
 					eventPublisher.publishEvent(new SendReceiptWebpayEvent(bill, transaction, webpay));
-
-				} else {
-					// update bill
-					bill.setStatus(Bill.FAILED);
-					billService.save(bill);
-
-					// update transaction
-					transaction.setStatus(Transaction.FAILED);
-					transactionService.save(transaction);
-
-					// throw exception
-					throw new ServerErrorException();
 				}
 			}
+			*/
 
-			// if payment not approved
-			if (isWebpayPaymentApproved(webpayResultResponse) == false) {
-				transaction.setStatus(Transaction.FAILED);
-				transactionService.save(transaction).orElseThrow(ServerErrorException::new);
-			}
-
-			// webpay ack
-			if (webpayClient.ack(webpay).isPresent()) {
-				webpay.setStatus(Webpay.ACKNOWLEDGED);
-				webpayService.save(webpay);
-			} else {
-				webpay.setStatus(Webpay.FAILED_ACK);
-				webpayService.save(webpay);
-				transaction.setStatus(Transaction.FAILED);
-				transactionService.save(transaction);
-				throw new ServerErrorException();
-			}
-
-			// redirect to webpay
-			return postRedirectEntity(webpayResultResponse.getUrlRedirection(), tokenWs);
-
-		} catch (final HttpException e) {
-			logger.error(e.getClass().getName() + ", " + e.getStackTrace()[0].getClassName() + ":" + e.getStackTrace()[0].getLineNumber());
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}

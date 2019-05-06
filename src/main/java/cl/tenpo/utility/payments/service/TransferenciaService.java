@@ -41,11 +41,11 @@ public class TransferenciaService
 		return Optional.empty();
 	}
 
-	public Optional<Transferencia> getWaitingOrPaidByPublicIdAndNotifyId(final String publicId, final String notifyId)
+	public Optional<Transferencia> getWaitingOrFailedByPublicIdAndNotifyId(final String publicId, final String notifyId)
 	{
 		try {
-			final Optional<Transferencia> pen = tr.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, Transferencia.WAITING);
-			return pen.isPresent() ? pen : tr.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, Transferencia.PAID);
+			final Optional<Transferencia> opt = tr.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, Transferencia.WAITING);
+			return opt.isPresent() ? opt : tr.findByPublicIdAndNotifyIdAndStatus(publicId, notifyId, Transferencia.FAILED);
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}
