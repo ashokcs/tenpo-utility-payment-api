@@ -174,27 +174,6 @@ public class TransferenciaController
 
 				// return ok
 				return ResponseEntity.ok(notifyResponse(request));
-
-				/*final Long queryId = bill.getQueryId();
-				final Integer queryOrder = bill.getQueryOrder();
-				final Long amount = bill.getAmount();
-				final Optional<UtilityConfirmResponse> confirmResponseOpt = utilititesClient.payBill(queryId, queryOrder, amount);
-
-				if (confirmResponseOpt.isPresent()) {
-					// update bill
-					final UtilityConfirmResponse confirmResponse = confirmResponseOpt.get();
-					bill.setStatus(Bill.CONFIRMED);
-					bill.setConfirmId(confirmResponse.getPaymentId());
-					bill.setConfirmState(confirmResponse.getState());
-					bill.setConfirmTransactionId(confirmResponse.getMcCode());
-					bill.setConfirmAuthCode(confirmResponse.getAuthCode());
-					bill.setConfirmDate(confirmResponse.getDate());
-					bill.setConfirmHour(confirmResponse.getHour());
-					billService.save(bill);
-
-					// publish send receipt
-					applicationEventPublisher.publishEvent(new SendReceipTransferenciaEvent(bill, transaction, transferencia));
-				}*/
 			}
 		} catch (final Exception e) {
 			logger.error(e.getMessage());

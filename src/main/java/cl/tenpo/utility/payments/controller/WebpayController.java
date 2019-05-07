@@ -150,38 +150,6 @@ public class WebpayController
 				transaction.setStatus(Transaction.FAILED);
 				transactionService.save(transaction);
 			}
-
-			/*
-			// if payment approved
-			if (isWebpayPaymentApproved(webpayResultResponse) == true) {
-
-				final Long queryId = bill.getQueryId();
-				final Integer queryOrder = bill.getQueryOrder();
-				final Long amount = bill.getAmount();
-				final Optional<UtilityConfirmResponse> utilityConfirm = utilitiesClient.payBill(queryId, queryOrder, amount);
-
-				if (utilityConfirm.isPresent()) {
-					// update bill
-					final UtilityConfirmResponse payBillResponse = utilityConfirm.get();
-					bill.setConfirmId(payBillResponse.getPaymentId());
-					bill.setConfirmTransactionId(payBillResponse.getMcCode());
-					bill.setConfirmState(payBillResponse.getState());
-					bill.setConfirmAuthCode(payBillResponse.getAuthCode());
-					bill.setConfirmDate(payBillResponse.getDate());
-					bill.setConfirmHour(payBillResponse.getHour());
-					bill.setStatus(Bill.CONFIRMED);
-					billService.save(bill);
-
-					// update transaction
-					transaction.setStatus(Transaction.SUCCEEDED);
-					transactionService.save(transaction);
-
-					// publish send receipt
-					eventPublisher.publishEvent(new SendReceiptWebpayEvent(bill, transaction, webpay));
-				}
-			}
-			*/
-
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}

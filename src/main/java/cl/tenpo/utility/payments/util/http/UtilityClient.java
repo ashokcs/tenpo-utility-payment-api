@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cl.tenpo.utility.payments.object.dto.MCBill;
-import cl.tenpo.utility.payments.object.dto.UtilityConfirmResponse;
 import cl.tenpo.utility.payments.util.Properties;
 
 @Component
@@ -205,54 +204,5 @@ public class UtilityClient
 			logger.error(e.getMessage(), e);
 		}
 		return bills;
-	}
-
-	public Optional<UtilityConfirmResponse> payBill(final Long debtDataId, final Integer debtNumber, final Long amount)
-	{
-		try {
-			final String url = properties.multicajaUtlitiesBillConfirmUrl;
-
-			final ObjectMapper mapper = new ObjectMapper();
-			final ObjectNode jsonObject = mapper.createObjectNode();
-			jsonObject.put("debt_data_id", debtDataId);
-			jsonObject.put("debt_number", debtNumber);
-			jsonObject.put("payment_amount", amount);
-			final String json = mapper.writeValueAsString(jsonObject);
-
-			final HttpPost request = new HttpPost(url);
-			request.setHeader("Content-Type", "application/json");
-			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
-			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
-
-			logger.info("=> {} [{}]", url, json);
-
-			try (final CloseableHttpResponse response = client.execute(request)) {
-				final HttpEntity entity = response.getEntity();
-				final String body = EntityUtils.toString(entity);
-
-				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
-
-				if (response.getStatusLine().getStatusCode() == 200) {
-					final JsonNode billJsonNode = mapper.readTree(body);
-					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
-					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
-					if (responseCode.equals(1) && responseMessage.contains("APROBADA")) {
-						final JsonNode dataJsonNode = billJsonNode.get("data");
-
-						final UtilityConfirmResponse payBillResponse = new UtilityConfirmResponse();
-						payBillResponse.setAuthCode(dataJsonNode.get("authorization_code").asText());
-						payBillResponse.setMcCode(dataJsonNode.get("mc_code").asText());
-						payBillResponse.setDate(dataJsonNode.get("date").asText());
-						payBillResponse.setHour(dataJsonNode.get("hour").asText());
-						payBillResponse.setPaymentId(dataJsonNode.get("confirm_payment_id").asLong());
-						payBillResponse.setState(dataJsonNode.get("tx_state_iso").asText());
-						return Optional.ofNullable(payBillResponse);
-					}
-				}
-			}
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return Optional.empty();
 	}
 }
