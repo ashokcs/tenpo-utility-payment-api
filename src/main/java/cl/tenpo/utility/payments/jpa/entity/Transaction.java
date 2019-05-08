@@ -39,6 +39,7 @@ public class Transaction
 	public static final String PROCESSING = "PROCESSING";
 	public static final String SUCCEEDED  = "SUCCEEDED";
 	public static final String FAILED     = "FAILED";
+	public static final String EXPIRED 	  = "EXPIRED";
 
 	public static final String WEBPAY = "WEBPAY";
 	public static final String TRANSFERENCIA = "TRANSFERENCIA";

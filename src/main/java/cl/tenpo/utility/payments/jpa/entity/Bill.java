@@ -34,7 +34,7 @@ public class Bill
 	public static final String WAITING 	  = "WAITING";
 	public static final String PROCESSING = "PROCESSING";
 	public static final String CONFIRMED  = "CONFIRMED";
-	public static final String FAILED 	  = "FAILED";
+	public static final String EXPIRED 	  = "EXPIRED";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
