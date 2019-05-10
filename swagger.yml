@@ -183,10 +183,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionResponse'
+              example:
+                "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
+                "status": "PENDING"
+                "order": "T20190509224702005"
+                "amount": 16962
+                "bills":
+                  - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
+                    "status": "PENDING"
+                    "identifier": "1231231"
+                    "amount": 9324
+                    "due_date": "No disponible"
+                    "description": "Deuda total"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "PENDING"
+                    "identifier": "1231233"
+                    "amount": 7638
+                    "due_date": "No disponible"
+                    "description": "Deuda vencida"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+                "created": "2019-05-09T24:47:02.642887-03:00"
+                "updated": "2019-05-09T24:47:02.642887-03:00"
         400:
           description: invalid parameters
         404:
           description: resource not found
+        409:
+          description: conflict error
         500:
           description: internal server error
 
@@ -209,6 +244,220 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionResponse'
+        404:
+          description: resource not found
+        500:
+          description: internal server error
+    put: 
+      tags: 
+        - Transactions
+      summary: Agrega una deuda a la transacción
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: Id de la transacción de pago de cuenta
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPutRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              example:
+                "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
+                "status": "PENDING"
+                "order": "T20190509224702005"
+                "amount": 20485
+                "bills":
+                  - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
+                    "status": "PENDING"
+                    "identifier": "1231231"
+                    "amount": 9324
+                    "due_date": "No disponible"
+                    "description": "Deuda total"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "PENDING"
+                    "identifier": "1231233"
+                    "amount": 7638
+                    "due_date": "No disponible"
+                    "description": "Deuda vencida"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+                  - "id": "2382ba91-8c02-4779-b113-d4aef2988bd2"
+                    "status": "PENDING"
+                    "identifier": "1231230"
+                    "amount": 3523
+                    "due_date": "No disponible"
+                    "description": "Deuda vencida"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+                "created": "2019-05-09T24:47:02.642887-03:00"
+                "updated": "2019-05-09T24:47:02.642887-03:00"
+        400:
+          description: invalid parameters
+        404:
+          description: resource not found
+        409:
+          description: conflict error
+        500:
+          description: internal server error
+          
+  /utility-payments/v1/transactions/{id}/bills/{billId}:
+    delete:
+      tags: 
+        - Transactions
+      summary: Elimina una deuda de la transacción
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: Id de la transacción de pago de cuenta
+          schema:
+            type: string
+            example: 0f052b43-1456-445a-9d24-8e71f7e0cdbe
+        - in: path
+          name: billId
+          required: true
+          description: Id de la deuda
+          schema:
+            type: string
+            example: 2382ba91-8c02-4779-b113-d4aef2988bd2
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              example:
+                "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
+                "status": "PENDING"
+                "order": "T20190509224702005"
+                "amount": 16962
+                "bills":
+                  - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
+                    "status": "PENDING"
+                    "identifier": "1231231"
+                    "amount": 9324
+                    "due_date": "No disponible"
+                    "description": "Deuda total"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "PENDING"
+                    "identifier": "1231233"
+                    "amount": 7638
+                    "due_date": "No disponible"
+                    "description": "Deuda vencida"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+                "created": "2019-05-09T24:47:02.642887-03:00"
+                "updated": "2019-05-09T24:47:02.642887-03:00"
+        404:
+          description: resource not found
+        500:
+          description: internal server error
+
+  /utility-payments/v1/transactions/{id}/checkout:
+    post:
+      tags: 
+        - Transactions
+      summary: Inicia el proceso de pago de una transacción
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: Id de la transacción de pago de cuenta
+          schema:
+            type: string
+            example: 0f052b43-1456-445a-9d24-8e71f7e0cdbe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCheckoutRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              example:
+                "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
+                "status": "WAITING"
+                "order": "T20190509224702005"
+                "amount": 16962
+                "payment_method": "WEBPAY"
+                "email": "correo@ejemplo.cl"
+                "bills":
+                  - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
+                    "status": "WAITING"
+                    "identifier": "1231231"
+                    "amount": 9324
+                    "due_date": "No disponible"
+                    "description": "Deuda total"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "WAITING"
+                    "identifier": "1231233"
+                    "amount": 7638
+                    "due_date": "No disponible"
+                    "description": "Deuda vencida"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category_id": "500"
+                      "category_name": "AUTOPISTAS"
+                "webpay":
+                  "id": "ce5fa20b-d680-487e-8e17-73be6f0dce31"
+                  "status": "WAITING"
+                  "url": "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
+                  "token": "e715b9b10abd777f0f3a537a9ad69a4c2db9de2ec12666fa889b41d55f7acb1cz"
+                "created": "2019-05-09T24:47:02.642887-03:00"
+                "updated": "2019-05-09T24:47:02.642887-03:00"
+        400:
+          description: invalid parameters
         404:
           description: resource not found
         500:
@@ -325,15 +574,30 @@ components:
     TransactionRequest:
       type: object
       properties:
-        bill_id:
+        bills:
+          type: array
+          items:
+            type: string
+          example: 
+            - 0f052b43-1456-445a-9d24-8e71f7e0cdbe
+            - e41564e9-9ea8-4aac-8b2e-969e45631d35
+
+    TransactionPutRequest:
+      type: object
+      properties:
+        bill:
           type: string
-          example: "fb7c3a5f-1db0-4ba0-ab72-a58db5f55f10"
+          example: 2382ba91-8c02-4779-b113-d4aef2988bd2
+          
+    TransactionCheckoutRequest:
+      type: object
+      properties:
+        payment_method:
+          type: string
+          example: webpay
         email:
           type: string
           example: correo@ejemplo.cl
-        payment_method_code:
-          type: string
-          example: webpay
     
     TransactionResponse:
       type: object
@@ -347,23 +611,19 @@ components:
         order:
           type: string
           example: 120190424105826006
-        payment_method:
-          type: string
-          example: WEBPAY
         amount:
           type: integer
           example: 7639
+        payment_method:
+          type: string
+          example: WEBPAY
         email:
           type: string
           example: correo@ejemplo.cl
-        created:
-          type: string
-          example: "2019-04-24T10:58:26.140605-04:00"
-        updated:
-          type: string
-          example: "2019-04-24T10:58:26.140605-04:00"
-        bill:
-          $ref: '#/components/schemas/UtilityBillResponse'
+        bills:
+          type: array
+          items:
+            $ref: '#/components/schemas/UtilityBillResponse'
         webpay:
           type: object
           properties:
@@ -379,6 +639,27 @@ components:
             token:
               type: string
               example: e47d8c3c2707730fda36fc15d4418a556e3a1f2bbb7e8cacfff56c0d0bb2d2d0
+            code: 
+              type: integer
+              example: 0
+            auth_code: 
+              type: string
+              example: 123123
+            card_number: 
+              type: string
+              example: 1234
+            payment_type: 
+              type: string
+              example: VD
+            shares_number:
+              type: integer
+              example: 0
+        created:
+          type: string
+          example: "2019-04-24T10:58:26.140605-04:00"
+        updated:
+          type: string
+          example: "2019-04-24T10:58:26.140605-04:00"
     
     ReceiptRequest:
       type: object

@@ -8,18 +8,18 @@ public class TransactionCheckoutRequest
 {
 	@NotBlank
 	@Pattern(regexp = "webpay|transferencia")
-	private String paymentMethodCode;
+	private String paymentMethod;
 
 	@NotBlank
 	@Email
 	private String email;
 
-	public String getPaymentMethodCode() {
-		return paymentMethodCode;
+	public String getPaymentMethod() {
+		return paymentMethod;
 	}
 
-	public void setPaymentMethodCode(final String paymentMethodCode) {
-		this.paymentMethodCode = paymentMethodCode;
+	public void setPaymentMethod(final String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 	public String getEmail() {

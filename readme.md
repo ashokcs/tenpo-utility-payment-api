@@ -274,6 +274,8 @@ git tag --delete oti-v1.0.0
 - Proceso clean transactions table (created, no childs)
 - Testing
 - We need an endpoint from multicaja to check the transaction status
+- BO Roles
+- receipt endpoint
 
 # Cart Feature
 ```
