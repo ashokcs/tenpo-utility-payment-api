@@ -9,13 +9,14 @@ public class Http
 	public static String INVALID_PAYMENT_METHOD = "INVALID_PAYMENT_METHOD";
 
 	/* 404 */
-	public static String BILL_NOT_FOUND = "BILL_NOT_FOUND";
-	public static String TRANSACTION_NOT_FOUND = "TRANSACTION_NOT_FOUND";
+	public static String BILL_ID_NOT_FOUND = "BILL_ID_NOT_FOUND";
+	public static String TRANSACTION_ID_NOT_FOUND = "TRANSACTION_ID_NOT_FOUND";
 	public static String TRANSFERENCIA_NOT_FOUND = "TRANSFERENCIA_NOT_FOUND";
 	public static String WEBPAY_NOT_FOUND = "WEBPAY_NOT_FOUND";
 
 	/* 409 */
-	public static String DUPLICATED_BILL = "DUPLICATED_BILL";
+	public static String IDENTIFIER_DUPLICATED = "IDENTIFIER_DUPLICATED";
+	public static String BILL_ID_DUPLICATED = "BILL_ID_DUPLICATED";
 	public static String MAX_SIZE_REACHED = "MAX_SIZE_REACHED";
 
 
@@ -57,12 +58,17 @@ public class Http
 
 	public static ResponseStatusException BillNotFound()
 	{
-		return exception(HttpStatus.NOT_FOUND, BILL_NOT_FOUND);
+		return exception(HttpStatus.NOT_FOUND, BILL_ID_NOT_FOUND);
+	}
+
+	public static ResponseStatusException BillNotFound(final String billId)
+	{
+		return exception(HttpStatus.NOT_FOUND, BILL_ID_NOT_FOUND + ":" + billId);
 	}
 
 	public static ResponseStatusException TransactionNotFound()
 	{
-		return exception(HttpStatus.NOT_FOUND, TRANSACTION_NOT_FOUND);
+		return exception(HttpStatus.NOT_FOUND, TRANSACTION_ID_NOT_FOUND);
 	}
 
 	public static ResponseStatusException TransferenciaNotFound()
@@ -79,7 +85,22 @@ public class Http
 
 	public static ResponseStatusException ConficDuplicatedBill()
 	{
-		return exception(HttpStatus.CONFLICT, DUPLICATED_BILL);
+		return exception(HttpStatus.CONFLICT, BILL_ID_DUPLICATED);
+	}
+
+	public static ResponseStatusException ConficDuplicatedBillId(final String billId)
+	{
+		return exception(HttpStatus.CONFLICT, BILL_ID_DUPLICATED + ":" + billId);
+	}
+
+	public static ResponseStatusException ConficDuplicatedIdentifier()
+	{
+		return exception(HttpStatus.CONFLICT, IDENTIFIER_DUPLICATED);
+	}
+
+	public static ResponseStatusException ConficDuplicatedIdentifier(final String billId)
+	{
+		return exception(HttpStatus.CONFLICT, IDENTIFIER_DUPLICATED + ":" + billId);
 	}
 
 	public static ResponseStatusException ConfictMaxSizeReached()

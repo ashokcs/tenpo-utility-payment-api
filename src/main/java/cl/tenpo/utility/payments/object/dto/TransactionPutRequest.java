@@ -3,19 +3,19 @@ package cl.tenpo.utility.payments.object.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-public class TransactionAddRequest
+public class TransactionPutRequest
 {
 	@NotBlank
 	@Pattern(regexp = "[a-f0-9\\-]{36}")
-	private String billId;
+	private String bill;
 
-	public String getBillId()
+	public String getBill()
 	{
-		return billId;
+		return bill;
 	}
 
-	public void setBillId(final String billId)
+	public void setBill(final String bill)
 	{
-		this.billId = billId;
+		this.bill = bill;
 	}
 }

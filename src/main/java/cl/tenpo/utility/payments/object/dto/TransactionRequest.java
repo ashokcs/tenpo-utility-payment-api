@@ -1,44 +1,23 @@
 package cl.tenpo.utility.payments.object.dto;
 
-import javax.validation.constraints.Email;
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class TransactionRequest
 {
-	@NotBlank
-	@Pattern(regexp = "webpay|transferencia")
-	private String paymentMethodCode;
+	@NotNull
+	@Size(min = 1, max = 15)
+	private List<@NotBlank @Pattern(regexp = "[a-f0-9\\-]{36}")String> bills;
 
-	@NotBlank
-	@Email
-	private String email;
-
-	@NotBlank
-	@Pattern(regexp = "[a-f0-9\\-]{36}")
-	private String billId;
-
-	public String getBillId() {
-		return billId;
+	public List<String> getBills() {
+		return bills;
 	}
 
-	public void setBillId(final String billId) {
-		this.billId = billId;
-	}
-
-	public String getPaymentMethodCode() {
-		return paymentMethodCode;
-	}
-
-	public void setPaymentMethodCode(final String paymentMethodCode) {
-		this.paymentMethodCode = paymentMethodCode;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(final String email) {
-		this.email = email;
+	public void setBills(final List<String> bills) {
+		this.bills = bills;
 	}
 }
