@@ -269,14 +269,18 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
+- use domain tenpodigital
+- receipt endpoint (Receipt email look and feel)
+- payment method prepaid
+- reports conciliacion
+- reports table
+- totaliser db
+- totaliser bo
 - Proceso clean bills table (orphans, created)
 - Proceso clean transactions table (created, no childs)
 - Testing
 - We need an endpoint from multicaja to check the transaction status
 - BO Roles
-- receipt endpoint (Receipt email look and feel)
-- reports conciliacion
-- payment method prepaid
 
 # Cart Feature
 ```

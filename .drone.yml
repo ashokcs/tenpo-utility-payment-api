@@ -38,18 +38,14 @@ pipeline:
         - push
 
   staging_consul:
-    image: alpine:3.8
+    image: hashicorp/consul-template:alpine
     commands:
-      - wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.tgz
-      - tar xvf consul-template_0.19.5_linux_amd64.tgz
-      - ./consul-template -template "secrets.yml.tmpl:secrets.yml" -once
+      - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
     environment:
       - ENVIRONMENT=staging
     secrets:
-      - source: consul_http_addr
-        target: CONSUL_HTTP_ADDR
-      - source: consul_http_token
-        target: CONSUL_HTTP_TOKEN
+      - consul_http_addr
+      - consul_http_token
     when:
       branch: master
       event: 
@@ -58,7 +54,7 @@ pipeline:
   staging_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
-    template: secrets.yml
+    template: .kube.secrets.yml
     when:
       branch: master
       event: 
@@ -67,7 +63,7 @@ pipeline:
   staging_virtual_service:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
-    template: virtual-service.yml
+    template: .kube.virtual-service.yml
     when:
       branch: master
       event: 
