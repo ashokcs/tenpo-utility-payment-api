@@ -91,7 +91,7 @@ public class TransferenciaController
 
 				// pending, paid, notified_mc, notified_ecom, notified_con
 				case 100: case 101: case 106: case 107: case 109:
-					return redirectEntity(properties.eftFrontFinal.replaceAll("\\{id\\}", transaction.getPublicId()));
+					return redirectEntity(properties.transferenciaFrontFinal.replaceAll("\\{id\\}", transaction.getPublicId()));
 
 				// nullified, canceled_user, expired, canceled_ecom
 				case 103: case 105: case 110: case 111:
@@ -190,9 +190,9 @@ public class TransferenciaController
 	private String getRedirectErrorUrl(final String transactionPublicId)
 	{
 		if ((transactionPublicId != null) && (!transactionPublicId.isEmpty())) {
-			return properties.eftFrontErrorOrder.replaceAll("\\{id\\}", transactionPublicId);
+			return properties.transferenciaFrontErrorOrder.replaceAll("\\{id\\}", transactionPublicId);
 		}
-		return properties.eftFrontError;
+		return properties.transferenciaFrontError;
 	}
 
 	private String notifyResponse(final HttpServletRequest request)
@@ -209,7 +209,7 @@ public class TransferenciaController
 	private Optional<Boolean> checkCredentials(final String authHeader)
 	{
 		if (authHeader != null) {
-			if (authHeader.equals("Basic " + properties.eftNotifyBasicAuth)) {
+			if (authHeader.equals("Basic " + properties.transferenciaNotifyBasicAuth)) {
 				return Optional.of(true);
 			}
 		}

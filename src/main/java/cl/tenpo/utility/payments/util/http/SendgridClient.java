@@ -82,7 +82,7 @@ public class SendgridClient
 			final Bill bill = event.getBill();
 			final Transferencia utilityPaymentEft = event.getTransferencia();
 
-			final Mail mail = getReceiptMail(transaction, properties.mailUtilityPaymentsReceiptEftTemplate);
+			final Mail mail = getReceiptMail(transaction, properties.mailUtilityPaymentsReceiptTransferenciaTemplate);
 			final Personalization personalization = mail.getPersonalization().get(0);
 
 			final OffsetDateTime updated = transaction.getUpdated()
@@ -141,8 +141,8 @@ public class SendgridClient
     	request.setMethod(Method.POST);
         request.setEndpoint("mail/send");
         request.setBody(mail.build());
-        logger.info("=> Sendgrid Notification: {}: {}", properties.mailUtilityPaymentsReceiptEftTemplate, request.getEndpoint());
+        logger.info("=> Sendgrid Notification: {}: {}", properties.mailUtilityPaymentsReceiptTransferenciaTemplate, request.getEndpoint());
         final Response response = sg.api(request);
-        logger.info("<= Sendgrid Notification: {}: {} [{}]", properties.mailUtilityPaymentsReceiptEftTemplate, request.getEndpoint(), response.getStatusCode());
+        logger.info("<= Sendgrid Notification: {}: {} [{}]", properties.mailUtilityPaymentsReceiptTransferenciaTemplate, request.getEndpoint(), response.getStatusCode());
 	}
 }

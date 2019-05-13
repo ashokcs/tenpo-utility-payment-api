@@ -5,8 +5,6 @@ info:
 servers:
   - url: https://tenpo.staging.multicajadigital.cloud
     description: Staging Environment
-  - url: https://tenpo.uat.multicajadigital.cloud
-    description: UAT Environment
 tags:
   - name: General
     description: Operaciones generales

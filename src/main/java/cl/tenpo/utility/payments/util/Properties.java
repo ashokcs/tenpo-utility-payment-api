@@ -21,20 +21,20 @@ public class Properties
 	@Value("${webpay.front.error-order}") public String webpayFrontErrorOrder;
 	@Value("${webpay.front.final}") public String webpayFrontFinal;
 
-	/* eft */
-	@Value("${eft.basic-auth}") public String eftBasicAuth;
-	@Value("${eft.notify-basic-auth}") public String eftNotifyBasicAuth;
-	@Value("${eft.commerce-id}") public String eftCommerceId;
-	@Value("${eft.branch-id}") public String eftBranchId;
-	@Value("${eft.get-order-status.url}") public String eftGetOrderStatusUrl;
-	@Value("${eft.create-order.url}") public String eftCreateOrderUrl;
-	@Value("${eft.create-order.description}") public String eftCreateOrderDescription;
-	@Value("${eft.create-order.request-duration}") public int eftCreateOrderRequestDuration;
-	@Value("${eft.create-order.go-back-url}") public String eftCreateOrderGoBackUrl;
-	@Value("${eft.create-order.notify-url}") public String eftCreateOrderNotifyUrl;
-	@Value("${eft.front.error}") public String eftFrontError;
-	@Value("${eft.front.error-order}") public String eftFrontErrorOrder;
-	@Value("${eft.front.final}") public String eftFrontFinal;
+	/* transferencia */
+	@Value("${transferencia.basic-auth}") public String transferenciaBasicAuth;
+	@Value("${transferencia.notify-basic-auth}") public String transferenciaNotifyBasicAuth;
+	@Value("${transferencia.commerce-id}") public String transferenciaCommerceId;
+	@Value("${transferencia.branch-id}") public String transferenciaBranchId;
+	@Value("${transferencia.get-order-status.url}") public String transferenciaGetOrderStatusUrl;
+	@Value("${transferencia.create-order.url}") public String transferenciaCreateOrderUrl;
+	@Value("${transferencia.create-order.description}") public String transferenciaCreateOrderDescription;
+	@Value("${transferencia.create-order.request-duration}") public int transferenciaCreateOrderRequestDuration;
+	@Value("${transferencia.create-order.go-back-url}") public String transferenciaCreateOrderGoBackUrl;
+	@Value("${transferencia.create-order.notify-url}") public String transferenciaCreateOrderNotifyUrl;
+	@Value("${transferencia.front.error}") public String transferenciaFrontError;
+	@Value("${transferencia.front.error-order}") public String transferenciaFrontErrorOrder;
+	@Value("${transferencia.front.final}") public String transferenciaFrontFinal;
 
 	/* multicaja utilities */
 	@Value("${multicaja.utilities.apikey}") public String multicajaUtilitiesApiKey;
@@ -48,13 +48,13 @@ public class Properties
 	@Value("${httpclient.trust.all}") public boolean httpClientTrustAll;
 
 	/* mail */
-	@Value("${mail.sendgrid.api-key}") public String mailSendgridApiKey;
+	@Value("${mail.utility-payments.api-key}") public String mailSendgridApiKey;
 	@Value("${mail.utility-payments.receipt.from}") public String mailUtilityPaymentsReceiptFrom;
-	@Value("${mail.utility-payments.receipt.from-name}") public String mailUtilityPaymentsReceiptFromName;
+	@Value("${mail.utility-payments.receipt.from.name}") public String mailUtilityPaymentsReceiptFromName;
 	@Value("${mail.utility-payments.receipt.bcc}") public String mailUtilityPaymentsReceiptBcc;
 	@Value("${mail.utility-payments.receipt.subject}") public String mailUtilityPaymentsReceiptSubject;
 	@Value("${mail.utility-payments.receipt.webpay.template}") public String mailUtilityPaymentsReceiptWebpayTemplate;
-	@Value("${mail.utility-payments.receipt.eft.template}") public String mailUtilityPaymentsReceiptEftTemplate;
+	@Value("${mail.utility-payments.receipt.transferencia.template}") public String mailUtilityPaymentsReceiptTransferenciaTemplate;
 
 	/* recaptcha */
 	@Value("${recaptcha.verify.url}") public String recaptchaVerifyUrl;
