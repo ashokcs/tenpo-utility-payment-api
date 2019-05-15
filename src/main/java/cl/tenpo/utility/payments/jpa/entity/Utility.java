@@ -30,13 +30,11 @@ public class Utility
 	@JsonIgnore
 	private String status;
 	@JsonIgnore
+	private Long categoryId;
+	@JsonIgnore
 	private String name;
 	@JsonIgnore
 	private String code;
-	@JsonProperty("category_id")
-	private String areaId;
-	@JsonProperty("category_name")
-	private String areaName;
 	@JsonIgnore
 	private String collectorId;
 	@JsonIgnore
@@ -71,6 +69,14 @@ public class Utility
 		this.status = status;
 	}
 
+	public Long getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(final Long categoryId) {
+		this.categoryId = categoryId;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -85,22 +91,6 @@ public class Utility
 
 	public void setCode(final String code) {
 		this.code = code;
-	}
-
-	public String getAreaId() {
-		return areaId;
-	}
-
-	public void setAreaId(final String areaId) {
-		this.areaId = areaId;
-	}
-
-	public String getAreaName() {
-		return areaName;
-	}
-
-	public void setAreaName(final String areaName) {
-		this.areaName = areaName;
 	}
 
 	public String getCollectorId() {

@@ -43,6 +43,7 @@ public class Transaction
 
 	public static final String WEBPAY = "WEBPAY";
 	public static final String TRANSFERENCIA = "TRANSFERENCIA";
+	public static final String PREPAID = "PREPAID";
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

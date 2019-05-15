@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Category;
 import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.object.dto.MCBill;
 import cl.tenpo.utility.payments.object.dto.UtilityBillsRequest;
-import cl.tenpo.utility.payments.object.vo.Category;
 import cl.tenpo.utility.payments.object.vo.PaymentMethod;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
@@ -48,23 +48,30 @@ public class UtilitiesController
 		this.utilityService = utilityService;
 	}
 
-	@GetMapping("/v1/categories")
-	public List<Category> categories()
-	{
-		return utilityService.getCategories();
-	}
-
 	@GetMapping("/v1/payment-methods")
 	public List<PaymentMethod> paymentMethods()
 	{
 		return utilityService.getPaymentMethods();
 	}
 
-	@GetMapping("/v1/utilities")
-	public List<Utility> utilities()
+	@GetMapping("/v1/categories")
+	public List<Category> categories()
 	{
-		return utilityService.findAll();
+		return utilityService.findAllCategories();
 	}
+
+	@GetMapping("/v1/categories/{id:\\d+}/utilities")
+	public List<Utility> categoryUtilities(@PathVariable("id") final long categoryId)
+	{
+		final Category category = utilityService.findCategoryById(categoryId).orElseThrow(NotFoundException::new);
+		return utilityService.findAllUtilitiesByCategoryId(category.getId());
+	}
+
+//	@GetMapping("/v1/utilities")
+//	public List<Utility> utilities()
+//	{
+//		return utilityService.findAllUtilities();
+//	}
 
 	@Transactional
 	@RequestMapping(
@@ -78,7 +85,7 @@ public class UtilitiesController
 		@RequestBody @Valid final UtilityBillsRequest request
 	){
 		// get request parameters
-		final Utility utility = utilityService.findById(utilityId).orElseThrow(NotFoundException::new);
+		final Utility utility = utilityService.findUtilityById(utilityId).orElseThrow(NotFoundException::new);
 		final String utilityCode = utility.getCode();
 		final String identifier = request.getIdentifier();
 		final String collector = utility.getCollectorId();

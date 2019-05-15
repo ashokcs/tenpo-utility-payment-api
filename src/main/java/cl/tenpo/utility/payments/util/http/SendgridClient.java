@@ -60,7 +60,7 @@ public class SendgridClient
 		    personalization.addDynamicTemplateData("transaction_auth", bill.getConfirmAuthCode());
 		    personalization.addDynamicTemplateData("transaction_total", Utils.currency(transaction.getAmount()));
 
-		    personalization.addDynamicTemplateData("payment_method", Utils.paymentMethodFriendlyName(transaction.getPaymentMethod()));
+		    personalization.addDynamicTemplateData("payment_method", transaction.getPaymentMethod());
 		    personalization.addDynamicTemplateData("payment_amount", Utils.currency(transaction.getAmount()));
 		    personalization.addDynamicTemplateData("payment_auth", webpay.getAuthCode());
 		    personalization.addDynamicTemplateData("payment_type", Utils.paymentTypeFriendlyName(webpay.getPaymentType()));
@@ -98,7 +98,7 @@ public class SendgridClient
 		    personalization.addDynamicTemplateData("transaction_auth", bill.getConfirmAuthCode());
 		    personalization.addDynamicTemplateData("transaction_total", Utils.currency(transaction.getAmount()));
 
-		    personalization.addDynamicTemplateData("payment_method", Utils.paymentMethodFriendlyName(transaction.getPaymentMethod()));
+		    personalization.addDynamicTemplateData("payment_method", transaction.getPaymentMethod());
 		    personalization.addDynamicTemplateData("payment_amount", Utils.currency(transaction.getAmount()));
 		    personalization.addDynamicTemplateData("payment_order", utilityPaymentEft.getOrder());
 

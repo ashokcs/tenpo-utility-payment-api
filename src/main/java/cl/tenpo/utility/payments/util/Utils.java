@@ -7,8 +7,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-import cl.tenpo.utility.payments.jpa.entity.Transaction;
-
 public class Utils
 {
 	public static String uuid()
@@ -21,22 +19,14 @@ public class Utils
 		return DateTimeFormatter.ofPattern(pattern).format(date);
 	}
 
-	public static String paymentMethodFriendlyName(final String paymentMethod)
-	{
-		if (Transaction.WEBPAY.equals(paymentMethod)) {
-			return "Webpay";
-		} else if (Transaction.TRANSFERENCIA.equals(paymentMethod)) {
-			return "Transferencia";
-		}
-		return "";
-	}
-
 	public static String paymentTypeFriendlyName(final String paymentTypeCode)
 	{
 		if (paymentTypeCode != null) {
 			if (paymentTypeCode.equals("VD")) {
 				return "Débito";
-			} else {
+			} else if (paymentTypeCode.equals("VP")) {
+				return "Prepago";
+			}else {
 				return "Crédito";
 			}
 		}
@@ -58,6 +48,8 @@ public class Utils
 				return "Sin interés";
 			}else if (paymentTypeCode.equals("VD")) {
 				return "Venta Débito";
+			}else if (paymentTypeCode.equals("VP")) {
+				return "Venta Prepago";
 			}
 		}
 		return "";
@@ -71,49 +63,6 @@ public class Utils
 	public static String utilityFriendlyName(final String utility)
 	{
 		return utility.replaceAll("\\_", " ");
-	}
-
-	public static String collectorFiendlyName(final String collectorId)
-	{
-		if (collectorId != null) {
-			switch (collectorId) {
-			case "1": return "OTRO";
-			case "2": return "EFT";
-			case "3": return "SENCILLITO";
-			case "4": return "SANTANDER";}
-		}
-		return "";
-	}
-
-	public static String categoryFriendlyName(final String categoryId)
-	{
-		if (categoryId != null) {
-			switch (categoryId) {
-			case "100": return "AGUA";
-			case "200": return "LUZ";
-			case "300": return "TELEF-TV-INTERNET";
-			case "400": return "GAS";
-			case "500": return "AUTOPISTAS";
-			case "600": return "COSMETICA";
-			case "700": return "RETAIL";
-			case "800": return "CREDITO-FINANCIERA";
-			case "900": return "SEGURIDAD";
-			case "1000": return "EDUCACION";
-			case "1100": return "CEMENTERIO";
-			case "1200": return "OTRAS EMPRESAS";
-			case "1300": return "EFECTIVO MULTICAJA";}
-		}
-		return "";
-	}
-
-	public static Optional<String> getPaymentMethod(final String paymentCodeMethod)
-	{
-		if (Transaction.WEBPAY.toLowerCase().equals(paymentCodeMethod)) {
-			return Optional.of(Transaction.WEBPAY);
-		} else if (Transaction.TRANSFERENCIA.toLowerCase().equals(paymentCodeMethod)) {
-			return Optional.of(Transaction.TRANSFERENCIA);
-		}
-		return Optional.empty();
 	}
 
 	public static Optional<String> getValidParam(final String param, final String regex)

@@ -55,7 +55,7 @@ public class BillService
 			final Optional<Bill> opt = billRepository.findByPublicIdAndTransactionIdAndStatus(publicId, transactionId, Bill.PENDING);
 			if (opt.isPresent()) {
 				final Bill bill = opt.get();
-				final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
 				bill.setUtility(utility);
 				return Optional.of(bill);
 			}
@@ -76,7 +76,7 @@ public class BillService
 			final Optional<Bill> opt = billRepository.findByPublicIdAndStatus(publicId, status);
 			if (opt.isPresent()) {
 				final Bill bill = opt.get();
-				final Utility utility = utilityService.findById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
 				bill.setUtility(utility);
 				return Optional.of(bill);
 			}
@@ -91,7 +91,7 @@ public class BillService
 		try {
 			final List<Bill> res = billRepository.findByTransactionId(transactionId);
 			for (final Bill bill : res) {
-				final Utility utility = utilityService.findById(bill.getUtilityId()).orElse(null);
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElse(null);
 				if (utility != null) {
 					bill.setUtility(utility);
 				}
@@ -108,7 +108,7 @@ public class BillService
 		try {
 			final List<Bill> res = billRepository.findByTransactionIdAndStatus(transactionId, Bill.WAITING);
 			for (final Bill bill : res) {
-				final Utility utility = utilityService.findById(bill.getUtilityId()).orElse(null);
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElse(null);
 				if (utility != null) {
 					bill.setUtility(utility);
 				}

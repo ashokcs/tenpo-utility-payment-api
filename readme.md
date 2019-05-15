@@ -16,6 +16,12 @@ docker run -it --rm --link tenpo_postgres_1:postgres --net tenpo_default postgre
 
 # Azure
 
+### Staging Db
+```
+docker run -it --rm postgres:9-alpine psql -h postgres-db-staging.postgres.database.azure.com -U staging@postgres-db-staging tenpo_utility_payment
+YDVxBXJSLNMjY8bf
+```
+
 ### **Container Registry**
 ```
 Username: McContainerRegistry (docker_username)
@@ -281,6 +287,7 @@ git tag --delete oti-v1.0.0
 - Testing
 - We need an endpoint from multicaja to check the transaction status
 - BO Roles
+- revisar TODOS
 
 # Cart Feature
 ```
