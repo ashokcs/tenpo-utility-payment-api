@@ -2,11 +2,16 @@ package cl.tenpo.utility.payments.object.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({
+	"id", "name", "private", "public"
+})
 public class PaymentMethod
 {
-	private final Long id;
 	@JsonIgnore
+	private final Long id;
+	@JsonProperty("id")
 	private final String code;
 	private final String name;
 	@JsonProperty("private")

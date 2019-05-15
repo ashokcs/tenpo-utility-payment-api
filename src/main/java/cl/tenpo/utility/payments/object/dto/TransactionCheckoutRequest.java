@@ -1,27 +1,24 @@
 package cl.tenpo.utility.payments.object.dto;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class TransactionCheckoutRequest
 {
-	@NotNull
-	@Min(1)
-	@Max(3)
-	private Long paymentMethod;
+	@NotBlank
+	@Pattern(regexp = "[A-Z]{1,20}")
+	private String paymentMethod;
 
 	@NotBlank
 	@Email
 	private String email;
 
-	public Long getPaymentMethod() {
+	public String getPaymentMethod() {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod(final Long paymentMethod) {
+	public void setPaymentMethod(final String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
 

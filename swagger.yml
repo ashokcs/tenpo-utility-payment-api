@@ -29,15 +29,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/PaymentMethod'
               example:
-                - "id": 1
+                - "id": "WEBPAY"
                   "name": "Webpay"
                   "private": false
                   "public": true
-                - "id": 2
+                - "id": "TRANSFERENCIA"
                   "name": "Transferencia"
                   "private": false
                   "public": true
-                - "id": 3
+                - "id": "PREPAID"
                   "name": "Prepago"
                   "private": true
                   "public": false
@@ -346,8 +346,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: String
+          example: WEBPAY
         name:
           type: string
           example: Webpay
@@ -404,8 +404,8 @@ components:
       type: object
       properties:
         payment_method:
-          type: integer
-          example: 1
+          type: string
+          example: WEBPAY
         email:
           type: string
           example: correo@ejemplo.cl

@@ -143,7 +143,7 @@ public class TransactionsController
 		@RequestBody @Valid final TransactionCheckoutRequest request
 	){
 		// get request transaction
-		final PaymentMethod paymentMethod = utilityService.getPaymentMethodById(request.getPaymentMethod()).orElseThrow(Http::InvalidPaymentMethod);
+		final PaymentMethod paymentMethod = utilityService.getPaymentMethodByCode(request.getPaymentMethod()).orElseThrow(Http::InvalidPaymentMethod);
 		final String email = request.getEmail();
 		final Transaction transaction = transactionService.getPendingByPublicId(publicId).orElseThrow(Http::TransactionNotFound);
 
