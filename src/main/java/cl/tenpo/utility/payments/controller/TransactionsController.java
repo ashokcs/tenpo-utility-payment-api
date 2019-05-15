@@ -72,9 +72,9 @@ public class TransactionsController
 
 	private final String ID = "{id:[0-9a-f\\-]{36}}";
 
-	private final String TRANSACTION_CREATE 	 = "/v1/transactions";
-	private final String TRANSACTION_GET 		 = "/v1/transactions/"+ID;
-	private final String TRANSACTION_CHECKOUT    = "/v1/transactions/"+ID+"/checkout";
+	private final String TRANSACTION_CREATE 	 = "/v1/utility-payments/transactions";
+	private final String TRANSACTION_GET 		 = "/v1/utility-payments/transactions/"+ID;
+	private final String TRANSACTION_CHECKOUT    = "/v1/utility-payments/transactions/"+ID+"/checkout";
 
 	@GetMapping(TRANSACTION_GET)
 	public Transaction get(@PathVariable("id") final String publicId)

@@ -48,19 +48,19 @@ public class UtilitiesController
 		this.utilityService = utilityService;
 	}
 
-	@GetMapping("/v1/payment-methods")
+	@GetMapping("/v1/utility-payments/payment-methods")
 	public List<PaymentMethod> paymentMethods()
 	{
 		return utilityService.getPaymentMethods();
 	}
 
-	@GetMapping("/v1/categories")
+	@GetMapping("/v1/utility-payments/categories")
 	public List<Category> categories()
 	{
 		return utilityService.findAllCategories();
 	}
 
-	@GetMapping("/v1/categories/{id:\\d+}/utilities")
+	@GetMapping("/v1/utility-payments/categories/{id:\\d+}/utilities")
 	public List<Utility> categoryUtilities(@PathVariable("id") final long categoryId)
 	{
 		final Category category = utilityService.findCategoryById(categoryId).orElseThrow(NotFoundException::new);
@@ -78,7 +78,7 @@ public class UtilitiesController
 		consumes = MediaType.APPLICATION_JSON_VALUE,
 		produces = MediaType.APPLICATION_JSON_VALUE,
 		method = RequestMethod.POST,
-		path = "/v1/utilities/{id:\\d+}/bills"
+		path = "/v1/utility-payments/utilities/{id:\\d+}/bills"
 	)
 	public List<Bill> utilityBills(
 		@PathVariable("id") final long utilityId,
@@ -111,7 +111,7 @@ public class UtilitiesController
 		return result;
 	}
 
-	@GetMapping("/v1/utilities/multicaja")
+	@GetMapping("/v1/utility-payments/utilities/multicaja")
 	public String utilitiesMulticaja()
 	{
 		return utilityClient.getUtilitiesMulticaja().orElseThrow(ServerErrorException::new);

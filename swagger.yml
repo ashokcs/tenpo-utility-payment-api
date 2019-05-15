@@ -14,7 +14,7 @@ tags:
     description: Operaciones de transacciones de pago de cuenta
 paths:
 
-  /utility-payments/v1/payment-methods:
+  /v1/utility-payments/payment-methods:
     get:
       tags: 
         - General
@@ -42,7 +42,7 @@ paths:
                   "private": true
                   "public": false
 
-  /utility-payments/v1/categories:
+  /v1/utility-payments/categories:
     get:
       tags: 
         - Utilities
@@ -67,7 +67,7 @@ paths:
                   "name": "Telecomunicaciones"
                   "utilities": 30
 
-  /utility-payments/v1/categories/{id}/utilities:
+  /v1/utility-payments/categories/{id}/utilities:
     get:
       tags: 
         - Utilities
@@ -108,7 +108,7 @@ paths:
         500:
           description: internal server error
 
-  /utility-payments/v1/utilities/{id}/bills:
+  /v1/utility-payments/utilities/{id}/bills:
     post:
       tags:
         - Utilities
@@ -165,7 +165,7 @@ paths:
         500:
           description: internal server error
 
-  /utility-payments/v1/transactions:
+  /v1/utility-payments/transactions:
     post:
       tags: 
         - Transactions
@@ -220,7 +220,7 @@ paths:
         500:
           description: internal server error
 
-  /utility-payments/v1/transactions/{id}:
+  /v1/utility-payments/transactions/{id}:
     get:
       tags: 
         - Transactions
@@ -244,7 +244,7 @@ paths:
         500:
           description: internal server error
 
-  /utility-payments/v1/transactions/{id}/checkout:
+  /v1/utility-payments/transactions/{id}/checkout:
     post:
       tags: 
         - Transactions

@@ -69,7 +69,7 @@ public class TransferenciaController
 		this.transferenciaClient = transferenciaClient;
 	}
 
-	@GetMapping("/v1/transferencia/{id:[0-9a-f\\-]{36}}/return")
+	@GetMapping("/v1/utility-payments/transferencia/{id:[0-9a-f\\-]{36}}/return")
 	public ResponseEntity<Object> tefReturn(
 		final HttpServletRequest request,
 		@PathVariable("id") final String requestId
@@ -114,7 +114,7 @@ public class TransferenciaController
 
 	@RequestMapping(
 		method = RequestMethod.POST,
-		path = "/v1/transferencia/{id:[0-9a-f\\-]{36}}/notify/{notifyId:[0-9a-f\\-]{36}}",
+		path = "/v1/utility-payments/transferencia/{id:[0-9a-f\\-]{36}}/notify/{notifyId:[0-9a-f\\-]{36}}",
 		consumes = MediaType.TEXT_XML_VALUE,
 		produces = MediaType.TEXT_XML_VALUE
 	)

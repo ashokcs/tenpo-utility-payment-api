@@ -62,7 +62,7 @@ public class WebpayController
 		this.webpayClient = webpayClient;
 	}
 
-	@PostMapping("/v1/webpay/{id}/return")
+	@PostMapping("/v1/utility-payments/webpay/{id}/return")
 	public ResponseEntity<?> webpayReturn(
 		final HttpServletRequest request,
 		@PathVariable("id") final String requestId,
@@ -158,7 +158,7 @@ public class WebpayController
 		return redirectEntity(getRedirectErrorUrl(transactionPublicId));
 	}
 
-	@PostMapping("/v1/webpay/{id}/final")
+	@PostMapping("/v1/utility-payments/webpay/{id}/final")
 	public ResponseEntity<?> webpayFinal(
 		final HttpServletRequest request,
 		@PathVariable("id") final String requestId,
