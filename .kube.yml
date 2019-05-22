@@ -31,6 +31,10 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: ${ENVIRONMENT}
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: DB_USER
               valueFrom:
                 secretKeyRef:

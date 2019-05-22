@@ -1,24 +1,11 @@
-buildscript {
-	ext {
-		springBootVersion = '2.1.2.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7")
-		classpath("org.ajoberstar:gradle-jacoco:0.3.0")
-	}
+plugins {
+	id 'org.springframework.boot' version '2.1.5.RELEASE'
+	id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.sonarqube'
-apply plugin: 'jacoco'
 
-group = 'cl.multipay'
+group = 'cl.tenpo.utility.payments.poc'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
@@ -26,22 +13,13 @@ repositories {
 	mavenCentral()
 }
 
-sonarqube {
-    properties {
-        property "sonar.host.url", "https://sonar.tools.multicajadigital.cloud"
-        property "sonar.login", "d51688d9873e45774dc83d36bcd577bcd36fb308"
-        property "sonar.projectName", "multipay-utility-payments-api"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.inclusions", "src/main/java/cl/multipay/**/*"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.apache.httpcomponents:httpclient:4.5.7'
+	implementation 'io.nats:jnats:2.4.6'
+	implementation 'io.nats:java-nats-streaming:2.1.6'
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
