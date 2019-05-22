@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.exception.NotFoundException;
-import cl.tenpo.utility.payments.exception.ServerErrorException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Category;
 import cl.tenpo.utility.payments.jpa.entity.Utility;
@@ -24,6 +22,7 @@ import cl.tenpo.utility.payments.object.dto.UtilityBillsRequest;
 import cl.tenpo.utility.payments.object.vo.PaymentMethod;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
+import cl.tenpo.utility.payments.util.Http;
 import cl.tenpo.utility.payments.util.Utils;
 import cl.tenpo.utility.payments.util.http.UtilityClient;
 
@@ -63,7 +62,7 @@ public class UtilitiesController
 	@GetMapping("/v1/utility-payments/categories/{id:\\d+}/utilities")
 	public List<Utility> categoryUtilities(@PathVariable("id") final long categoryId)
 	{
-		final Category category = utilityService.findCategoryById(categoryId).orElseThrow(NotFoundException::new);
+		final Category category = utilityService.findCategoryById(categoryId).orElseThrow(Http::NotFound);
 		return utilityService.findAllUtilitiesByCategoryId(category.getId());
 	}
 
@@ -85,7 +84,7 @@ public class UtilitiesController
 		@RequestBody @Valid final UtilityBillsRequest request
 	){
 		// get request parameters
-		final Utility utility = utilityService.findUtilityById(utilityId).orElseThrow(NotFoundException::new);
+		final Utility utility = utilityService.findUtilityById(utilityId).orElseThrow(Http::NotFound);
 		final String utilityCode = utility.getCode();
 		final String identifier = request.getIdentifier();
 		final String collector = utility.getCollectorId();
@@ -104,7 +103,7 @@ public class UtilitiesController
 			bill.setQueryId(mcb.getDebtDataId());
 			bill.setQueryOrder(mcb.getOrder());
 			bill.setQueryTransactionId(mcb.getMcCode());
-			billService.save(bill).orElseThrow(ServerErrorException::new);
+			billService.save(bill).orElseThrow(Http::ServerError);
 			bill.setUtility(utility);
 			result.add(bill);
 		}
@@ -114,6 +113,6 @@ public class UtilitiesController
 	@GetMapping("/v1/utility-payments/utilities/multicaja")
 	public String utilitiesMulticaja()
 	{
-		return utilityClient.getUtilitiesMulticaja().orElseThrow(ServerErrorException::new);
+		return utilityClient.getUtilitiesMulticaja().orElseThrow(Http::ServerError);
 	}
 }

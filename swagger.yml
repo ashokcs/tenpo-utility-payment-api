@@ -159,7 +159,7 @@ paths:
                       "name": "Vespucio Sur"
                       "identifier": "RUT, CON DIGITO VERIFICADOR"
         400:
-          description: invalid parameteres
+          description: invalid parameters
         404:
           description: utility not found
         500:

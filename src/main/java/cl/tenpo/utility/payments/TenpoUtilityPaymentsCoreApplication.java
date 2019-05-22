@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
-public class TenpoUtilityPaymentsApplication
+public class TenpoUtilityPaymentsCoreApplication
 {
 	public static void main(final String[] args)
 	{
-		SpringApplication.run(TenpoUtilityPaymentsApplication.class, args);
+		SpringApplication.run(TenpoUtilityPaymentsCoreApplication.class, args);
 	}
 }

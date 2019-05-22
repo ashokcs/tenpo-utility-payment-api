@@ -36,27 +36,14 @@ public class Properties
 	@Value("${transferencia.front.error-order}") public String transferenciaFrontErrorOrder;
 	@Value("${transferencia.front.final}") public String transferenciaFrontFinal;
 
-	/* multicaja utilities */
+	/* multicaja */
 	@Value("${multicaja.utilities.apikey}") public String multicajaUtilitiesApiKey;
 	@Value("${multicaja.utilities.url}") public String multicajaUtilitiesUrl;
-	@Value("${multicaja.utilities.bill.url}") public String multicajaUtlitiesBillUrl;
-	@Value("${multicaja.utilities.bill-confirm.url}") public String multicajaUtlitiesBillConfirmUrl;
+	@Value("${multicaja.utilities.debt.url}") public String multicajaUtlitiesDebtUrl;
+	@Value("${multicaja.utilities.confirm.url}") public String multicajaUtlitiesConfirmUrl;
 
 	/* proxy */
 	@Value("${httpclient.proxy}") public String httpClientProxy;
 	@Value("${httpclient.proxy.exclude}") public String httpClientProxyExclude;
 	@Value("${httpclient.trust.all}") public boolean httpClientTrustAll;
-
-	/* mail */
-	@Value("${mail.utility-payments.api-key}") public String mailSendgridApiKey;
-	@Value("${mail.utility-payments.receipt.from}") public String mailUtilityPaymentsReceiptFrom;
-	@Value("${mail.utility-payments.receipt.from.name}") public String mailUtilityPaymentsReceiptFromName;
-	@Value("${mail.utility-payments.receipt.bcc}") public String mailUtilityPaymentsReceiptBcc;
-	@Value("${mail.utility-payments.receipt.subject}") public String mailUtilityPaymentsReceiptSubject;
-	@Value("${mail.utility-payments.receipt.webpay.template}") public String mailUtilityPaymentsReceiptWebpayTemplate;
-	@Value("${mail.utility-payments.receipt.transferencia.template}") public String mailUtilityPaymentsReceiptTransferenciaTemplate;
-
-	/* recaptcha */
-	@Value("${recaptcha.verify.url}") public String recaptchaVerifyUrl;
-	@Value("${recaptcha.secret}") public String recaptchaSecret;
 }

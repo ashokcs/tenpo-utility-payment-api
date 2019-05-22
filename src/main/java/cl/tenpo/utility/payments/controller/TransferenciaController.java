@@ -167,8 +167,8 @@ public class TransferenciaController
 						job.setTransactionId(transaction.getId());
 						jobService.save(job).orElseThrow(Http::ServerError);
 
-						// send receipt
-						// ... TODO
+						// publish payment approved event
+						// TODO
 					}
 				});
 

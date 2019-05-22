@@ -1,4 +1,5 @@
 pipeline:
+
   test:
     image: openjdk:8-alpine
     environment:
@@ -26,7 +27,7 @@ pipeline:
   docker:
     registry: mccontainerregistry.azurecr.io
     image: plugins/docker
-    repo: mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-api
+    repo: mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-core
     secrets: 
       - docker_username
       - docker_password
@@ -73,7 +74,7 @@ pipeline:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: staging
     vars:
-      - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-api:${DRONE_COMMIT_SHA}
+      - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-core:${DRONE_COMMIT_SHA}
       - ENVIRONMENT=staging
     when:
       branch: master

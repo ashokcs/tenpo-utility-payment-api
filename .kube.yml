@@ -2,29 +2,29 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: tenpo
+  name: tenpo-utility-payments
   labels:
     istio-injection: enabled
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tenpo-utility-payments-api
-  namespace: tenpo
+  name: tenpo-utility-payments-core
+  namespace: tenpo-utility-payments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tenpo-utility-payments-api
+      app: tenpo-utility-payments-core
   template:
     metadata:
-      namespace: tenpo
+      namespace: tenpo-utility-payments
       labels:
-        app: tenpo-utility-payments-api
+        app: tenpo-utility-payments-core
         version: v1
     spec:
       containers:
-        - name: tenpo-utility-payments-api
+        - name: tenpo-utility-payments-core
           image: ${IMAGE}
           ports:
             - containerPort: 80
@@ -34,22 +34,22 @@ spec:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: tenpo-utility-payments-api-secrets
+                  name: tenpo-utility-payments-core-secrets
                   key: pg_login
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: tenpo-utility-payments-api-secrets
+                  name: tenpo-utility-payments-core-secrets
                   key: pg_password
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: tenpo-utility-payments-api-secrets
+                  name: tenpo-utility-payments-core-secrets
                   key: pg_name
             - name: DB_FQDN
               valueFrom:
                 secretKeyRef:
-                  name: tenpo-utility-payments-api-secrets
+                  name: tenpo-utility-payments-core-secrets
                   key: pg_fqdn
           imagePullPolicy: Always
       imagePullSecrets:
@@ -58,10 +58,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tenpo-utility-payments-api-svc
-  namespace: tenpo
+  name: tenpo-utility-payments-core-svc
+  namespace: tenpo-utility-payments
   labels:
-    app: tenpo-utility-payments-api
+    app: tenpo-utility-payments-core
 spec:
   type: ClusterIP
   ports:
@@ -70,27 +70,13 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: tenpo-utility-payments-api
+    app: tenpo-utility-payments-core
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: tenpo-utility-payments-api-se-mail
-  namespace: tenpo
-spec:
-  hosts:
-    - smtp.sendgrid.net
-  location: MESH_EXTERNAL
-  ports:
-    - number: 587
-      name: tcp-smtp
-      protocol: TCP
----
-apiVersion: networking.istio.io/v1alpha3
-kind: ServiceEntry
-metadata:
-  name: tenpo-utility-payments-api-se-db
-  namespace: tenpo
+  name: tenpo-utility-payments-core-se-db
+  namespace: tenpo-utility-payments
 spec:
   hosts:
     - "*.database.azure.com"
@@ -103,8 +89,8 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: tenpo-utility-payments-api-pdc
-  namespace: tenpo
+  name: tenpo-utility-payments-core-pdc
+  namespace: tenpo-utility-payments
 spec:
   hosts:
     - "*.multicaja.cl"

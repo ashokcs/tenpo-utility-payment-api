@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Job;
 import cl.tenpo.utility.payments.jpa.entity.Transaction;
@@ -125,8 +124,8 @@ public class WebpayController
 						job.setTransactionId(transaction.getId());
 						jobService.save(job);
 
-						// send receipt
-						// ... TODO
+						// publish payment approved event
+						// TODO
 
 						// redirect to webpay
 						return postRedirectEntity(webpayResultResponse.getUrlRedirection(), tokenWs);
@@ -168,12 +167,12 @@ public class WebpayController
 	) {
 		logger.info("-> " + request.getRequestURL() + "?token_ws=" + tokenWs);
 		try {
-			final String publicId = Utils.getValidParam(requestId, "[0-9a-f\\-]{36}").orElseThrow(NotFoundException::new);;
+			final String publicId = Utils.getValidParam(requestId, "[0-9a-f\\-]{36}").orElseThrow(Http::NotFound);
 
 			// process token_ws (approved, denied)
 			if (Utils.getValidParam(tokenWs, "[0-9a-f]{64}").isPresent()) {
-				final Webpay webpay = webpayService.getAckByPublicIdAndToken(publicId, tokenWs).orElseThrow(NotFoundException::new);
-				final Transaction transaction = transactionService.findById(webpay.getTransactionId()).orElseThrow(NotFoundException::new);
+				final Webpay webpay = webpayService.getAckByPublicIdAndToken(publicId, tokenWs).orElseThrow(Http::NotFound);
+				final Transaction transaction = transactionService.findById(webpay.getTransactionId()).orElseThrow(Http::NotFound);
 
 				if (Transaction.SUCCEEDED.equals(transaction.getStatus())) {
 					return redirectEntity(properties.webpayFrontFinal.replaceAll("\\{id\\}", transaction.getPublicId()));

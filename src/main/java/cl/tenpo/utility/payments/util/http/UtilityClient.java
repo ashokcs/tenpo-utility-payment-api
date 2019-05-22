@@ -141,7 +141,7 @@ public class UtilityClient
 	{
 		final List<MCBill> bills = new ArrayList<>();
 		try {
-			final String url = properties.multicajaUtlitiesBillUrl;
+			final String url = properties.multicajaUtlitiesDebtUrl;
 
 			// create json
 			final ObjectMapper mapper = new ObjectMapper();

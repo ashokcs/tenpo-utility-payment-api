@@ -10,8 +10,7 @@
 
 ### Docker Compose
 ```bash
-docker-compose -p tenpo up
-docker run -it --rm --link tenpo_postgres_1:postgres --net tenpo_default postgres:9-alpine psql -h postgres -U tenpo
+docker-compose -p tenpo_nats up
 ```
 
 # Azure

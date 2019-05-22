@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cl.tenpo.utility.payments.exception.NotFoundException;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.repository.BillRepository;
+import cl.tenpo.utility.payments.util.Http;
 
 @Service
 public class BillService
@@ -55,7 +55,7 @@ public class BillService
 			final Optional<Bill> opt = billRepository.findByPublicIdAndTransactionIdAndStatus(publicId, transactionId, Bill.PENDING);
 			if (opt.isPresent()) {
 				final Bill bill = opt.get();
-				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(Http::NotFound);
 				bill.setUtility(utility);
 				return Optional.of(bill);
 			}
@@ -76,7 +76,7 @@ public class BillService
 			final Optional<Bill> opt = billRepository.findByPublicIdAndStatus(publicId, status);
 			if (opt.isPresent()) {
 				final Bill bill = opt.get();
-				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(NotFoundException::new);
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(Http::NotFound);
 				bill.setUtility(utility);
 				return Optional.of(bill);
 			}
