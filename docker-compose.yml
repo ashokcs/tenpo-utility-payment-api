@@ -12,7 +12,7 @@ services:
       - "4222"
       - "-m"
       - "8222"
-      # - "-DV"
+      - "-DV"
       # - "-SDV"
       - "-store"
       - "file"
