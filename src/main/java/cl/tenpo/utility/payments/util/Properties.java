@@ -8,6 +8,13 @@ public class Properties
 {
 	@Value("${time-zone.offset}") public String timezoneOffset;
 
+	/* nats */
+	@Value("${nats.cluster.url}") public String natsClusterUrl;
+	@Value("${nats.cluster.id}") public String natsClusterId;
+	@Value("${nats.client.id}") public String natsClientId;
+	@Value("${nats.subject.webpay-payment-approved}") public String natsSubjectWebpayPaymentApproved;
+	@Value("${nats.subject.transferencia-payment-approved}") public String natsSubjectTransferenciaPaymentApproved;
+
 	/* webpay */
 	@Value("${webpay.init.url}") public String webpayInitUrl;
 	@Value("${webpay.result.url}") public String webpayResultUrl;
