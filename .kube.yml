@@ -99,6 +99,7 @@ spec:
   hosts:
     - "*.multicaja.cl"
     - "*.mcdesaqa.cl"
+    - "*.multicajadigital.cloud"
   location: MESH_EXTERNAL
   ports:
     - number: 443
