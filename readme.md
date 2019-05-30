@@ -279,10 +279,12 @@ git tag --delete oti-v1.0.0
 - payment method prepaid
 - reports conciliacion
 - reports table
+- worker report trxs daily and monthly
 - totaliser db
 - totaliser bo
 - Proceso clean bills table (orphans, created)
 - Proceso clean transactions table (created, no childs)
+- Proceso expire waiting transactions
 - Testing
 - We need an endpoint from multicaja to check the transaction status
 - BO Roles
