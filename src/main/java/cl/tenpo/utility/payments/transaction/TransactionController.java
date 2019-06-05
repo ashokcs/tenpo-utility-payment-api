@@ -116,6 +116,7 @@ public class TransactionController
 
 		// create transaction
 		final Transaction transaction = new Transaction();
+		transaction.setOrder(transactionService.generateOrderSequence().orElseThrow(Http::ServerError));
 		transaction.setStatus(Transaction.PENDING);
 		transaction.setPublicId(Utils.uuid());
 		transaction.setAmount(bills.stream().mapToLong(b -> b.getAmount()).sum());

@@ -9,6 +9,8 @@ import java.util.UUID;
 
 public class Utils
 {
+	public static final DateTimeFormatter orderFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
 	public static String uuid()
 	{
 		return UUID.randomUUID().toString();

@@ -41,6 +41,7 @@ public class Transaction
 	public static final String PENDING 	  = "PENDING";
 	public static final String WAITING 	  = "WAITING";
 	public static final String PROCESSING = "PROCESSING";
+	public static final String UNFINISHED = "UNFINISHED";
 	public static final String SUCCEEDED  = "SUCCEEDED";
 	public static final String FAILED     = "FAILED";
 	public static final String EXPIRED 	  = "EXPIRED";
@@ -57,7 +58,7 @@ public class Transaction
 	private String status;
 	@JsonProperty("id")
 	private String publicId;
-	@Column(name = "\"order\"", insertable = false)
+	@Column(name = "\"order\"")
 	private String order;
 	private String paymentMethod;
 	private Long amount;

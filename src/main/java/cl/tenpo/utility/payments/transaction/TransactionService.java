@@ -1,5 +1,6 @@
 package cl.tenpo.utility.payments.transaction;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,8 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import cl.tenpo.utility.payments.util.Utils;
 
 @Service
 public class TransactionService
@@ -77,5 +80,19 @@ public class TransactionService
 	{
 		final Optional<Transaction> opt = transactionRepository.findByPublicIdAndStatus(publicId, Transaction.CREATED);
 		return opt.isPresent() ? opt : transactionRepository.findByPublicIdAndStatus(publicId, Transaction.PENDING);
+	}
+
+	public Optional<String> generateOrderSequence()
+	{
+		try {
+			final Integer seq = transactionRepository.getNextTransactionSequence().get();
+			final LocalDateTime localDateTime = LocalDateTime.now();
+			final String now = Utils.orderFormatter.format(localDateTime);
+			final String order = "U" + now + String.format("%03d", seq);
+			return Optional.of(order);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
 	}
 }
