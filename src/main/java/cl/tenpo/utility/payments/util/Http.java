@@ -1,5 +1,7 @@
 package cl.tenpo.utility.payments.util;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,7 +22,7 @@ public class Http
 	public static String MAX_SIZE_REACHED = "MAX_SIZE_REACHED";
 
 
-	public static ResponseStatusException exception(final HttpStatus status)
+	public static ResponseStatusException ex(final HttpStatus status)
 	{
 		return new ResponseStatusException(status);
 	}
@@ -34,7 +36,7 @@ public class Http
 
 	public static ResponseStatusException BadRequest()
 	{
-		return exception(HttpStatus.BAD_REQUEST);
+		return ex(HttpStatus.BAD_REQUEST);
 	}
 
 	public static ResponseStatusException InvalidPaymentMethod()
@@ -46,14 +48,14 @@ public class Http
 
 	public static ResponseStatusException Unauthorized()
 	{
-		return exception(HttpStatus.UNAUTHORIZED);
+		return ex(HttpStatus.UNAUTHORIZED);
 	}
 
 	/* 404 - NOT FOUND */
 
 	public static ResponseStatusException NotFound()
 	{
-		return exception(HttpStatus.NOT_FOUND);
+		return ex(HttpStatus.NOT_FOUND);
 	}
 
 	public static ResponseStatusException BillNotFound()
@@ -61,9 +63,9 @@ public class Http
 		return exception(HttpStatus.NOT_FOUND, BILL_ID_NOT_FOUND);
 	}
 
-	public static ResponseStatusException BillNotFound(final String billId)
+	public static ResponseStatusException BillNotFound(final UUID billId)
 	{
-		return exception(HttpStatus.NOT_FOUND, BILL_ID_NOT_FOUND + ":" + billId);
+		return exception(HttpStatus.NOT_FOUND, BILL_ID_NOT_FOUND + ":" + billId.toString());
 	}
 
 	public static ResponseStatusException TransactionNotFound()
@@ -88,9 +90,9 @@ public class Http
 		return exception(HttpStatus.CONFLICT, BILL_ID_DUPLICATED);
 	}
 
-	public static ResponseStatusException ConficDuplicatedBillId(final String billId)
+	public static ResponseStatusException ConficDuplicatedBillId(final UUID billId)
 	{
-		return exception(HttpStatus.CONFLICT, BILL_ID_DUPLICATED + ":" + billId);
+		return exception(HttpStatus.CONFLICT, BILL_ID_DUPLICATED + ":" + billId.toString());
 	}
 
 	public static ResponseStatusException ConficDuplicatedIdentifier()
@@ -98,9 +100,9 @@ public class Http
 		return exception(HttpStatus.CONFLICT, IDENTIFIER_DUPLICATED);
 	}
 
-	public static ResponseStatusException ConficDuplicatedIdentifier(final String billId)
+	public static ResponseStatusException ConficDuplicatedIdentifier(final UUID billId)
 	{
-		return exception(HttpStatus.CONFLICT, IDENTIFIER_DUPLICATED + ":" + billId);
+		return exception(HttpStatus.CONFLICT, IDENTIFIER_DUPLICATED + ":" + billId.toString());
 	}
 
 	public static ResponseStatusException ConfictMaxSizeReached()
@@ -112,6 +114,6 @@ public class Http
 
 	public static ResponseStatusException ServerError()
 	{
-		return exception(HttpStatus.INTERNAL_SERVER_ERROR);
+		return ex(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

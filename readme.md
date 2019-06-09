@@ -27,60 +27,6 @@ Username: McContainerRegistry (docker_username)
 Password: hwtF4xp8V2dhxWPCGv=ODCTEWgJTgTVc (docker_password)
 ```
 
-# Webpay
-...
-
-# Multicaja Transferencia
-## Production
-Create Order: https://www.multicaja.cl/bdpcows/CreateOrderWebService   
-Get Order Status: https://www.multicaja.cl/BDPGetOrderStatus/GetOrderStatusWebService   
-```
-Remote WS
-commerce_id : 76828790
-branch_id   : 142809
-username    : multicaja
-password    : fJLQRFm67QNnbo
-base64      : bXVsdGljYWphOmZKTFFSRm02N1FObmJv
-
-Local WS
-notify_user : xNXxrkMmMxqD77GCn2Fw
-notify_pass : dd73MTANpLMCLMkRaMxN
-notify_auth : eE5YeHJrTW1NeHFENzdHQ24yRnc6ZGQ3M01UQU5wTE1DTE1rUmFNeE4=
-```
-
-## Categories
-```
-"1": "OTRO"
-"2": "EFT"
-"3": "SENCILLITO"
-"4": "SANTANDER"
-
-"100": "AGUA"
-"200": "LUZ"
-"300": "TELEF-TV-INTERNET"
-"400": "GAS"
-"500": "AUTOPISTAS"
-"600": "COSMETICA"
-"700": "RETAIL"
-"800": "CREDITO-FINANCIERA"
-"900": "SEGURIDAD"
-"1000": "EDUCACION",
-"1100": "CEMENTERIO"
-"1200": "OTRAS EMPRESAS"
-"1300": "EFECTIVO MULTICAJA"
-```
-
-## Notify Request
-```
-HTTP request - http://localhost:7771/v1/payments/transferencia/notify/b968349f0e1d4ee7802b08d944027670/1cbc544079894abc895bf74a5862563e/]---
-Accept: text/xml, multipart/related
-Authorization: Basic aHlheXZ1NThhSzhTU0Z5SFZxZno6Ym55a0hHWjhyS1Jackp2UjZIOU0=
-Content-Type: text/xml; charset=utf-8
-SOAPAction: "http://www.example.cl/ecommerce/NotifyPaymentWeb/notifyPaymentRequest"
-
-<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:notifyPayment xmlns:ns2="http://www.example.cl/ecommerce/"><mcOrderId>986916273366660</mcOrderId><ecOrderId>1201902131759160003</ecOrderId></ns2:notifyPayment></S:Body></S:Envelope>
-```
-
 # Multicaja Utility Payment
 ```
 DEVELOPMENT
@@ -274,6 +220,8 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
+- api prepaid - payment description - movements event
+- api utility - movements event ?
 - reports conciliacion
 - reports table
 - report trxs daily and monthly

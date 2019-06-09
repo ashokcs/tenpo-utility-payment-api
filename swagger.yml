@@ -6,41 +6,11 @@ servers:
   - url: https://tenpo.staging.multicajadigital.cloud
     description: Staging Environment
 tags:
-  - name: General
-    description: Operaciones generales
   - name: Utilities
     description: Operaciones de los convenios de pago de cuenta
   - name: Transactions
     description: Operaciones de transacciones de pago de cuenta
 paths:
-
-  /v1/utility-payments/payment-methods:
-    get:
-      tags: 
-        - General
-      summary: Lista los métodos de pago disponibles
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PaymentMethod'
-              example:
-                - "id": "WEBPAY"
-                  "name": "Webpay"
-                  "private": false
-                  "public": true
-                - "id": "TRANSFERENCIA"
-                  "name": "Transferencia"
-                  "private": false
-                  "public": true
-                - "id": "PREPAID"
-                  "name": "Prepago"
-                  "private": true
-                  "public": false
 
   /v1/utility-payments/categories:
     get:
@@ -243,74 +213,6 @@ paths:
           description: resource not found
         500:
           description: internal server error
-
-  /v1/utility-payments/transactions/{id}/checkout:
-    post:
-      tags: 
-        - Transactions
-      summary: Inicia el proceso de pago de una transacción
-      parameters: 
-        - in: path
-          name: id
-          required: true
-          description: Id de la transacción de pago de cuenta
-          schema:
-            type: string
-            example: 0f052b43-1456-445a-9d24-8e71f7e0cdbe
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionCheckoutRequest'
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionResponse'
-              example:
-                "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
-                "status": "WAITING"
-                "order": "T20190509224702005"
-                "amount": 16962
-                "payment_method": "WEBPAY"
-                "email": "correo@ejemplo.cl"
-                "bills":
-                  - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
-                    "status": "WAITING"
-                    "identifier": "1231231"
-                    "amount": 9324
-                    "due_date": "No disponible"
-                    "description": "Deuda total"
-                    "utility":
-                      "id": 71
-                      "name": "Vespucio Sur"
-                      "identifier": "RUT, CON DIGITO VERIFICADOR"
-                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
-                    "status": "WAITING"
-                    "identifier": "1231233"
-                    "amount": 7638
-                    "due_date": "No disponible"
-                    "description": "Deuda vencida"
-                    "utility":
-                      "id": 71
-                      "name": "Vespucio Sur"
-                      "identifier": "RUT, CON DIGITO VERIFICADOR"
-                "webpay":
-                  "id": "ce5fa20b-d680-487e-8e17-73be6f0dce31"
-                  "status": "WAITING"
-                  "url": "https://webpay3gint.transbank.cl/webpayserver/initTransaction"
-                  "token": "e715b9b10abd777f0f3a537a9ad69a4c2db9de2ec12666fa889b41d55f7acb1cz"
-                "created": "2019-05-09T24:47:02.642887-03:00"
-                "updated": "2019-05-09T24:47:02.642887-03:00"
-        400:
-          description: invalid parameters
-        404:
-          description: resource not found
-        500:
-          description: internal server error
           
 components:
   schemas:
@@ -341,22 +243,6 @@ components:
         utilities:
           type: integer
           example: 14
-    
-    PaymentMethod:
-      type: object
-      properties:
-        id:
-          type: String
-          example: WEBPAY
-        name:
-          type: string
-          example: Webpay
-        private:
-          type: boolean
-          example: true
-        public:
-          type: boolean
-          example: false
     
     UtilityBillRequest:
       type: object
@@ -399,16 +285,6 @@ components:
           example: 
             - 0f052b43-1456-445a-9d24-8e71f7e0cdbe
             - e41564e9-9ea8-4aac-8b2e-969e45631d35
-          
-    TransactionCheckoutRequest:
-      type: object
-      properties:
-        payment_method:
-          type: string
-          example: WEBPAY
-        email:
-          type: string
-          example: correo@ejemplo.cl
     
     TransactionResponse:
       type: object

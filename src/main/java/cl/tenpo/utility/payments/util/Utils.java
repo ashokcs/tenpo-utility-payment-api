@@ -5,16 +5,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.UUID;
 
 public class Utils
 {
 	public static final DateTimeFormatter orderFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-
-	public static String uuid()
-	{
-		return UUID.randomUUID().toString();
-	}
 
 	public static String format(final String pattern, final TemporalAccessor date)
 	{

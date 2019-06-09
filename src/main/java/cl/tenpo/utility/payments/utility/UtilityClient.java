@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.util.Properties;
 
 @Component
@@ -35,7 +36,7 @@ public class UtilityClient
 		this.properties = properties;
 	}
 
-	public Optional<String> getUtilitiesMulticaja()
+	public Optional<String> getUtilities()
 	{
 		try {
 			final String url = properties.multicajaUtilitiesUrl;
@@ -59,84 +60,7 @@ public class UtilityClient
 		return Optional.empty();
 	}
 
-	/*public Optional<List<Utility>> getUtilities()
-	{
-		try {
-			final ObjectMapper mapper = new ObjectMapper();
-			final String url = properties.multicajaUtilitiesUrl;
-			final HttpPost request = new HttpPost(url);
-			request.setHeader("Content-Type", "application/json");
-			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
-
-			logger.info("=> {}", url);
-
-			try (final CloseableHttpResponse response = client.execute(request)) {
-				final HttpEntity entity = response.getEntity();
-				final String body = EntityUtils.toString(entity);
-
-				logger.info("<= {}: {}", url, response.getStatusLine());
-
-				if (response.getStatusLine().getStatusCode() == 200) {
-
-					final JsonNode utilitiesJsonNode = mapper.readTree(body);
-					final JsonNode data = utilitiesJsonNode.get("data");
-					final JsonNode utilities = data.get("agreements");
-					if (utilities.isArray()) {
-						final List<Utility> utilitiesList = new ArrayList<>();
-						for (final JsonNode utility : utilities) {
-
-							// utility name
-							final String utilityName = utility.get("firm").asText();
-							final Utility tmp = new Utility();
-							tmp.setCode(utilityName);
-							tmp.setName(Utils.utilityFriendlyName(utilityName));
-
-							// utility identifiers
-							final JsonNode utilityIdentifiers = utility.get("gloss");
-							final List<String> utilityIdentifiersList = new ArrayList<>();
-							for (final Iterator<String> keys = utilityIdentifiers.fieldNames(); keys.hasNext();){
-								final String key = keys.next();
-								final String value = utilityIdentifiers.get(key).asText();
-								if (!value.isEmpty()) {
-									utilityIdentifiersList.add(value);
-								}
-							}
-							tmp.setIdentifiers(utilityIdentifiersList);
-
-							// utility collector
-							final JsonNode collectors = utility.get("collector");
-							for (final Iterator<String> keys = collectors.fieldNames(); keys.hasNext();){
-								final String key = keys.next();
-								tmp.setCollectorId(key);
-								tmp.setCollectorName(collectors.get(key).asText(null));
-								break;
-							}
-
-							// utility category
-							final JsonNode categories = utility.get("area");
-							for (final Iterator<String> keys = categories.fieldNames(); keys.hasNext();){
-								final String key = keys.next();
-								tmp.setCategoryId(key);
-								tmp.setCategoryName(categories.get(key).asText( null));
-								break;
-							}
-
-							// add to list
-							utilitiesList.add(tmp);
-						}
-						return Optional.of(utilitiesList);
-					}
-				} else {
-					logger.error("<= {}: {}", url, body);
-				}
-			}
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return Optional.empty();
-	}*/
-
-	public List<UtilityBillItem> getBills(final String utility, final String identifier, final String collector)
+	public List<UtilityBillItem> getBills(final String utility, final String collector, final String identifier)
 	{
 		final List<UtilityBillItem> bills = new ArrayList<>();
 		try {
