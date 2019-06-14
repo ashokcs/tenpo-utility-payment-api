@@ -10,8 +10,7 @@ import cl.tenpo.utility.payments.entity.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, UUID>
 {
-	public Optional<Transaction> findByIdAndStatus(final UUID id, final String status);
-
     @Query(value = "SELECT nextval('public.transactions_seq')", nativeQuery = true)
-    public Optional<Integer> getNextTransactionSequence();
+    public Optional<Integer> getNextval();
+    public Optional<Transaction> findByIdAndUser(final UUID id, final UUID user);
 }

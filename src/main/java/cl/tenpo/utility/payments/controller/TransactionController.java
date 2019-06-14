@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Job;
+import cl.tenpo.utility.payments.entity.Payment;
 import cl.tenpo.utility.payments.entity.Transaction;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
+import cl.tenpo.utility.payments.service.PaymentService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.transaction.TransactionRequest;
 import cl.tenpo.utility.payments.util.Http;
@@ -33,23 +35,28 @@ public class TransactionController
 {
 	private final BillService billService;
 	private final JobService jobService;
+	private final PaymentService paymentService;
 	private final TransactionService transactionService;
 
 	public TransactionController(
 		final BillService billService,
 		final JobService jobService,
+		final PaymentService paymentService,
 		final TransactionService transactionService
 	){
 		this.billService = billService;
 		this.jobService = jobService;
+		this.paymentService = paymentService;
 		this.transactionService = transactionService;
 	}
 
 	@GetMapping("/v1/utility-payments/transactions/{id:[0-9a-f\\-]{36}}")
-	public Transaction get(@PathVariable("id") final UUID id)
-	{
+	public Transaction get(
+		@PathVariable("id") final UUID id,
+		@RequestHeader(value="User-Id") final UUID userId
+	) {
 		// get transaction and bills
-		final Transaction transaction = transactionService.findById(id).orElseThrow(Http::TransactionNotFound);
+		final Transaction transaction = transactionService.findByIdAndUser(id, userId).orElseThrow(Http::TransactionNotFound);
 		transaction.setBills(billService.findByTransactionId(transaction.getId()));
 
 		// get payment method
@@ -97,19 +104,27 @@ public class TransactionController
 		// create transaction
 		final Transaction transaction = new Transaction();
 		transaction.setStatus(Transaction.PROCESSING);
-		transaction.setOrder(transactionService.generateOrderSequence().orElseThrow(Http::ServerError));
+		transaction.setOrder(transactionService.getNextval().orElseThrow(Http::ServerError));
 		transaction.setUser(userId);
 		transaction.setAmount(bills.stream().mapToLong(b -> b.getAmount()).sum());
 		transaction.setAmountSucceeded(0L);
-		transaction.setAmountExpired(0L);
 		transactionService.save(transaction).orElseThrow(Http::ServerError);
 		transaction.setBills(bills);
 
 		// update bills
 		transaction.getBills().forEach(b -> {
+			// set bills processing
 			b.setTransactionId(transaction.getId());
 			b.setStatus(Bill.PROCESSING);
 			billService.save(b).orElseThrow(Http::ServerError);
+
+			// save pending payment
+			final Payment payment = new Payment();
+			payment.setStatus(Payment.PROCESSING);
+			payment.setTransactionId(transaction.getId());
+			payment.setBillId(b.getId());
+			payment.setAmount(b.getAmount());
+			paymentService.save(payment).orElseThrow(Http::ServerError);;
 		});
 
 		// save job

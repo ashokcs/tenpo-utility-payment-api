@@ -31,8 +31,8 @@ public class Bill
 {
 	public static final String CREATED 	  = "CREATED";
 	public static final String PROCESSING = "PROCESSING";
-	public static final String CONFIRMED  = "CONFIRMED";
-	public static final String EXPIRED 	  = "EXPIRED";
+	public static final String SUCCEEDED  = "SUCCEEDED";
+	public static final String FAILED 	  = "FAILED";
 
 	@Id
 	private UUID id;

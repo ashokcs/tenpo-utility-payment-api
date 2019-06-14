@@ -25,9 +25,9 @@ public class TransactionService
 		this.transactionRepository = transactionRepository;
 	}
 
-	public Optional<Transaction> findById(final UUID id)
+	public Optional<Transaction> findByIdAndUser(final UUID id, final UUID user)
 	{
-		return transactionRepository.findById(id);
+		return transactionRepository.findByIdAndUser(id, user);
 	}
 
 	public Optional<Transaction> save(final Transaction transaction)
@@ -40,10 +40,10 @@ public class TransactionService
 		return Optional.empty();
 	}
 
-	public Optional<String> generateOrderSequence()
+	public Optional<String> getNextval()
 	{
 		try {
-			final Integer seq = transactionRepository.getNextTransactionSequence().get();
+			final Integer seq = transactionRepository.getNextval().get();
 			final LocalDateTime localDateTime = LocalDateTime.now();
 			final String now = Utils.orderFormatter.format(localDateTime);
 			final String order = "U" + now + String.format("%03d", seq);

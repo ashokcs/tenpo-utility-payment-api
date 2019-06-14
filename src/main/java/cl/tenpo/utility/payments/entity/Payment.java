@@ -1,55 +1,32 @@
 package cl.tenpo.utility.payments.entity;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Entity
-@Table(name = "transactions")
-@JsonPropertyOrder({
-	"id",
-    "status",
-    "order",
-    "user",
-    "amount",
-    "bills",
-    "created",
-    "updated",
-})
-public class Transaction
+@Table(name = "payments")
+public class Payment
 {
 	public static final String PROCESSING = "PROCESSING";
 	public static final String SUCCEEDED  = "SUCCEEDED";
 	public static final String FAILED     = "FAILED";
-	public static final String UNFINISHED = "UNFINISHED";
+	public static final String REVERSED   = "REVERSED";
 
 	@Id
-	@Column(updatable = false)
 	private UUID id;
 	private String status;
-	@Column(name = "\"order\"")
-	private String order;
-	@Column(name = "\"user\"")
-	private UUID user;
+	private UUID transactionId;
+	private UUID billId;
 	private Long amount;
-	@JsonIgnore
-	private Long amountSucceeded;
+	private Long paymentId;
 	private OffsetDateTime created;
 	private OffsetDateTime updated;
-
-	@Transient
-    private List<Bill> bills;
 
 	@PrePersist
 	private void prePersist()
@@ -81,12 +58,20 @@ public class Transaction
 		this.status = status;
 	}
 
-	public String getOrder() {
-		return order;
+	public UUID getTransactionId() {
+		return transactionId;
 	}
 
-	public void setOrder(final String order) {
-		this.order = order;
+	public void setTransactionId(final UUID transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public UUID getBillId() {
+		return billId;
+	}
+
+	public void setBillId(final UUID billId) {
+		this.billId = billId;
 	}
 
 	public Long getAmount() {
@@ -95,6 +80,14 @@ public class Transaction
 
 	public void setAmount(final Long amount) {
 		this.amount = amount;
+	}
+
+	public Long getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(final Long paymentId) {
+		this.paymentId = paymentId;
 	}
 
 	public OffsetDateTime getCreated() {
@@ -111,30 +104,5 @@ public class Transaction
 
 	public void setUpdated(final OffsetDateTime updated) {
 		this.updated = updated;
-	}
-
-	public List<Bill> getBills() {
-		return bills;
-	}
-
-	public void setBills(final List<Bill> bills) {
-		this.bills = bills;
-	}
-
-	public UUID getUser() {
-		return user;
-	}
-
-	public void setUser(final UUID user) {
-		this.user = user;
-	}
-
-	public Long getAmountSucceeded() {
-		return amountSucceeded;
-	}
-
-	public void setAmountSucceeded(final Long amountSucceeded)
-	{
-		this.amountSucceeded = amountSucceeded;
 	}
 }
