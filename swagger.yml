@@ -110,24 +110,26 @@ paths:
               example:
                 - "id": "dd10d4fc-e25e-41be-bde9-e740c7696658"
                   "status": "WAITING"
+                  "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                   "identifier": "12312312"
                   "amount": 5233
                   "due_date": "No disponible"
                   "description": "Deuda total"
+                  "created": "2019-06-14T12:48:24.039-04:00"
+                - "id": "56f31b96-1da2-4372-923d-07b8782f2207"
+                  "status": "WAITING"
                   "utility":
                       "id": 71
                       "name": "Vespucio Sur"
                       "identifier": "RUT, CON DIGITO VERIFICADOR"
-                - "id": "56f31b96-1da2-4372-923d-07b8782f2207"
-                  "status": "WAITING"
                   "identifier": "12312312"
                   "amount": 4177
                   "due_date": "No disponible"
                   "description": "Deuda vencida"
-                  "utility":
-                      "id": 71
-                      "name": "Vespucio Sur"
-                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                  "created": "2019-06-14T12:48:24.039-04:00"
         400:
           description: invalid parameters
         404:
@@ -157,28 +159,29 @@ paths:
                 "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
                 "status": "PENDING"
                 "order": "T20190509224702005"
+                "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
                 "amount": 16962
                 "bills":
                   - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
                     "status": "PENDING"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                     "identifier": "1231231"
                     "amount": 9324
                     "due_date": "No disponible"
                     "description": "Deuda total"
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "PENDING"
                     "utility":
                       "id": 71
                       "name": "Vespucio Sur"
                       "identifier": "RUT, CON DIGITO VERIFICADOR"
-                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
-                    "status": "PENDING"
                     "identifier": "1231233"
                     "amount": 7638
                     "due_date": "No disponible"
                     "description": "Deuda vencida"
-                    "utility":
-                      "id": 71
-                      "name": "Vespucio Sur"
-                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                 "created": "2019-05-09T24:47:02.642887-03:00"
                 "updated": "2019-05-09T24:47:02.642887-03:00"
         400:
@@ -260,6 +263,8 @@ components:
         status:
           type: string
           example: WAITING
+        utility:
+          $ref: '#/components/schemas/Utility'
         identifier:
           type: string
           example: 66823334
@@ -272,8 +277,9 @@ components:
         description:
           type: string
           example: Deuda Total
-        utility:
-          $ref: '#/components/schemas/Utility'
+        created:
+          type: string
+          example: "2019-06-14T12:48:24.039-04:00"
     
     TransactionRequest:
       type: object
@@ -298,49 +304,16 @@ components:
         order:
           type: string
           example: 120190424105826006
+        user:
+          type: string
+          example: bdb7cd6d-dfca-4aee-82b0-4588e871ec79
         amount:
           type: integer
           example: 7639
-        payment_method:
-          type: string
-          example: WEBPAY
-        email:
-          type: string
-          example: correo@ejemplo.cl
         bills:
           type: array
           items:
             $ref: '#/components/schemas/UtilityBillResponse'
-        webpay:
-          type: object
-          properties:
-            id:
-              type: string
-              example: "1e97647a-e380-4cc8-ba71-6bbd85b5ed07"
-            status:
-              type: string
-              example: WAITING
-            url:
-              type: string
-              example: https://webpay3gint.transbank.cl/webpayserver/initTransaction
-            token:
-              type: string
-              example: e47d8c3c2707730fda36fc15d4418a556e3a1f2bbb7e8cacfff56c0d0bb2d2d0
-            code: 
-              type: integer
-              example: 0
-            auth_code: 
-              type: string
-              example: 123123
-            card_number: 
-              type: string
-              example: 1234
-            payment_type: 
-              type: string
-              example: VD
-            shares_number:
-              type: integer
-              example: 0
         created:
           type: string
           example: "2019-04-24T10:58:26.140605-04:00"
