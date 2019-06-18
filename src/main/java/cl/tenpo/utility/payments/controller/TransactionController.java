@@ -53,7 +53,7 @@ public class TransactionController
 	@GetMapping("/v1/utility-payments/transactions/{id:[0-9a-f\\-]{36}}")
 	public Transaction get(
 		@PathVariable("id") final UUID id,
-		@RequestHeader(value="User-Id") final UUID userId
+		@RequestHeader(value="x-mine-user-id") final UUID userId
 	) {
 		// get transaction and bills
 		final Transaction transaction = transactionService.findByIdAndUser(id, userId).orElseThrow(Http::TransactionNotFound);
@@ -76,7 +76,7 @@ public class TransactionController
 	@PostMapping(path = "/v1/utility-payments/transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Transaction create(
 		@RequestBody @Valid final TransactionRequest request,
-		@RequestHeader(value="User-Id") final UUID userId
+		@RequestHeader(value="x-mine-user-id") final UUID userId
 	){
 		// TODO check user balance
 		// ...
