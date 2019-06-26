@@ -220,6 +220,11 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
+- fix comments bo
+- Job max attemps in record
+- subir a uat
+- subir a prod
+- modificar azure apis y poner url internas de ambientes
 - api prepaid - payment description - movements event
 - api utility - movements event ?
 - reports conciliacion

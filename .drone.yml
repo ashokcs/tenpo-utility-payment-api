@@ -43,7 +43,7 @@ pipeline:
     commands:
       - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
     environment:
-      - ENVIRONMENT=staging
+      - ENVIRONMENT=falcon
     secrets:
       - consul_http_addr
       - consul_http_token
@@ -54,7 +54,7 @@ pipeline:
 
   staging_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
-    cluster: staging
+    cluster: falcon
     template: .kube.secrets.yml
     when:
       branch: master
@@ -63,7 +63,7 @@ pipeline:
 
   staging_virtual_service:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
-    cluster: staging
+    cluster: falcon
     template: .kube.virtual-service.yml
     when:
       branch: master
@@ -72,7 +72,7 @@ pipeline:
 
   staging_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
-    cluster: staging
+    cluster: falcon
     vars:
       - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-core:${DRONE_COMMIT_SHA}
       - ENVIRONMENT=staging
