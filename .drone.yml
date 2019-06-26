@@ -38,12 +38,12 @@ pipeline:
       event: 
         - push
 
-  staging_consul:
+  dev_consul:
     image: hashicorp/consul-template:alpine
     commands:
       - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
     environment:
-      - ENVIRONMENT=falcon
+      - ENVIRONMENT=dev
     secrets:
       - consul_http_addr
       - consul_http_token
@@ -52,7 +52,7 @@ pipeline:
       event: 
         - push
 
-  staging_secrets:
+  dev_secrets:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: falcon
     template: .kube.secrets.yml
@@ -61,7 +61,7 @@ pipeline:
       event: 
         - push
 
-  staging_virtual_service:
+  dev_virtual_service:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: falcon
     template: .kube.virtual-service.yml
@@ -70,7 +70,7 @@ pipeline:
       event: 
         - push
 
-  staging_deployment:
+  dev_deployment:
     image: mccontainerregistry.azurecr.io/tools/drone-phoenix:1.0.0
     cluster: falcon
     vars:
