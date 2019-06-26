@@ -220,6 +220,7 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
+- save user id bill
 - fix comments bo
 - Job max attemps in record
 - subir a uat
