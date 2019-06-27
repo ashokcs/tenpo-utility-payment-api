@@ -5,9 +5,16 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 
-group = 'cl.tenpo.utility.payments.poc'
+group = 'cl.tenpo.utility.payments'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
 
 repositories {
 	mavenCentral()
