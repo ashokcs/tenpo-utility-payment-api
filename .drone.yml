@@ -4,6 +4,7 @@ pipeline:
     image: openjdk:8-alpine
     environment:
       - GRADLE_USER_HOME=~/.gradle
+      - GRADLE_OPTS="-Dorg.gradle.daemon=false"
     commands:
       - ./gradlew check
     when:
@@ -16,6 +17,7 @@ pipeline:
     image: openjdk:8-alpine
     environment:
       - GRADLE_USER_HOME=~/.gradle
+      - GRADLE_OPTS="-Dorg.gradle.daemon=false"
     commands:
       - ./gradlew build
     when:
