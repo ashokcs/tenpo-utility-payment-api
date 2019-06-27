@@ -23,13 +23,6 @@ pipeline:
         - push
         - pull_request
         - tag
-  
-  debug:
-    image: openjdk:8-alpine
-    commands: 
-      - ls -la
-      - cd ./build/libs
-      - ls -la
 
   docker:
     registry: mccontainerregistry.azurecr.io
