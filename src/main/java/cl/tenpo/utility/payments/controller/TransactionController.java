@@ -24,10 +24,12 @@ import cl.tenpo.utility.payments.entity.Payment;
 import cl.tenpo.utility.payments.entity.Transaction;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
+import cl.tenpo.utility.payments.service.NatsService;
 import cl.tenpo.utility.payments.service.PaymentService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.transaction.TransactionRequest;
 import cl.tenpo.utility.payments.util.Http;
+import cl.tenpo.utility.payments.util.Properties;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,18 +37,24 @@ public class TransactionController
 {
 	private final BillService billService;
 	private final JobService jobService;
+	private final NatsService natsService;
 	private final PaymentService paymentService;
+	private final Properties properties;
 	private final TransactionService transactionService;
 
 	public TransactionController(
 		final BillService billService,
 		final JobService jobService,
+		final NatsService natsService,
 		final PaymentService paymentService,
+		final Properties properties,
 		final TransactionService transactionService
 	){
 		this.billService = billService;
 		this.jobService = jobService;
+		this.natsService = natsService;
 		this.paymentService = paymentService;
+		this.properties = properties;
 		this.transactionService = transactionService;
 	}
 
@@ -129,6 +137,9 @@ public class TransactionController
 
 		// save job
 		jobService.save(new Job(transaction.getId()));
+
+		// fire event
+		natsService.publish(properties.natsTransactionCreated, transaction.getId().toString().getBytes());
 
 		// return transaction
 		return transaction;

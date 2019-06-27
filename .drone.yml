@@ -75,7 +75,7 @@ pipeline:
     cluster: falcon
     vars:
       - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-core:${DRONE_COMMIT_SHA}
-      - ENVIRONMENT=staging
+      - ENVIRONMENT=dev
     when:
       branch: master
       event:

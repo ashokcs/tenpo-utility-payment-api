@@ -18,4 +18,7 @@ public class Properties
 	@Value("${httpclient.proxy}") public String httpClientProxy;
 	@Value("${httpclient.proxy.exclude}") public String httpClientProxyExclude;
 	@Value("${httpclient.trust.all}") public boolean httpClientTrustAll;
+
+	/* nats */
+	@Value("${nats.subject.transaction-created}") public String natsTransactionCreated;
 }
