@@ -17,6 +17,9 @@ pipeline:
     environment:
       - GRADLE_USER_HOME=~/.gradle
     commands:
+      - ls -la
+      - cd ./build/libs/
+      - ls -la
       - ./gradlew build
     when:
       event:
