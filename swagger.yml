@@ -10,6 +10,8 @@ tags:
     description: Operaciones de los convenios de pago de cuenta
   - name: Transactions
     description: Operaciones de transacciones de pago de cuenta
+  - name: Favorites
+    description: Operaciones de cuentas favoritas
 paths:
 
   /v1/utility-payments/categories:
@@ -216,7 +218,107 @@ paths:
           description: resource not found
         500:
           description: internal server error
-          
+
+  /v1/utility-payments/favorites:
+    get:
+      tags: 
+        - Favorites
+      summary: Lista las cuentas favoritas de un usuario
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Favorite'
+              example: 
+                - "id": 1
+                  "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
+                  "utility_id": "Agua"
+                  "identifier": "123123121"
+                  "description": "cuenta fav 1"
+                  "created": "2019-07-04T15:49:25.668-04:00"
+                - "id": 2
+                  "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
+                  "utility_id": "Agua"
+                  "identifier": "123123122"
+                  "description": "cuenta fav 2"
+                  "created": "2019-07-04T15:49:25.668-04:00"
+                - "id": 3
+                  "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
+                  "utility_id": "Agua"
+                  "identifier": "123123123"
+                  "description": "cuenta fav 3"
+                  "created": "2019-07-04T15:49:25.668-04:00"
+    post:
+      tags: 
+        - Favorites
+      summary: Crea una cuenta favorita
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteRequest'
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              example:
+                "id": 3
+                "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
+                "utility_id": "Agua"
+                "identifier": "123123123"
+                "description": "cuenta fav 3"
+                "created": "2019-07-04T15:49:25.668-04:00"
+
+  /v1/utility-payments/favorites/{id}:
+    get:
+      tags: 
+        - Favorites
+      summary: Obtiene los detalles de una cuenta favorita
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: Id de la cuenta favorita
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+        404:
+          description: resource not found
+        500:
+          description: internal server error
+    delete:
+      tags: 
+        - Favorites
+      summary: Elimina una cuenta favorita
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: Id de la cuenta favorita
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: resource not found
+        500:
+          description: internal server error
+
 components:
   schemas:
 
@@ -246,6 +348,28 @@ components:
         utilities:
           type: integer
           example: 14
+
+    Favorite:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user:
+          type: string
+          example: "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
+        utility_id:
+          type: integer
+          example: 1
+        identifier:
+          type: string
+          example: 12345678
+        description:
+          type: string
+          example: cuenta fav 1
+        created:
+          type: string
+          example: "2019-07-04T15:49:25.668-04:00"
     
     UtilityBillRequest:
       type: object
@@ -280,6 +404,19 @@ components:
         created:
           type: string
           example: "2019-06-14T12:48:24.039-04:00"
+
+    FavoriteRequest:
+      type: object
+      properties:
+        utility_id:
+          type: integer
+          example: 1
+        identifier:
+          type: string
+          example: "123123"
+        description:
+          type: string
+          example: "cuenta fav 1"
     
     TransactionRequest:
       type: object
