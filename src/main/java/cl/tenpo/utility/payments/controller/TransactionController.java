@@ -22,12 +22,12 @@ import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Job;
 import cl.tenpo.utility.payments.entity.Payment;
 import cl.tenpo.utility.payments.entity.Transaction;
+import cl.tenpo.utility.payments.object.TransactionRequest;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
 import cl.tenpo.utility.payments.service.NatsService;
 import cl.tenpo.utility.payments.service.PaymentService;
 import cl.tenpo.utility.payments.service.TransactionService;
-import cl.tenpo.utility.payments.transaction.TransactionRequest;
 import cl.tenpo.utility.payments.util.Http;
 import cl.tenpo.utility.payments.util.Properties;
 

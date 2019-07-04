@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.transaction;
+package cl.tenpo.utility.payments.object;
 
 import java.util.List;
 import java.util.UUID;

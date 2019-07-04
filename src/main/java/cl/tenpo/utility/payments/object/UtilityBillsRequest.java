@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.utility;
+package cl.tenpo.utility.payments.object;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

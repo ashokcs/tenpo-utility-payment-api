@@ -220,6 +220,7 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
+- agregar payment method to payments table
 - dejar expuesto solo el path management en virtual hosts
 - save user id bill
 - fix comments bo

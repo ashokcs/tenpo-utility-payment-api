@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.utility;
+package cl.tenpo.utility.payments.object;
 
 public class UtilityConfirmResponse
 {

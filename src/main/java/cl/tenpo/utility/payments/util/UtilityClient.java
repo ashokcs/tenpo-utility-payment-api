@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.utility;
+package cl.tenpo.utility.payments.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cl.tenpo.utility.payments.object.UtilityBillItem;
-import cl.tenpo.utility.payments.util.Properties;
 
 @Component
 public class UtilityClient

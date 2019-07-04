@@ -20,11 +20,11 @@ import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
+import cl.tenpo.utility.payments.object.UtilityBillsRequest;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
-import cl.tenpo.utility.payments.utility.UtilityBillsRequest;
-import cl.tenpo.utility.payments.utility.UtilityClient;
+import cl.tenpo.utility.payments.util.UtilityClient;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
