@@ -224,6 +224,13 @@ paths:
       tags: 
         - Favorites
       summary: Lista las cuentas favoritas de un usuario
+      parameters:
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
       responses:
         200:
           description: successful operation
@@ -256,6 +263,13 @@ paths:
       tags: 
         - Favorites
       summary: Crea una cuenta favorita
+      parameters:
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
       requestBody:
         required: true
         content:
@@ -283,6 +297,12 @@ paths:
         - Favorites
       summary: Obtiene los detalles de una cuenta favorita
       parameters: 
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
         - in: path
           name: id
           required: true
@@ -305,6 +325,12 @@ paths:
         - Favorites
       summary: Elimina una cuenta favorita
       parameters: 
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
         - in: path
           name: id
           required: true
