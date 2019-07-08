@@ -60,7 +60,7 @@ public class Category
 		this.status = status;
 	}
 
-	public long getGuantity()
+	public long getQuantity()
 	{
 		return quantity;
 	}
