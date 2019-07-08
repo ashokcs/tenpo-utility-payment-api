@@ -31,13 +31,13 @@ paths:
               example: 
                 - "id": 1
                   "name": "Agua"
-                  "utilities": 14
+                  "quantity": 14
                 - "id": 2
                   "name": "Luz"
-                  "utilities": 17
+                  "quantity": 17
                 - "id": 3
                   "name": "Telecomunicaciones"
-                  "utilities": 30
+                  "quantity": 30
 
   /v1/utility-payments/categories/{id}/utilities:
     get:
@@ -371,7 +371,7 @@ components:
         name:
           type: string
           example: Agua
-        utilities:
+        quantity:
           type: integer
           example: 14
 

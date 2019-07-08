@@ -39,7 +39,7 @@ public class UtilityService
 		try {
 			return categoryRepository.findAllByStatusOrderByNameAsc(Category.ENABLED)
 					.stream()
-					.map(c -> c.setUtilities(utilityRepository.countByCategoryId(c.getId())))
+					.map(c -> c.setQuantity(utilityRepository.countByCategoryId(c.getId())))
 					.filter(c -> !c.getName().equals("Efectivo"))
 					.collect(Collectors.toList());
 		} catch (final Exception e) {

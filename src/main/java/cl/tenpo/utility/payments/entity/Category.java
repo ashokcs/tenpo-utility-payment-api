@@ -28,7 +28,7 @@ public class Category
 	@JsonIgnore
 	private String status;
 	private String name;
-	private transient long utilities;
+	private transient long quantity;
 
 	public Long getId()
 	{
@@ -60,14 +60,14 @@ public class Category
 		this.status = status;
 	}
 
-	public long getUtilities()
+	public long getGuantity()
 	{
-		return utilities;
+		return quantity;
 	}
 
-	public Category setUtilities(final long utilities)
+	public Category setQuantity(final long quantity)
 	{
-		this.utilities = utilities;
+		this.quantity = quantity;
 		return this;
 	}
 }
