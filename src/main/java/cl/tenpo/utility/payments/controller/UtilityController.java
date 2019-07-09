@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.object.UtilitiesResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
 import cl.tenpo.utility.payments.service.BillService;
@@ -51,10 +52,10 @@ public class UtilityController
 	}
 
 	@GetMapping("/v1/utility-payments/categories/{id:\\d+}/utilities")
-	public List<Utility> category(@PathVariable("id") final long categoryId)
+	public List<UtilitiesResponse> category(@PathVariable("id") final long categoryId)
 	{
 		final Category category = utilityService.findCategoryById(categoryId).orElseThrow(Http::NotFound);
-		return utilityService.findAllUtilitiesByCategoryId(category.getId());
+		return utilityService.findAllUtilitiesByCategoryIdGrouped(category.getId());
 	}
 
 	@Transactional
