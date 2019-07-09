@@ -6,6 +6,7 @@ public class UtilityItem
 {
 	private Long id;
 	private String name;
+	private String identifier;
 	private String letter;
 
 	public UtilityItem()
@@ -17,6 +18,7 @@ public class UtilityItem
 	{
 		this.id = utility.getId();
 		this.name = utility.friendlyName();
+		this.identifier = utility.getGlossNames();
 		this.letter = utility.friendlyName().substring(0, 1).toUpperCase();
 	}
 
@@ -48,5 +50,15 @@ public class UtilityItem
 	public void setLetter(final String letter)
 	{
 		this.letter = letter;
+	}
+
+	public String getIdentifier()
+	{
+		return identifier;
+	}
+
+	public void setIdentifier(final String identifier)
+	{
+		this.identifier = identifier;
 	}
 }
