@@ -1,5 +1,7 @@
 package cl.tenpo.utility.payments.object;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cl.tenpo.utility.payments.entity.Utility;
 
 public class UtilityItem
@@ -7,6 +9,7 @@ public class UtilityItem
 	private Long id;
 	private String name;
 	private String identifier;
+	@JsonIgnore
 	private String letter;
 
 	public UtilityItem()
