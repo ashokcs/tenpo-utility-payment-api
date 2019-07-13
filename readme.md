@@ -220,7 +220,8 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
-- manjer en front sectionlist data
+- probar contra api bill_payment dev/qa mc
+- manejar en front sectionlist data
 - manejar reversa en timeout prepaid charge
 - agregar payment method to payments table
 - dejar expuesto solo el path management en virtual hosts
