@@ -245,19 +245,16 @@ paths:
                   "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
                   "utility_id": "Agua"
                   "identifier": "123123121"
-                  "description": "cuenta fav 1"
                   "created": "2019-07-04T15:49:25.668-04:00"
                 - "id": 2
                   "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
                   "utility_id": "Agua"
                   "identifier": "123123122"
-                  "description": "cuenta fav 2"
                   "created": "2019-07-04T15:49:25.668-04:00"
                 - "id": 3
                   "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
                   "utility_id": "Agua"
                   "identifier": "123123123"
-                  "description": "cuenta fav 3"
                   "created": "2019-07-04T15:49:25.668-04:00"
     post:
       tags: 
@@ -282,13 +279,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionResponse'
+                $ref: '#/components/schemas/Favorite'
               example:
                 "id": 3
                 "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
                 "utility_id": "Agua"
                 "identifier": "123123123"
-                "description": "cuenta fav 3"
                 "created": "2019-07-04T15:49:25.668-04:00"
 
   /v1/utility-payments/favorites/{id}:
@@ -390,9 +386,6 @@ components:
         identifier:
           type: string
           example: 12345678
-        description:
-          type: string
-          example: cuenta fav 1
         created:
           type: string
           example: "2019-07-04T15:49:25.668-04:00"
