@@ -3,8 +3,8 @@ info:
   title: Utility Payments
   version: 1.0.0
 servers:
-  - url: https://tenpo.staging.multicajadigital.cloud
-    description: Staging Environment
+  - url: https://tenpo.dev.multicajadigital.cloud
+    description: Development Environment
 tags:
   - name: Utilities
     description: Operaciones de los convenios de pago de cuenta
