@@ -60,7 +60,7 @@ public class FavoriteController
 		favorite.setUser(user);
 		favorite.setUtilityId(utility.getId());
 		favorite.setIdentifier(request.getIdentifier());
-		favorite.setDescription(request.getDescription());
+//		favorite.setDescription(request.getDescription());
 		favoriteRepository.save(favorite);
 		return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
 	}

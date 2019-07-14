@@ -22,7 +22,7 @@ public class Favorite
 	private UUID user;
 	private Long utilityId;
 	private String identifier;
-	private String description;
+//	private String description;
 	private OffsetDateTime created;
 
 	@PrePersist
@@ -63,13 +63,13 @@ public class Favorite
 		this.identifier = identifier;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(final String description) {
-		this.description = description;
-	}
+//	public String getDescription() {
+//		return description;
+//	}
+//
+//	public void setDescription(final String description) {
+//		this.description = description;
+//	}
 
 	public OffsetDateTime getCreated() {
 		return created;
