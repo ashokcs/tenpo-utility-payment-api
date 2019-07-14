@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "description",
     "authorization_code",
     "created",
+    "updated",
     "utility"
 })
 public class Bill
@@ -64,7 +65,6 @@ public class Bill
 	@JsonIgnore
 	private String confirmHour;
 	private OffsetDateTime created;
-	@JsonIgnore
 	private OffsetDateTime updated;
 
 	@Transient
