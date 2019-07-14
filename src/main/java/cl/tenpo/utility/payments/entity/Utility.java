@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,8 +19,7 @@ import cl.tenpo.utility.payments.util.Utils;
     "id",
     "name",
     "identifier",
-    "category_id",
-    "category_name"
+    "category"
 })
 public class Utility
 {
@@ -43,6 +43,9 @@ public class Utility
 	private String glossIds;
 	@JsonProperty("identifier")
 	private String glossNames;
+
+	@Transient
+	private Category category;
 
 	@JsonProperty("name")
 	public String friendlyName()
@@ -123,5 +126,13 @@ public class Utility
 
 	public void setGlossNames(final String glossNames) {
 		this.glossNames = glossNames;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(final Category category) {
+		this.category = category;
 	}
 }

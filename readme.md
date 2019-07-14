@@ -220,6 +220,7 @@ git tag --delete oti-v1.0.0
 ```
 
 # TODO 
+- agregar rubro en reporte conciliacion
 - probar contra api bill_payment dev/qa mc
 - manejar en front sectionlist data
 - manejar reversa en timeout prepaid charge

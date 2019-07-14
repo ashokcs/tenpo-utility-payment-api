@@ -19,13 +19,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
 	"id",
     "status",
-    "utility",
     "identifier",
     "amount",
     "due_date",
     "description",
     "authorization_code",
-    "created"
+    "created",
+    "utility"
 })
 public class Bill
 {

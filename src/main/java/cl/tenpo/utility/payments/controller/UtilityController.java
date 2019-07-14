@@ -64,6 +64,8 @@ public class UtilityController
 	{
 		// get request parameters
 		final Utility utility = utilityService.findUtilityById(utilityId).orElseThrow(Http::NotFound);
+		final Category category = utilityService.findCategoryById(utility.getCategoryId()).orElseThrow(Http::NotFound);
+		utility.setCategory(category);
 		final String utilityCode = utility.getCode();
 		final String utilityCollector = utility.getCollectorId();
 		final String utilityIdentifier = request.getIdentifier();
