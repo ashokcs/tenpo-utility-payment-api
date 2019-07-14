@@ -8,22 +8,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "favorites")
+@NamedEntityGraph(name = "joined", includeAllAttributes = true)
 public class Favorite
 {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@JsonIgnore
 	@Column(name = "\"user\"")
 	private UUID user;
-	private Long utilityId;
 	private String identifier;
-//	private String description;
+	@JsonIgnore
 	private OffsetDateTime created;
+
+	@OneToOne
+	private Utility utility;
 
 	@PrePersist
 	private void prePersist()
@@ -47,14 +55,6 @@ public class Favorite
 		this.user = user;
 	}
 
-	public Long getUtilityId() {
-		return utilityId;
-	}
-
-	public void setUtilityId(final Long utilityId) {
-		this.utilityId = utilityId;
-	}
-
 	public String getIdentifier() {
 		return identifier;
 	}
@@ -63,19 +63,19 @@ public class Favorite
 		this.identifier = identifier;
 	}
 
-//	public String getDescription() {
-//		return description;
-//	}
-//
-//	public void setDescription(final String description) {
-//		this.description = description;
-//	}
-
 	public OffsetDateTime getCreated() {
 		return created;
 	}
 
 	public void setCreated(final OffsetDateTime created) {
 		this.created = created;
+	}
+
+	public Utility getUtility() {
+		return utility;
+	}
+
+	public void setUtility(final Utility utility) {
+		this.utility = utility;
 	}
 }

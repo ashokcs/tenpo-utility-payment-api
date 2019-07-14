@@ -43,26 +43,23 @@ public class FavoriteController
 		return favoriteRepository.findByUser(user);
 	}
 
-	@GetMapping("/v1/utility-payments/favorites/{id}")
-	public ResponseEntity<Favorite> show(
-		@RequestHeader("x-mine-user-id") final UUID user, @PathVariable("id") final Long id
-	){
-		return ResponseEntity.of(favoriteRepository.findByUserAndId(user, id));
-	}
-
 	@PostMapping("/v1/utility-payments/favorites")
 	public ResponseEntity<Favorite> create(
 		@RequestHeader("x-mine-user-id") final UUID user,
 		@RequestBody @Valid final FavoriteRequest request
 	){
 		final Utility utility = utilityService.findUtilityById(request.getUtilityId()).orElseThrow(Http::NotFound);
-		final Favorite favorite = new Favorite();
-		favorite.setUser(user);
-		favorite.setUtilityId(utility.getId());
-		favorite.setIdentifier(request.getIdentifier());
-//		favorite.setDescription(request.getDescription());
-		favoriteRepository.save(favorite);
-		return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
+		final Optional<Favorite> fav = favoriteRepository.findByUserAndUtilityIdAndIdentifier(user, request.getUtilityId(), request.getIdentifier());
+		if (fav.isPresent()) {
+			return ResponseEntity.status(HttpStatus.OK).body(fav.get());
+		} else {
+			final Favorite favorite = new Favorite();
+			favorite.setUser(user);
+			favorite.setUtility(utility);
+			favorite.setIdentifier(request.getIdentifier());
+			favoriteRepository.save(favorite);
+			return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
+		}
 	}
 
 	@DeleteMapping("/v1/utility-payments/favorites/{id}")
