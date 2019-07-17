@@ -12,7 +12,7 @@ import cl.tenpo.utility.payments.entity.Favorite;
 public interface FavoriteRepository extends JpaRepository<Favorite, Long>
 {
 	@EntityGraph("joined")
-	public List<Favorite> findByUser(final UUID user);
+	public List<Favorite> findByUserOrderById(final UUID user);
 	public Optional<Favorite> findByUserAndId(final UUID user, final Long id);
 	public Optional<Favorite> findByUserAndUtilityIdAndIdentifier(final UUID user, final Long utilityId, final String identifier);
 }

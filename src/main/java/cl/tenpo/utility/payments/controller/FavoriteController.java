@@ -40,7 +40,7 @@ public class FavoriteController
 	@GetMapping("/v1/utility-payments/favorites")
 	public List<Favorite> index(@RequestHeader("x-mine-user-id") final UUID user)
 	{
-		return favoriteRepository.findByUser(user);
+		return favoriteRepository.findByUserOrderById(user);
 	}
 
 	@PostMapping("/v1/utility-payments/favorites")

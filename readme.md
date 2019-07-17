@@ -219,6 +219,12 @@ git push --delete bb oti-v1.0.0
 git tag --delete oti-v1.0.0
 ```
 
+# TODO API
+- Pasar al front sectionlist
+- cambiar texto mi identificador por el que viene en la api
+- mostrar deuda ya seleccionado
+- cambiar estilo agregar a favoritos en pago de cuentas
+
 # TODO 
 - agregar rubro en reporte conciliacion
 - probar contra api bill_payment dev/qa mc

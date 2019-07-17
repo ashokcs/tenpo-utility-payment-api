@@ -241,21 +241,18 @@ paths:
                 items:
                   $ref: '#/components/schemas/Favorite'
               example: 
-                - "id": 1
-                  "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
-                  "utility_id": "Agua"
-                  "identifier": "123123121"
-                  "created": "2019-07-04T15:49:25.668-04:00"
-                - "id": 2
-                  "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
-                  "utility_id": "Agua"
-                  "identifier": "123123122"
-                  "created": "2019-07-04T15:49:25.668-04:00"
-                - "id": 3
-                  "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
-                  "utility_id": "Agua"
-                  "identifier": "123123123"
-                  "created": "2019-07-04T15:49:25.668-04:00"
+                - "id": 10,
+                  "identifier": "1123121"
+                  "utility":
+                    "id": 1
+                    "name": "Aguas Andinas"
+                    "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+                - "id": 11,
+                  "identifier": "123939393"
+                  "utility":
+                    "id": 2
+                    "name": "Entel"
+                    "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
     post:
       tags: 
         - Favorites
@@ -281,41 +278,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Favorite'
               example:
-                "id": 3
-                "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
-                "utility_id": "Agua"
-                "identifier": "123123123"
-                "created": "2019-07-04T15:49:25.668-04:00"
+                "id": 10,
+                "identifier": "1123121"
+                "utility":
+                  "id": 1
+                  "name": "Aguas Andinas"
+                  "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
 
   /v1/utility-payments/favorites/{id}:
-    get:
-      tags: 
-        - Favorites
-      summary: Obtiene los detalles de una cuenta favorita
-      parameters: 
-        - in: header
-          name: x-mine-user-id
-          schema:
-            type: string
-            format: uuid
-          required: true
-        - in: path
-          name: id
-          required: true
-          description: Id de la cuenta favorita
-          schema:
-            type: string
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Favorite'
-        404:
-          description: resource not found
-        500:
-          description: internal server error
     delete:
       tags: 
         - Favorites
@@ -377,18 +347,11 @@ components:
         id:
           type: integer
           example: 1
-        user:
-          type: string
-          example: "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
-        utility_id:
-          type: integer
-          example: 1
         identifier:
           type: string
           example: 12345678
-        created:
-          type: string
-          example: "2019-07-04T15:49:25.668-04:00"
+        utility:
+          $ref: '#/components/schemas/Utility'
     
     UtilityBillRequest:
       type: object
@@ -433,9 +396,6 @@ components:
         identifier:
           type: string
           example: "123123"
-        description:
-          type: string
-          example: "cuenta fav 1"
     
     TransactionRequest:
       type: object
