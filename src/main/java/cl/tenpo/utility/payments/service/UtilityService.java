@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Utility;
-import cl.tenpo.utility.payments.object.UtilitiesResponse;
-import cl.tenpo.utility.payments.object.UtilityItem;
 import cl.tenpo.utility.payments.repository.CategoryRepository;
 import cl.tenpo.utility.payments.repository.UtilityRepository;
 
@@ -63,24 +60,26 @@ public class UtilityService
 		return new ArrayList<>();
 	}
 
-	public List<UtilitiesResponse> findAllUtilitiesByCategoryIdGrouped(final Long categoryId)
+	public List<Utility> findAllUtilitiesByCategoryId(final Long categoryId)
 	{
 		try {
-			// TODO mover al front
-			final List<UtilitiesResponse> utilities = new ArrayList<>();
-			utilityRepository.findAllByCategoryIdOrderByIdAsc(categoryId)
-			.stream()
-			.filter(utility -> !filtered().contains(utility.getCode()))
-			.map(u -> new UtilityItem(u))
-			.sorted((x, z) -> x.getLetter().compareTo(z.getLetter()))
-			.collect(Collectors.groupingBy(UtilityItem::getLetter, TreeMap::new, Collectors.toList()))
-			.forEach((k, u) -> {
-				final UtilitiesResponse t = new UtilitiesResponse();
-				t.setTitle(k);
-				t.setData(u);
-				utilities.add(t);
-			});
-			return utilities;
+			return utilityRepository.findAllByCategoryIdOrderByIdAsc(categoryId).stream()
+					.filter(utility -> !filtered().contains(utility.getCode()))
+					.collect(Collectors.toList());
+//			final List<UtilitiesResponse> utilities = new ArrayList<>();
+//			utilityRepository.findAllByCategoryIdOrderByIdAsc(categoryId)
+//			.stream()
+//			.filter(utility -> !filtered().contains(utility.getCode()))
+//			.map(u -> new UtilityItem(u))
+//			.sorted((x, z) -> x.getLetter().compareTo(z.getLetter()))
+//			.collect(Collectors.groupingBy(UtilityItem::getLetter, TreeMap::new, Collectors.toList()))
+//			.forEach((k, u) -> {
+//				final UtilitiesResponse t = new UtilitiesResponse();
+//				t.setTitle(k);
+//				t.setData(u);
+//				utilities.add(t);
+//			});
+//			return utilities;
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
 		}

@@ -6,20 +6,17 @@ import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Utility;
-import cl.tenpo.utility.payments.object.UtilitiesResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
 import cl.tenpo.utility.payments.service.BillService;
@@ -46,16 +43,16 @@ public class UtilityController
 	}
 
 	@GetMapping("/v1/utility-payments/categories")
-	public List<Category> categories(@RequestHeader final HttpHeaders headers)
+	public List<Category> categories()
 	{
 		return utilityService.findAllCategories();
 	}
 
 	@GetMapping("/v1/utility-payments/categories/{id:\\d+}/utilities")
-	public List<UtilitiesResponse> category(@PathVariable("id") final long categoryId)
+	public List<Utility> category(@PathVariable("id") final long categoryId)
 	{
 		final Category category = utilityService.findCategoryById(categoryId).orElseThrow(Http::NotFound);
-		return utilityService.findAllUtilitiesByCategoryIdGrouped(category.getId());
+		return utilityService.findAllUtilitiesByCategoryId(category.getId());
 	}
 
 	@Transactional
