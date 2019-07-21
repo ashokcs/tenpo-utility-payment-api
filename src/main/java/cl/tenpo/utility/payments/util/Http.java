@@ -20,6 +20,7 @@ public class Http
 	public static String IDENTIFIER_DUPLICATED = "IDENTIFIER_DUPLICATED";
 	public static String BILL_ID_DUPLICATED = "BILL_ID_DUPLICATED";
 	public static String MAX_SIZE_REACHED = "MAX_SIZE_REACHED";
+	public static String FAVORITES_LIMIT_REACHED = "FAVORITES_LIMIT_REACHED";
 
 
 	public static ResponseStatusException ex(final HttpStatus status)
@@ -108,6 +109,11 @@ public class Http
 	public static ResponseStatusException ConfictMaxSizeReached()
 	{
 		return exception(HttpStatus.CONFLICT, MAX_SIZE_REACHED);
+	}
+
+	public static ResponseStatusException ConfictFavoritesLimitReached()
+	{
+		return exception(HttpStatus.CONFLICT, FAVORITES_LIMIT_REACHED);
 	}
 
 	/* 500 - SERVER ERROR */

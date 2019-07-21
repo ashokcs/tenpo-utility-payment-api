@@ -33,13 +33,27 @@ public class UtilityService
 		this.utilityRepository = utilityMulticajaRepository;
 	}
 
+	@Cacheable(value = "categories.withCounter", unless = "#result.size() == 0")
+	public List<Category> findAllCategoriesWithCounter()
+	{
+		try {
+			return categoryRepository.findAllByStatusOrderByNameAsc(Category.ENABLED)
+					.stream()
+					.map(c -> c.setQuantity(utilityRepository.countByCategoryId(c.getId())))
+					.filter(c -> !c.getName().equals("Efectivo"))
+					.collect(Collectors.toList());
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return new ArrayList<>();
+	}
+
 	@Cacheable(value = "categories", unless = "#result.size() == 0")
 	public List<Category> findAllCategories()
 	{
 		try {
 			return categoryRepository.findAllByStatusOrderByNameAsc(Category.ENABLED)
 					.stream()
-					.map(c -> c.setQuantity(utilityRepository.countByCategoryId(c.getId())))
 					.filter(c -> !c.getName().equals("Efectivo"))
 					.collect(Collectors.toList());
 		} catch (final Exception e) {

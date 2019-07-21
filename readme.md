@@ -226,6 +226,8 @@ git tag --delete oti-v1.0.0
 - cambiar estilo agregar a favoritos en pago de cuentas
 
 # TODO 
+- agregar categoria a favorites
+- proceso de sync de convenios de pago de cuenta
 - probar nodeport para exponer api en rke
 - agregar rubro en reporte conciliacion
 - probar contra api bill_payment dev/qa mc

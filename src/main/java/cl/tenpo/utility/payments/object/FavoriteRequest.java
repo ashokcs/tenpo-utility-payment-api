@@ -13,10 +13,6 @@ public class FavoriteRequest
 	@Pattern(regexp = "^[A-Z0-9]{2,20}$")
 	private String identifier;
 
-//	@NotBlank
-//	@Pattern(regexp = "^[a-zA-Z0-9\\s\\.\\,\\;\\-\\_\\:\\{\\}\\[\\]\\º\\ª\\!\\¡\\?\\¿\\=\\)\\(\\&\\%\\$\\#\\@]{2,300}$")
-//	private String description;
-
 	public Long getUtilityId()
 	{
 		return utilityId;
@@ -26,9 +22,4 @@ public class FavoriteRequest
 	{
 		return identifier;
 	}
-
-//	public String getDescription()
-//	{
-//		return description;
-//	}
 }

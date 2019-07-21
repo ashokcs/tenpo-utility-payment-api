@@ -45,7 +45,7 @@ public class UtilityController
 	@GetMapping("/v1/utility-payments/categories")
 	public List<Category> categories()
 	{
-		return utilityService.findAllCategories();
+		return utilityService.findAllCategoriesWithCounter();
 	}
 
 	@GetMapping("/v1/utility-payments/categories/{id:\\d+}/utilities")

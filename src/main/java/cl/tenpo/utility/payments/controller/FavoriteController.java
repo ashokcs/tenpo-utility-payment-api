@@ -1,8 +1,10 @@
 package cl.tenpo.utility.payments.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Favorite;
 import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.object.FavoriteRequest;
@@ -40,7 +43,16 @@ public class FavoriteController
 	@GetMapping("/v1/utility-payments/favorites")
 	public List<Favorite> index(@RequestHeader("x-mine-user-id") final UUID user)
 	{
-		return favoriteRepository.findByUserOrderById(user);
+		// get categories and generate map
+		final Map<Long, Category> categories = utilityService
+				.findAllCategories().stream()
+				.collect(Collectors.toMap(c -> c.getId(), c -> c));
+
+		// get favorites and add category
+		return favoriteRepository.findFirst20ByUserOrderById(user).stream().map(f -> {
+			f.getUtility().setCategory(categories.get(f.getUtility().getCategoryId()));
+			return f;
+		}).collect(Collectors.toList());
 	}
 
 	@PostMapping("/v1/utility-payments/favorites")
@@ -48,7 +60,15 @@ public class FavoriteController
 		@RequestHeader("x-mine-user-id") final UUID user,
 		@RequestBody @Valid final FavoriteRequest request
 	){
+		// get utility
 		final Utility utility = utilityService.findUtilityById(request.getUtilityId()).orElseThrow(Http::NotFound);
+
+		// count user favorites
+		if (favoriteRepository.countByUser(user) > 20) {
+			throw Http.ConfictFavoritesLimitReached();
+		}
+
+		// get or create favorite
 		final Optional<Favorite> fav = favoriteRepository.findByUserAndUtilityIdAndIdentifier(user, request.getUtilityId(), request.getIdentifier());
 		if (fav.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(fav.get());
