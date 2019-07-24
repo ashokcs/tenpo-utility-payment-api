@@ -12,7 +12,7 @@ metadata:
   name: tenpo-utility-payments-core
   namespace: tenpo-utility-payments
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       app: tenpo-utility-payments-core

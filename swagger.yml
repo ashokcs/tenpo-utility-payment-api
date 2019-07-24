@@ -112,26 +112,34 @@ paths:
               example:
                 - "id": "dd10d4fc-e25e-41be-bde9-e740c7696658"
                   "status": "WAITING"
-                  "utility":
-                      "id": 71
-                      "name": "Vespucio Sur"
-                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                   "identifier": "12312312"
                   "amount": 5233
                   "due_date": "No disponible"
                   "description": "Deuda total"
                   "created": "2019-06-14T12:48:24.039-04:00"
-                - "id": "56f31b96-1da2-4372-923d-07b8782f2207"
-                  "status": "WAITING"
+                  "updated": "2019-06-14T12:48:24.039-04:00"
                   "utility":
                       "id": 71
                       "name": "Vespucio Sur"
                       "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category": 
+                          "id": 1,
+                          "name": "Agua"
+                - "id": "56f31b96-1da2-4372-923d-07b8782f2207"
+                  "status": "WAITING"
                   "identifier": "12312312"
                   "amount": 4177
                   "due_date": "No disponible"
                   "description": "Deuda vencida"
                   "created": "2019-06-14T12:48:24.039-04:00"
+                  "updated": "2019-06-14T12:48:24.039-04:00"
+                  "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category": 
+                          "id": 1,
+                          "name": "Agua"
         400:
           description: invalid parameters
         404:
@@ -159,31 +167,35 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
               example:
                 "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
-                "status": "PENDING"
+                "status": "PROCESSING"
                 "order": "T20190509224702005"
                 "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
                 "amount": 16962
                 "bills":
                   - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
-                    "status": "PENDING"
-                    "utility":
-                      "id": 71
-                      "name": "Vespucio Sur"
-                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                    "status": "PROCESSING"
                     "identifier": "1231231"
                     "amount": 9324
                     "due_date": "No disponible"
                     "description": "Deuda total"
-                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
-                    "status": "PENDING"
+                    "created": "2019-07-22T03:44:00.814Z"
+                    "updated": "2019-07-22T03:53:06.246Z"
                     "utility":
                       "id": 71
                       "name": "Vespucio Sur"
                       "identifier": "RUT, CON DIGITO VERIFICADOR"
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "PROCESSING"
                     "identifier": "1231233"
                     "amount": 7638
                     "due_date": "No disponible"
                     "description": "Deuda vencida"
+                    "created": "2019-07-22T03:44:00.814Z"
+                    "updated": "2019-07-22T03:53:06.246Z"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
                 "created": "2019-05-09T24:47:02.642887-03:00"
                 "updated": "2019-05-09T24:47:02.642887-03:00"
         400:
@@ -344,6 +356,8 @@ components:
         identifier:
           type: string
           example: "RUT, CON DIGITO VERIFICADOR"
+        utility:
+          $ref: '#/components/schemas/Category'
     
     Category:
       type: object
@@ -386,8 +400,6 @@ components:
         status:
           type: string
           example: WAITING
-        utility:
-          $ref: '#/components/schemas/Utility'
         identifier:
           type: string
           example: 66823334
@@ -403,6 +415,11 @@ components:
         created:
           type: string
           example: "2019-06-14T12:48:24.039-04:00"
+        updated:
+          type: string
+          example: "2019-06-14T12:48:24.039-04:00"
+        utility:
+          $ref: '#/components/schemas/Utility'
 
     FavoriteRequest:
       type: object
