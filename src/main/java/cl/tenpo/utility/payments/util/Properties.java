@@ -19,6 +19,9 @@ public class Properties
 	@Value("${httpclient.proxy.exclude}") public String httpClientProxyExclude;
 	@Value("${httpclient.trust.all}") public boolean httpClientTrustAll;
 
+	/* job */
+	@Value("${job.max.attempts}") public Integer jobMaxAttempts;
+
 	/* nats */
 	@Value("${nats.subject.transaction-created}") public String natsTransactionCreated;
 }

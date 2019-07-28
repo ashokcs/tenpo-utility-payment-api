@@ -28,6 +28,7 @@ public class Job
 	@Version
 	private Long version;
 	@Column(insertable = false)
+	private Integer attempt;
 	private Integer attempts;
 	@Column(insertable = false)
 	private OffsetDateTime locked;
@@ -39,10 +40,11 @@ public class Job
 
 	}
 
-	public Job(final UUID id)
+	public Job(final UUID id, final Integer attempts)
 	{
 		setStatus(RUNNING);
 		setTransactionId(id);
+		setAttempts(attempts);
 	}
 
 	@PrePersist
@@ -96,6 +98,14 @@ public class Job
 
 	public void setAttempts(final Integer attempts) {
 		this.attempts = attempts;
+	}
+
+	public Integer getAttempt() {
+		return attempt;
+	}
+
+	public void setAttempt(final Integer attempt) {
+		this.attempt = attempt;
 	}
 
 	public OffsetDateTime getLocked() {

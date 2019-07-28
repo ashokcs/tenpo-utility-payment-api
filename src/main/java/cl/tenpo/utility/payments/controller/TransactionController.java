@@ -136,7 +136,7 @@ public class TransactionController
 		});
 
 		// save job
-		jobService.save(new Job(transaction.getId()));
+		jobService.save(new Job(transaction.getId(), properties.jobMaxAttempts));
 
 		// fire event
 		natsService.publish(properties.natsTransactionCreated, transaction.getId().toString().getBytes());

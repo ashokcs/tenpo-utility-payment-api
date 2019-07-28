@@ -221,27 +221,27 @@ git tag --delete oti-v1.0.0
 
 # TODO API
 - cambiar hora from utc to mobile local
-- cambiar texto mi identificador por el que viene en la api
-- mostrar deuda ya seleccionado
-- cambiar estilo agregar a favoritos en pago de cuentas
-- --- Pasar al front sectionlist
+- -- cambiar texto mi identificador por el que viene en la api
+- -- mostrar deuda ya seleccionado
+- -- cambiar estilo agregar a favoritos en pago de cuentas
+- -- Pasar al front sectionlist
 
 # TODO 
 - -- limitar connection pool
 - -- agregar categoria a favorites
 - -- agregar rubro en reporte conciliacion
 - -- manejar en front sectionlist data
+- -- save user id bill
+- -- agregar payment method to payments table
+- -- Job max attemps in record
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
 - proceso de sync de convenios de pago de cuenta
 - probar nodeport para exponer api en rke
 - probar contra api bill_payment dev/qa mc
 - agregar tabla payment_method a bo
 - agregar user_id tabla bills en bo
-- -- agregar payment method to payments table
-- -- save user id bill
 - dejar expuesto solo el path management en virtual hosts
 - fix comments bo
-- Job max attemps in record
 - subir a uat
 - subir a prod
 - modificar azure apis y poner url internas de ambientes
