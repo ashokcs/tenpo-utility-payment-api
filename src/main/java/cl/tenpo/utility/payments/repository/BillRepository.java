@@ -10,6 +10,6 @@ import cl.tenpo.utility.payments.entity.Bill;
 
 public interface BillRepository extends JpaRepository<Bill, UUID>
 {
-	public Optional<Bill> findByIdAndStatus(final UUID id, final String status);
-	public List<Bill> findByTransactionId(final UUID transactionId);
+	public Optional<Bill> findByIdAndUserAndStatus(final UUID id, final UUID user, final String status);
+	public List<Bill> findByUserAndTransactionId(final UUID user, final UUID transactionId);
 }

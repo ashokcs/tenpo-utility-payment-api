@@ -2,6 +2,7 @@ package cl.tenpo.utility.payments.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,8 +59,11 @@ public class UtilityController
 
 	@Transactional
 	@PostMapping(path = "/v1/utility-payments/utilities/{id:\\d+}/bills", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public List<Bill> bills(@PathVariable("id") final long utilityId, @RequestBody @Valid final UtilityBillsRequest request)
-	{
+	public List<Bill> bills(
+		@RequestHeader(value="x-mine-user-id") final UUID userId,
+		@PathVariable("id") final long utilityId,
+		@RequestBody @Valid final UtilityBillsRequest request
+	){
 		// get request parameters
 		final Utility utility = utilityService.findUtilityById(utilityId).orElseThrow(Http::NotFound);
 		final Category category = utilityService.findCategoryById(utility.getCategoryId()).orElseThrow(Http::NotFound);
@@ -72,6 +77,7 @@ public class UtilityController
 		for (final UtilityBillItem mcb : utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier)) {
 			final Bill bill = new Bill();
 			bill.setStatus(Bill.CREATED);
+			bill.setUser(userId);
 			bill.setUtilityId(utility.getId());
 			bill.setIdentifier(utilityIdentifier);
 			bill.setDueDate(mcb.getDueDate());

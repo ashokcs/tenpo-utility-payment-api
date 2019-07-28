@@ -3,6 +3,7 @@ package cl.tenpo.utility.payments.entity;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -38,6 +39,9 @@ public class Bill
 	@Id
 	private UUID id;
 	private String status;
+	@JsonIgnore
+	@Column(name = "\"user\"")
+	private UUID user;
 	@JsonIgnore
 	private UUID transactionId;
 	@JsonIgnore
@@ -109,6 +113,14 @@ public class Bill
 
 	public void setStatus(final String status) {
 		this.status = status;
+	}
+
+	public UUID getUser() {
+		return user;
+	}
+
+	public void setUser(final UUID user) {
+		this.user = user;
 	}
 
 	public Long getUtilityId() {

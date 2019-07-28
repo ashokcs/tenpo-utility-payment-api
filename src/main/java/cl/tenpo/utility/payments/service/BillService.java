@@ -40,15 +40,15 @@ public class BillService
 		return Optional.empty();
 	}
 
-	public Optional<Bill> findCreatedById(final UUID id)
+	public Optional<Bill> findCreatedById(final UUID id, final UUID user)
 	{
-		return findByIdAndStatus(id, Bill.CREATED);
+		return findByIdAndStatus(id, user, Bill.CREATED);
 	}
 
-	public Optional<Bill> findByIdAndStatus(final UUID id, final String status)
+	public Optional<Bill> findByIdAndStatus(final UUID id, final UUID user, final String status)
 	{
 		try {
-			final Optional<Bill> opt = billRepository.findByIdAndStatus(id, status);
+			final Optional<Bill> opt = billRepository.findByIdAndUserAndStatus(id, user, status);
 			if (opt.isPresent()) {
 				final Bill bill = opt.get();
 				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(Http::NotFound);
@@ -61,10 +61,10 @@ public class BillService
 		return Optional.empty();
 	}
 
-	public List<Bill> findByTransactionId(final UUID transactionId)
+	public List<Bill> findByTransactionId(final UUID user, final UUID transactionId)
 	{
 		try {
-			final List<Bill> res = billRepository.findByTransactionId(transactionId);
+			final List<Bill> res = billRepository.findByUserAndTransactionId(user, transactionId);
 			for (final Bill bill : res) {
 				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElse(null);
 				if (utility != null) {

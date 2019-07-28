@@ -10,8 +10,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -59,27 +57,27 @@ public class TransactionController
 		this.transactionService = transactionService;
 	}
 
-	@GetMapping("/v1/utility-payments/transactions/{id:[0-9a-f\\-]{36}}")
-	public Transaction get(
-		@PathVariable("id") final UUID id,
-		@RequestHeader(value="x-mine-user-id") final UUID userId
-	) {
-		// get transaction and bills
-		final Transaction transaction = transactionService.findByIdAndUser(id, userId).orElseThrow(Http::TransactionNotFound);
-		transaction.setBills(billService.findByTransactionId(transaction.getId()));
-
-		// get payment method
-		// TODO
-//		if (transaction.getPaymentMethod() != null) {
-//			if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {
-//				transaction.setWebpay(webpayService.findByTransactionId(transaction.getId()).orElse(null));
-//			} else if (transaction.getPaymentMethod().equals(Transaction.TRANSFERENCIA)) {
-//				transaction.setTransferencia(transferenciaService.findByTransactionId(transaction.getId()).orElse(null));
-//			}
-//		}
-
-		return transaction;
-	}
+//	@GetMapping("/v1/utility-payments/transactions/{id:[0-9a-f\\-]{36}}")
+//	public Transaction get(
+//		@PathVariable("id") final UUID id,
+//		@RequestHeader(value="x-mine-user-id") final UUID userId
+//	) {
+//		// get transaction and bills
+//		final Transaction transaction = transactionService.findByIdAndUser(id, userId).orElseThrow(Http::TransactionNotFound);
+//		transaction.setBills(billService.findByTransactionId(userId, transaction.getId()));
+//
+//		// get payment method
+//		// TODO
+////		if (transaction.getPaymentMethod() != null) {
+////			if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {
+////				transaction.setWebpay(webpayService.findByTransactionId(transaction.getId()).orElse(null));
+////			} else if (transaction.getPaymentMethod().equals(Transaction.TRANSFERENCIA)) {
+////				transaction.setTransferencia(transferenciaService.findByTransactionId(transaction.getId()).orElse(null));
+////			}
+////		}
+//
+//		return transaction;
+//	}
 
 	@Transactional
 	@PostMapping(path = "/v1/utility-payments/transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -99,7 +97,7 @@ public class TransactionController
 		// get bills
 		final List<Bill> bills = new ArrayList<>();
 		request.getBills().forEach(uuid -> {
-			bills.add(billService.findCreatedById(uuid).orElseThrow(() -> Http.BillNotFound(uuid)));
+			bills.add(billService.findCreatedById(uuid, userId).orElseThrow(() -> Http.BillNotFound(uuid)));
 		});
 
 		// check duplicates identifiers

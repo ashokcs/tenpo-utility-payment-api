@@ -236,8 +236,9 @@ git tag --delete oti-v1.0.0
 - probar nodeport para exponer api en rke
 - probar contra api bill_payment dev/qa mc
 - agregar tabla payment_method a bo
+- agregar user_id tabla bills en bo
 - -- agregar payment method to payments table
-- save user id bill
+- -- save user id bill
 - dejar expuesto solo el path management en virtual hosts
 - fix comments bo
 - Job max attemps in record
