@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Job;
 import cl.tenpo.utility.payments.entity.Payment;
+import cl.tenpo.utility.payments.entity.PaymentMethod;
 import cl.tenpo.utility.payments.entity.Transaction;
 import cl.tenpo.utility.payments.object.TransactionRequest;
 import cl.tenpo.utility.payments.service.BillService;
@@ -131,6 +132,7 @@ public class TransactionController
 			payment.setStatus(Payment.PROCESSING);
 			payment.setTransactionId(transaction.getId());
 			payment.setBillId(b.getId());
+			payment.setPaymentMethodId(PaymentMethod.PREPAID);
 			payment.setAmount(b.getAmount());
 			paymentService.save(payment).orElseThrow(Http::ServerError);;
 		});

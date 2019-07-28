@@ -23,6 +23,7 @@ public class Payment
 	private String status;
 	private UUID transactionId;
 	private UUID billId;
+	private Long paymentMethodId;
 	private Long amount;
 	private Long paymentId;
 	private OffsetDateTime created;
@@ -72,6 +73,14 @@ public class Payment
 
 	public void setBillId(final UUID billId) {
 		this.billId = billId;
+	}
+
+	public Long getPaymentMethodId() {
+		return paymentMethodId;
+	}
+
+	public void setPaymentMethodId(final Long paymentMethodId) {
+		this.paymentMethodId = paymentMethodId;
 	}
 
 	public Long getAmount() {

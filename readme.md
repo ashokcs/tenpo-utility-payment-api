@@ -227,16 +227,18 @@ git tag --delete oti-v1.0.0
 - --- Pasar al front sectionlist
 
 # TODO 
-- agregar categoria a favorites
+- -- limitar connection pool
+- -- agregar categoria a favorites
+- -- agregar rubro en reporte conciliacion
+- -- manejar en front sectionlist data
+- manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
 - proceso de sync de convenios de pago de cuenta
 - probar nodeport para exponer api en rke
-- agregar rubro en reporte conciliacion
 - probar contra api bill_payment dev/qa mc
-- manejar en front sectionlist data
-- manejar reversa en timeout prepaid charge
-- agregar payment method to payments table
-- dejar expuesto solo el path management en virtual hosts
+- agregar tabla payment_method a bo
+- -- agregar payment method to payments table
 - save user id bill
+- dejar expuesto solo el path management en virtual hosts
 - fix comments bo
 - Job max attemps in record
 - subir a uat
