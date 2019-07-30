@@ -234,6 +234,11 @@ git tag --delete oti-v1.0.0
 - -- save user id bill
 - -- agregar payment method to payments table
 - -- Job max attemps in record
+- -- Proceso clean bills table (orphans, created)
+- bill id diferente por cada reintento
+- llamar a api balance
+- hacer mock de api balance
+- apuntar engine a api prepago - dev
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
 - proceso de sync de convenios de pago de cuenta
 - probar nodeport para exponer api en rke
@@ -255,7 +260,6 @@ git tag --delete oti-v1.0.0
 - payment method prepaid
 - use domain tenpodigital
 - receipt endpoint (Receipt email look and feel)
-- Proceso clean bills table (orphans, created)
 - Proceso clean transactions table (created, no childs)
 - Proceso expire waiting transactions
 - Testing
