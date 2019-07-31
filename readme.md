@@ -235,6 +235,8 @@ git tag --delete oti-v1.0.0
 - -- agregar payment method to payments table
 - -- Job max attemps in record
 - -- Proceso clean bills table (orphans, created)
+- payment external_id to report
+- engine, configurar bill_code, merchant_code, merchant_category, merchant_name
 - bill id diferente por cada reintento
 - llamar a api balance
 - hacer mock de api balance

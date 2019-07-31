@@ -23,6 +23,7 @@ public class Payment
 	private String status;
 	private UUID transactionId;
 	private UUID billId;
+	private UUID externalId;
 	private Long paymentMethodId;
 	private Long amount;
 	private Long paymentId;
@@ -33,6 +34,7 @@ public class Payment
 	private void prePersist()
 	{
 		id = UUID.randomUUID();
+		externalId = UUID.randomUUID();
 		created = OffsetDateTime.now();
 		updated = OffsetDateTime.now();
 	}
@@ -113,5 +115,13 @@ public class Payment
 
 	public void setUpdated(final OffsetDateTime updated) {
 		this.updated = updated;
+	}
+
+	public UUID getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(final UUID externalId) {
+		this.externalId = externalId;
 	}
 }
