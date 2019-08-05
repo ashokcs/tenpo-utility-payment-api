@@ -21,6 +21,7 @@ public class Http
 	public static String BILL_ID_DUPLICATED = "BILL_ID_DUPLICATED";
 	public static String MAX_SIZE_REACHED = "MAX_SIZE_REACHED";
 	public static String FAVORITES_LIMIT_REACHED = "FAVORITES_LIMIT_REACHED";
+	public static String NOT_ENOUGH_BALANCE = "NOT_ENOUGH_BALANCE";
 
 
 	public static ResponseStatusException ex(final HttpStatus status)
@@ -114,6 +115,11 @@ public class Http
 	public static ResponseStatusException ConfictFavoritesLimitReached()
 	{
 		return exception(HttpStatus.CONFLICT, FAVORITES_LIMIT_REACHED);
+	}
+
+	public static ResponseStatusException ConfictNotEnoughBalance()
+	{
+		return exception(HttpStatus.CONFLICT, NOT_ENOUGH_BALANCE);
 	}
 
 	/* 500 - SERVER ERROR */

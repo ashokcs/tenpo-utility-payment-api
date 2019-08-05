@@ -24,4 +24,7 @@ public class Properties
 
 	/* nats */
 	@Value("${nats.subject.transaction-created}") public String natsTransactionCreated;
+
+	/* prepaid */
+	@Value("${prepaid.balance.url}") public String prepaidBalanceUrl;
 }

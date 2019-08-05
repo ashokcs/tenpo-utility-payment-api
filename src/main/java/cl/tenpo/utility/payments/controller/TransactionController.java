@@ -21,6 +21,7 @@ import cl.tenpo.utility.payments.entity.Job;
 import cl.tenpo.utility.payments.entity.Payment;
 import cl.tenpo.utility.payments.entity.PaymentMethod;
 import cl.tenpo.utility.payments.entity.Transaction;
+import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.TransactionRequest;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
@@ -28,6 +29,7 @@ import cl.tenpo.utility.payments.service.NatsService;
 import cl.tenpo.utility.payments.service.PaymentService;
 import cl.tenpo.utility.payments.service.TransactionService;
 import cl.tenpo.utility.payments.util.Http;
+import cl.tenpo.utility.payments.util.PrepaidClient;
 import cl.tenpo.utility.payments.util.Properties;
 
 @RestController
@@ -38,6 +40,7 @@ public class TransactionController
 	private final JobService jobService;
 	private final NatsService natsService;
 	private final PaymentService paymentService;
+	private final PrepaidClient prepaidClient;
 	private final Properties properties;
 	private final TransactionService transactionService;
 
@@ -46,6 +49,7 @@ public class TransactionController
 		final JobService jobService,
 		final NatsService natsService,
 		final PaymentService paymentService,
+		final PrepaidClient prepaidClient,
 		final Properties properties,
 		final TransactionService transactionService
 	){
@@ -53,6 +57,7 @@ public class TransactionController
 		this.jobService = jobService;
 		this.natsService = natsService;
 		this.paymentService = paymentService;
+		this.prepaidClient = prepaidClient;
 		this.properties = properties;
 		this.transactionService = transactionService;
 	}
@@ -85,9 +90,6 @@ public class TransactionController
 		@RequestBody @Valid final TransactionRequest request,
 		@RequestHeader(value="x-mine-user-id") final UUID userId
 	){
-		// TODO check user balance
-		// ...
-
 		// check duplicates ids
 		final Optional<UUID> duplicated = getDuplicatedBillId(request.getBills());
 		if (duplicated.isPresent()) {
@@ -108,12 +110,19 @@ public class TransactionController
 				throw Http.ConficDuplicatedIdentifier(r.getId());
 		});
 
+		// check user balance
+		final Balance balance = prepaidClient.balance(userId).getBalance().orElseThrow(Http::ServerError);
+		final Long totalAmount = bills.stream().mapToLong(b -> b.getAmount()).sum();
+		if (balance.isUpdated() && balance.getBalance().getValue().compareTo(totalAmount) < 0) {
+			throw Http.ConfictNotEnoughBalance();
+		}
+
 		// create transaction
 		final Transaction transaction = new Transaction();
 		transaction.setStatus(Transaction.PROCESSING);
 		transaction.setOrder(transactionService.getNextval().orElseThrow(Http::ServerError));
 		transaction.setUser(userId);
-		transaction.setAmount(bills.stream().mapToLong(b -> b.getAmount()).sum());
+		transaction.setAmount(totalAmount);
 		transaction.setAmountSucceeded(0L);
 		transactionService.save(transaction).orElseThrow(Http::ServerError);
 		transaction.setBills(bills);

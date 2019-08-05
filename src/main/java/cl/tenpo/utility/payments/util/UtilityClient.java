@@ -42,15 +42,18 @@ public class UtilityClient
 			final HttpPost request = new HttpPost(url);
 			request.setHeader("Content-Type", "application/json");
 			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
-			logger.info("=> {}", url);
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
-				logger.info("<= {}: {}", url, response.getStatusLine());
+
+				logger.trace("=> {}", request.getRequestLine());
+				logger.trace("<= {}", response.getStatusLine());
+
 				if (response.getStatusLine().getStatusCode() == 200) {
 					return Optional.of(body);
 				} else {
-					logger.error("<= {}: {}", url, body);
+					logger.error("=> {}", request.getRequestLine());
+					logger.error("<= {} {}", response.getStatusLine(), body);
 				}
 			}
 		} catch (final Exception e) {
@@ -79,13 +82,12 @@ public class UtilityClient
 			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-			logger.info("=> {} [{}]", url, json);
-
 			try (final CloseableHttpResponse response = client.execute(request)) {
 				final HttpEntity entity = response.getEntity();
 				final String body = EntityUtils.toString(entity);
 
-				logger.info("<= {}: {} [{}]", url, response.getStatusLine(), body);
+				logger.info("=> {} {}", request.getRequestLine(), json);
+				logger.info("<= {} {}", response.getStatusLine(), body);
 
 				if (response.getStatusLine().getStatusCode() == 200) {
 					final JsonNode billJsonNode = mapper.readTree(body);

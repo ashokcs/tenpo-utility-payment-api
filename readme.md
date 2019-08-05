@@ -236,6 +236,8 @@ git tag --delete oti-v1.0.0
 - -- Job max attemps in record
 - -- Proceso clean bills table (orphans, created)
 - -- bill id diferente por cada reintento
+- -- email receipt date to cl-time
+- We need an endpoint from multicaja to check the transaction status (retry engine)
 - payment external_id to report
 - engine, configurar bill_code, merchant_code, merchant_category, merchant_name
 - llamar a api balance
