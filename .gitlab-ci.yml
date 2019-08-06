@@ -7,6 +7,9 @@ stages:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
+variables:
+  GITLAB_REGISTRY: registry.gitlab.com/krealomine/tenpo-utility-payments-api:$CI_COMMIT_REF_NAME
+
 test:
   stage: test
   image: openjdk:8-alpine
@@ -45,4 +48,5 @@ docker:
     DOCKER_DRIVER: overlay2
   script: 
     - docker info
-    - docker build -t registry.gitlab.com/krealomine/tenpo-utility-payments-api:$CI_COMMIT_REF_NAME .
+    - docker build -t $GITLAB_REGISTRY .
+    - docker push $GITLAB_REGISTRY
