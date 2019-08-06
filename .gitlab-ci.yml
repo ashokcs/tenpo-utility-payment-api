@@ -14,3 +14,17 @@ test:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .gradle
+
+build:
+  stage: build
+  dependencies:
+    - test
+  image: openjdk:8-alpine
+  variables:
+    GRADLE_USER_HOME: ~/.gradle
+  script:
+    - ./gradlew build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .gradle
