@@ -12,7 +12,6 @@ public class Properties
 	@Value("${multicaja.utilities.apikey}") public String multicajaUtilitiesApiKey;
 	@Value("${multicaja.utilities.url}") public String multicajaUtilitiesUrl;
 	@Value("${multicaja.utilities.debt.url}") public String multicajaUtlitiesDebtUrl;
-	@Value("${multicaja.utilities.confirm.url}") public String multicajaUtlitiesConfirmUrl;
 
 	/* proxy */
 	@Value("${httpclient.proxy}") public String httpClientProxy;

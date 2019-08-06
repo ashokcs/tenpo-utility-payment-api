@@ -237,12 +237,12 @@ git tag --delete oti-v1.0.0
 - -- Proceso clean bills table (orphans, created)
 - -- bill id diferente por cada reintento
 - -- email receipt date to cl-time
+- -- engine, configurar bill_code, merchant_code, merchant_category, merchant_name
+- -- llamar a api balance
+- -- hacer mock de api balance
+- -- apuntar engine a api prepago - dev
 - We need an endpoint from multicaja to check the transaction status (retry engine)
 - payment external_id to report
-- engine, configurar bill_code, merchant_code, merchant_category, merchant_name
-- llamar a api balance
-- hacer mock de api balance
-- apuntar engine a api prepago - dev
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
 - proceso de sync de convenios de pago de cuenta
 - probar nodeport para exponer api en rke
