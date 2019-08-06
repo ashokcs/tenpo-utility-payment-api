@@ -13,28 +13,6 @@
 docker-compose -p tenpo_nats up
 ```
 
-# Azure
-
-### Staging Db
-```
-docker run -it --rm postgres:9-alpine psql -h postgres-db-staging.postgres.database.azure.com -U staging@postgres-db-staging tenpo_utility_payment
-YDVxBXJSLNMjY8bf
-```
-
-### **Container Registry**
-```
-Username: McContainerRegistry (docker_username)
-Password: hwtF4xp8V2dhxWPCGv=ODCTEWgJTgTVc (docker_password)
-```
-
-# Multicaja Utility Payment
-```
-DEVELOPMENT
-API-KEY: SBBcjF38qNaOASyyPu596dBzdjITzii3 
-https://apidev.mcdesaqa.cl/bill_payment/agreements_data (https://pastebin.com/wGC0VpDn)  
-https://apidev.mcdesaqa.cl/bill_payment/debt_data (https://pastebin.com/SGN1kLCz)  
-```
-
 ```
 DEUDA TOTAL
 DEUDA VENCIDA
