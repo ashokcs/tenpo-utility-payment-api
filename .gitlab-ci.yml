@@ -1,10 +1,11 @@
 stages:
+- test
 - build
 - docker
 - deploy
 
 test:
-  stage: build
+  stage: test
   image: openjdk:8-alpine
   variables:
     GRADLE_USER_HOME: ~/.gradle
