@@ -1,0 +1,16 @@
+stages:
+- build
+- docker
+- deploy
+
+.test:
+  stage: build
+  image: openjdk:8-alpine
+  environment:
+    GRADLE_USER_HOME: ~/.gradle
+  script:
+    - ./gradlew check
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .gradle
