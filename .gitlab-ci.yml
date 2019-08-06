@@ -4,6 +4,9 @@ stages:
 - docker
 - deploy
 
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
 test:
   stage: test
   image: openjdk:8-alpine
@@ -23,9 +26,6 @@ build:
     GRADLE_USER_HOME: ~/.gradle
   script:
     - ./gradlew build
-    - ls -la
-    - ls -la build
-    - ls -la build/libs
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
