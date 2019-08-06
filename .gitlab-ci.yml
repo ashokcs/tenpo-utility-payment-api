@@ -48,5 +48,6 @@ docker:
     DOCKER_DRIVER: overlay2
   script: 
     - docker info
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
     - docker build -t $GITLAB_REGISTRY .
     - docker push $GITLAB_REGISTRY
