@@ -86,11 +86,7 @@ dev_deployment:
   script:
     - sed -i "s|{{IMAGE}}|$IMAGE|g" .kube.yml
     - sed -i "s|{{ENVIRONMENT}}|$ENVIRONMENT|g" .kube.yml
-    - cat .kube.yml
-    # - kubectl apply -f .kube.yml
+    - kubectl apply -f .kube.yml
   only:
     - develop
 
-  # vars:
-  #   - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-core:${DRONE_COMMIT_SHA}
-  #   - ENVIRONMENT=dev
