@@ -69,6 +69,7 @@ dev_secrets:
   stage: deploy
   image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
   script:
+    - ls -la
     - kubectl apply -f .kube.secrets.yml
   cache:
     key: ${CI_COMMIT_REF_SLUG}
