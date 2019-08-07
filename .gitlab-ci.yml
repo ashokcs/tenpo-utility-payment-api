@@ -91,7 +91,7 @@ dev_deployment:
           --dry-run=true \
           --docker-server=$CI_REGISTRY \
           --docker-username=$CI_REGISTRY_USER \
-          --docker-password=$CI_BUILD_TOKEN \
+          --docker-password=$CI_REGISTRY_PASSWORD \
           --docker-email=$GITLAB_USER_EMAIL -o yaml | kubectl apply -f -
     - kubectl apply -f .kube.yml
   only:
