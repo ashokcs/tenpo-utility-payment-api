@@ -69,7 +69,6 @@ dev_secrets:
   stage: deploy
   image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
   script:
-    - ls -la
     - kubectl apply -f .kube.secrets.yml
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -77,3 +76,21 @@ dev_secrets:
       - .kube.secrets.yml
   only:
     - develop
+
+dev_deployment:
+  stage: deploy
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
+  variables:
+    ENVIRONMENT: dev
+    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  script:
+    - sed -i 's/${IMAGE}/$IMAGE/g' .kube.yml
+    - sed -i 's/${ENVIRONMENT}/$ENVIRONMENT/g' .kube.yml
+    - cat .kube.yml
+    # - kubectl apply -f .kube.yml
+  only:
+    - develop
+
+  # vars:
+  #   - IMAGE=mccontainerregistry.azurecr.io/tenpo/tenpo-utility-payments-core:${DRONE_COMMIT_SHA}
+  #   - ENVIRONMENT=dev
