@@ -55,8 +55,8 @@ dev_consul:
   variables:
     ENVIRONMENT: dev
   script:
-    - echo $consul_http_addr
-    - echo $consul_http_token
+    - echo $CONSUL_HTTP_ADDR
+    - echo $CONSUL_HTTP_TOKEN
     - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
   only:
     - develop
