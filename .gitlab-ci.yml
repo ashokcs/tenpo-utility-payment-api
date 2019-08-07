@@ -1,8 +1,8 @@
-stages:
-- test
-- build
-- docker
-- deploy
+# stages:
+# - test
+# - build
+# - docker
+# - deploy
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -44,7 +44,16 @@ docker:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script: 
-    #- docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+dev_consul:
+  stage: consul
+  image: hashicorp/consul-template:alpine
+  variables:
+    ENVIRONMENT: dev
+  script:
+    - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
+  only:
+    - develop
