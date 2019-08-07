@@ -57,7 +57,7 @@ spec:
                   key: pg_fqdn
           imagePullPolicy: Always
       imagePullSecrets:
-        - name: container-reg-credentials
+        - name: tenpo-utility-payments-core-registry
 ---
 apiVersion: v1
 kind: Service
