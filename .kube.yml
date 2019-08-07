@@ -25,12 +25,12 @@ spec:
     spec:
       containers:
         - name: tenpo-utility-payments-core
-          image: ${IMAGE}
+          image: {{IMAGE}}
           ports:
             - containerPort: 80
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: ${ENVIRONMENT}
+              value: {{ENVIRONMENT}}
             - name: MY_POD_NAME
               valueFrom:
                 fieldRef:
