@@ -61,7 +61,7 @@ dev_consul:
     paths:
       - .gradle
       - build
-      - .kube.*
+      - .kube.secrets.yml
   only:
     - develop
 
@@ -70,5 +70,7 @@ dev_secrets:
   image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
   script:
     - kubectl apply -f .kube.secrets.yml
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
   only:
     - develop
