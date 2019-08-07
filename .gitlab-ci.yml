@@ -1,8 +1,9 @@
-# stages:
-# - test
-# - build
-# - docker
-# - deploy
+stages:
+- test
+- build
+- docker
+- consul
+- deploy
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
