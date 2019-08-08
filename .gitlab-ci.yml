@@ -52,6 +52,8 @@ docker:
 dev_consul:
   stage: consul
   image: hashicorp/consul-template:alpine
+  environment:
+    name: dev
   variables:
     ENVIRONMENT: dev
   script:
@@ -68,6 +70,8 @@ dev_consul:
 dev_secrets:
   stage: deploy
   image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
+  environment:
+    name: dev
   script:
     - kubectl apply -f .kube.secrets.yml
   cache:
@@ -80,6 +84,8 @@ dev_secrets:
 dev_deployment:
   stage: deploy
   image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
+  environment:
+    name: dev
   variables:
     ENVIRONMENT: dev
     REGISTRY: tenpo-utility-payments-core-registry
