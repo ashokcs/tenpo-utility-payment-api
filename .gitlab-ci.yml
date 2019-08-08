@@ -88,10 +88,11 @@ dev_deployment:
     - sed -i "s|{{ENVIRONMENT}}|$ENVIRONMENT|g" .kube.yml
     - > 
         kubectl create secret docker-registry tenpo-utility-payments-core-registry \
+          --namespace=tenpo-utility-payments \
           --dry-run=true \
           --docker-server=$CI_REGISTRY \
-          --docker-username=$CI_DEPLOY_USER \
-          --docker-password=$CI_DEPLOY_PASSWORD \
+          --docker-username=$CI_REGISTRY_USER \
+          --docker-password=$CI_REGISTRY_PASSWORD \
           --docker-email=$GITLAB_USER_EMAIL -o yaml | kubectl apply -f -
     - kubectl apply -f .kube.yml
   only:
