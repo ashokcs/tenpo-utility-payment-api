@@ -35,26 +35,26 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-core-secrets
+                  key: pg_host
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: tenpo-utility-payments-core-secrets
-                  key: pg_login
+                  key: pg_user
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
                   name: tenpo-utility-payments-core-secrets
-                  key: pg_password
+                  key: pg_pass
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: tenpo-utility-payments-core-secrets
-                  key: pg_name
-            - name: DB_FQDN
-              valueFrom:
-                secretKeyRef:
-                  name: tenpo-utility-payments-core-secrets
-                  key: pg_fqdn
+                  key: pg_db
           imagePullPolicy: Always
       imagePullSecrets:
         - name: tenpo-utility-payments-core-registry
