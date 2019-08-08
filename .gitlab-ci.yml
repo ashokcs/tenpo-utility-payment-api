@@ -92,8 +92,8 @@ dev_deployment:
     NAMESPACE: tenpo-utility-payments
     IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
-    - sed -i "s|{{IMAGE}}|$IMAGE|g" .kube.yml
-    - sed -i "s|{{ENVIRONMENT}}|$ENVIRONMENT|g" .kube.yml
+    - sed -i "s|_IMAGE_|$IMAGE|g" .kube.yml
+    - sed -i "s|_ENVIRONMENT_|$ENVIRONMENT|g" .kube.yml
     - > 
         kubectl create secret docker-registry $REGISTRY \
           --namespace=$NAMESPACE \
