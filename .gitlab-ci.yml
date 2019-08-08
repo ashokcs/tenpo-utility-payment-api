@@ -41,8 +41,8 @@ docker:
     DOCKER_DRIVER: overlay2
   script: 
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -90,7 +90,7 @@ dev_deployment:
     ENVIRONMENT: dev
     REGISTRY: tenpo-utility-payments-core-registry
     NAMESPACE: tenpo-utility-payments
-    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
   script:
     - sed -i "s|_IMAGE_|$IMAGE|g" .kube.yml
     - sed -i "s|_ENVIRONMENT_|$ENVIRONMENT|g" .kube.yml
