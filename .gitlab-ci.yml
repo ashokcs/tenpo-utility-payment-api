@@ -33,7 +33,7 @@ build:
 
 docker:
   stage: docker
-  image: docker:stable
+  image: docker:19
   services:
     - docker:dind
   variables:
@@ -82,13 +82,15 @@ dev_deployment:
   image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
   variables:
     ENVIRONMENT: dev
+    REGISTRY: tenpo-utility-payments-core-registry
+    NAMESPACE: tenpo-utility-payments
     IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
     - sed -i "s|{{IMAGE}}|$IMAGE|g" .kube.yml
     - sed -i "s|{{ENVIRONMENT}}|$ENVIRONMENT|g" .kube.yml
     - > 
-        kubectl create secret docker-registry tenpo-utility-payments-core-registry \
-          --namespace=tenpo-utility-payments \
+        kubectl create secret docker-registry $REGISTRY \
+          --namespace=$NAMESPACE \
           --dry-run=true \
           --docker-server=$CI_REGISTRY \
           --docker-username=$CI_DEPLOY_USER \
