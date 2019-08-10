@@ -219,6 +219,7 @@ git tag --delete oti-v1.0.0
 - -- llamar a api balance
 - -- hacer mock de api balance
 - -- apuntar engine a api prepago - dev
+- api prepago ip interna cluster a cluster
 - We need an endpoint from multicaja to check the transaction status (retry engine)
 - payment external_id to report
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
