@@ -10,7 +10,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tenpo-utility-payments-core
-  namespace: tenpo-utility-payments
+  # namespace: tenpo-utility-payments
 spec:
   replicas: 4
   selector:
@@ -18,7 +18,7 @@ spec:
       app: tenpo-utility-payments-core
   template:
     metadata:
-      namespace: tenpo-utility-payments
+      # namespace: tenpo-utility-payments
       labels:
         app: tenpo-utility-payments-core
         version: v1
@@ -63,7 +63,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tenpo-utility-payments-core-svc
-  namespace: tenpo-utility-payments
+  # namespace: tenpo-utility-payments
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "_INTERNAL_BALANCER_"
 spec:
