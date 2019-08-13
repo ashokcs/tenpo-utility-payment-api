@@ -65,7 +65,7 @@ metadata:
   name: tenpo-utility-payments-core-svc
   namespace: tenpo-utility-payments
   annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+    service.beta.kubernetes.io/azure-load-balancer-internal: "_INTERNAL_BALANCER_"
 spec:
   type: LoadBalancer
   ports:
