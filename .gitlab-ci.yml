@@ -98,7 +98,6 @@ dev_deployment:
     - sed -i "s|_INTERNAL_BALANCER_|$INTERNAL_BALANCER|g" .kube.yml
     - > 
         kubectl create secret docker-registry $REGISTRY \
-          --namespace=$NAMESPACE \
           --dry-run=true \
           --docker-server=$CI_REGISTRY \
           --docker-username=$CI_DEPLOY_USER \
