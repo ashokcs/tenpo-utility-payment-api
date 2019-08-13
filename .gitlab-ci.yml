@@ -96,7 +96,6 @@ dev_deployment:
     - sed -i "s|_IMAGE_|$IMAGE|g" .kube.yml
     - sed -i "s|_ENVIRONMENT_|$ENVIRONMENT|g" .kube.yml
     - sed -i "s|_INTERNAL_BALANCER_|$INTERNAL_BALANCER|g" .kube.yml
-    - cat .kube.yml
     - > 
         kubectl create secret docker-registry $REGISTRY \
           --namespace=$NAMESPACE \
