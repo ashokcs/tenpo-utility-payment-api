@@ -91,7 +91,7 @@ dev_deployment:
     REGISTRY: tenpo-utility-payments-core-registry
     NAMESPACE: tenpo-utility-payments
     IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
-    INTERNAL_BALANCER: "false"
+    INTERNAL_BALANCER: "true"
   script:
     - sed -i "s|_IMAGE_|$IMAGE|g" .kube.yml
     - sed -i "s|_ENVIRONMENT_|$ENVIRONMENT|g" .kube.yml
