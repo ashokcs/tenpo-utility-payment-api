@@ -62,28 +62,6 @@ public class TransactionController
 		this.transactionService = transactionService;
 	}
 
-//	@GetMapping("/v1/utility-payments/transactions/{id:[0-9a-f\\-]{36}}")
-//	public Transaction get(
-//		@PathVariable("id") final UUID id,
-//		@RequestHeader(value="x-mine-user-id") final UUID userId
-//	) {
-//		// get transaction and bills
-//		final Transaction transaction = transactionService.findByIdAndUser(id, userId).orElseThrow(Http::TransactionNotFound);
-//		transaction.setBills(billService.findByTransactionId(userId, transaction.getId()));
-//
-//		// get payment method
-//		// TODO
-////		if (transaction.getPaymentMethod() != null) {
-////			if (transaction.getPaymentMethod().equals(Transaction.WEBPAY)) {
-////				transaction.setWebpay(webpayService.findByTransactionId(transaction.getId()).orElse(null));
-////			} else if (transaction.getPaymentMethod().equals(Transaction.TRANSFERENCIA)) {
-////				transaction.setTransferencia(transferenciaService.findByTransactionId(transaction.getId()).orElse(null));
-////			}
-////		}
-//
-//		return transaction;
-//	}
-
 	@Transactional
 	@PostMapping(path = "/v1/utility-payments/transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Transaction create(
