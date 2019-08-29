@@ -119,7 +119,7 @@ uat_consul:
 
 uat_secrets:
   extends: dev_secrets
-  image: registry.gitlab.com/krealomine/deploy_k8s_azure_uat:latest
+  image: registry.gitlab.com/tenpo/deploy_k8s_azure_uat_2:latest
   environment:
     name: uat
   only:
@@ -127,7 +127,7 @@ uat_secrets:
 
 uat_deployment:
   extends: dev_deployment
-  image: registry.gitlab.com/krealomine/deploy_k8s_azure_uat:latest
+  image: registry.gitlab.com/tenpo/deploy_k8s_azure_uat_2:latest
   environment:
     name: uat
   variables:
