@@ -1,7 +1,5 @@
 package cl.tenpo.utility.payments.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,20 +59,20 @@ public class BillService
 		return Optional.empty();
 	}
 
-	public List<Bill> findByTransactionId(final UUID user, final UUID transactionId)
-	{
-		try {
-			final List<Bill> res = billRepository.findByUserAndTransactionId(user, transactionId);
-			for (final Bill bill : res) {
-				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElse(null);
-				if (utility != null) {
-					bill.setUtility(utility);
-				}
-			}
-			return res;
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return new ArrayList<>();
-	}
+//	public List<Bill> findByTransactionId(final UUID user, final UUID transactionId)
+//	{
+//		try {
+//			final List<Bill> res = billRepository.findByUserAndTransactionId(user, transactionId);
+//			for (final Bill bill : res) {
+//				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElse(null);
+//				if (utility != null) {
+//					bill.setUtility(utility);
+//				}
+//			}
+//			return res;
+//		} catch (final Exception e) {
+//			logger.error(e.getMessage(), e);
+//		}
+//		return new ArrayList<>();
+//	}
 }

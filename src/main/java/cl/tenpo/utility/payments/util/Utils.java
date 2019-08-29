@@ -2,18 +2,16 @@ package cl.tenpo.utility.payments.util;
 
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
-import java.util.Optional;
 
 public class Utils
 {
 	public static final DateTimeFormatter orderFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-	public static String format(final String pattern, final TemporalAccessor date)
-	{
-		return DateTimeFormatter.ofPattern(pattern).format(date);
-	}
+//	public static String format1(final String pattern, final TemporalAccessor date)
+//	{
+//		return DateTimeFormatter.ofPattern(pattern).format(date);
+//	}
 
 	public static String paymentTypeFriendlyName(final String paymentTypeCode)
 	{
@@ -61,11 +59,11 @@ public class Utils
 		return utility.replaceAll("\\_", " ");
 	}
 
-	public static Optional<String> getValidParam(final String param, final String regex)
-	{
-		if ((param != null) && param.matches(regex)) {
-			return Optional.of(param);
-		}
-		return Optional.empty();
-	}
+//	public static Optional<String> getValidParam(final String param, final String regex)
+//	{
+//		if ((param != null) && param.matches(regex)) {
+//			return Optional.of(param);
+//		}
+//		return Optional.empty();
+//	}
 }

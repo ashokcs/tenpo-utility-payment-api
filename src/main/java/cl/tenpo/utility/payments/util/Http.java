@@ -36,22 +36,22 @@ public class Http
 
 	/* 400 - BAD REQUEST */
 
-	public static ResponseStatusException BadRequest()
-	{
-		return ex(HttpStatus.BAD_REQUEST);
-	}
+//	public static ResponseStatusException BadRequest()
+//	{
+//		return ex(HttpStatus.BAD_REQUEST);
+//	}
 
-	public static ResponseStatusException InvalidPaymentMethod()
-	{
-		return exception(HttpStatus.BAD_REQUEST, INVALID_PAYMENT_METHOD);
-	}
+//	public static ResponseStatusException InvalidPaymentMethod()
+//	{
+//		return exception(HttpStatus.BAD_REQUEST, INVALID_PAYMENT_METHOD);
+//	}
 
 	/* 401 - Unauthorized */
 
-	public static ResponseStatusException Unauthorized()
-	{
-		return ex(HttpStatus.UNAUTHORIZED);
-	}
+//	public static ResponseStatusException Unauthorized()
+//	{
+//		return ex(HttpStatus.UNAUTHORIZED);
+//	}
 
 	/* 404 - NOT FOUND */
 
@@ -70,20 +70,20 @@ public class Http
 		return exception(HttpStatus.NOT_FOUND, BILL_ID_NOT_FOUND + ":" + billId.toString());
 	}
 
-	public static ResponseStatusException TransactionNotFound()
-	{
-		return exception(HttpStatus.NOT_FOUND, TRANSACTION_ID_NOT_FOUND);
-	}
+//	public static ResponseStatusException TransactionNotFound()
+//	{
+//		return exception(HttpStatus.NOT_FOUND, TRANSACTION_ID_NOT_FOUND);
+//	}
 
-	public static ResponseStatusException TransferenciaNotFound()
-	{
-		return exception(HttpStatus.NOT_FOUND, TRANSFERENCIA_NOT_FOUND);
-	}
+//	public static ResponseStatusException TransferenciaNotFound()
+//	{
+//		return exception(HttpStatus.NOT_FOUND, TRANSFERENCIA_NOT_FOUND);
+//	}
 
-	public static ResponseStatusException WebpayNotFound()
-	{
-		return exception(HttpStatus.NOT_FOUND, WEBPAY_NOT_FOUND);
-	}
+//	public static ResponseStatusException WebpayNotFound()
+//	{
+//		return exception(HttpStatus.NOT_FOUND, WEBPAY_NOT_FOUND);
+//	}
 
 	/* 409 - CONFLICT */
 
@@ -107,10 +107,10 @@ public class Http
 		return exception(HttpStatus.CONFLICT, IDENTIFIER_DUPLICATED + ":" + billId.toString());
 	}
 
-	public static ResponseStatusException ConfictMaxSizeReached()
-	{
-		return exception(HttpStatus.CONFLICT, MAX_SIZE_REACHED);
-	}
+//	public static ResponseStatusException ConfictMaxSizeReached()
+//	{
+//		return exception(HttpStatus.CONFLICT, MAX_SIZE_REACHED);
+//	}
 
 	public static ResponseStatusException ConfictFavoritesLimitReached()
 	{

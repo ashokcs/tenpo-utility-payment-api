@@ -62,17 +62,17 @@ public class UtilityService
 		return new ArrayList<>();
 	}
 
-	public List<Utility> findAllUtilities()
-	{
-		try {
-			return utilityRepository.findAllByOrderByIdAsc().stream()
-				.filter(utility -> !filtered().contains(utility.getCode()))
-				.collect(Collectors.toList());
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return new ArrayList<>();
-	}
+//	public List<Utility> findAllUtilities()
+//	{
+//		try {
+//			return utilityRepository.findAllByOrderByIdAsc().stream()
+//				.filter(utility -> !filtered().contains(utility.getCode()))
+//				.collect(Collectors.toList());
+//		} catch (final Exception e) {
+//			logger.error(e.getMessage(), e);
+//		}
+//		return new ArrayList<>();
+//	}
 
 	public List<Utility> findAllUtilitiesByCategoryId(final Long categoryId)
 	{
