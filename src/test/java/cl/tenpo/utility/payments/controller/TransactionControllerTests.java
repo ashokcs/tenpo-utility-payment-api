@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.BalanceResponse;
 import cl.tenpo.utility.payments.repository.BillRepository;
+import cl.tenpo.utility.payments.repository.JobRepository;
+import cl.tenpo.utility.payments.repository.PaymentRepository;
+import cl.tenpo.utility.payments.repository.TransactionRepository;
 import cl.tenpo.utility.payments.repository.UtilityRepository;
 import cl.tenpo.utility.payments.util.PrepaidClient;
 import io.nats.streaming.StreamingConnection;
@@ -42,6 +47,9 @@ public class TransactionControllerTests
 	private MockMvc mockMvc;
 
 	@MockBean
+	private CloseableHttpClient client;
+
+	@MockBean
 	private StreamingConnection streamingConnection;
 
 	@MockBean
@@ -54,6 +62,15 @@ public class TransactionControllerTests
 	private UtilityRepository utilityRepository;
 
 	@Autowired
+	private TransactionRepository transactionRepository;
+
+	@Autowired
+	private JobRepository jobRepository;
+
+	@Autowired
+	private PaymentRepository paymentRepository;
+
+	@Autowired
 	private EntityManager entityManager;
 
 	@Autowired
@@ -63,11 +80,12 @@ public class TransactionControllerTests
 	public void create_shouldReturnOk() throws Exception
 	{
 		final UUID user = UUID.fromString("470e40c5-89f3-4500-ac62-7991c04d24d5");
-		final Bill bill = createBill(user, "123123ASD", 1l);
+		final Utility u = createUtility();
+		final Bill b = createBill(user, "123123ASD", u);
 
 		when(prepaidClient.balance(any())).thenReturn(mockBalance(99999l));
 
-		final String body = "{\"bills\": [\""+bill.getId().toString()+"\"]}";
+		final String body = "{\"bills\": [\""+b.getId().toString()+"\"]}";
 		mockMvc.perform(
 			post("/v1/utility-payments/transactions")
 			.header("x-mine-user-id", user.toString())
@@ -112,10 +130,11 @@ public class TransactionControllerTests
 	public void create_shouldReturnConflict_withDuplicatedIdentifiers() throws Exception
 	{
 		final UUID user = UUID.fromString("470e40c5-89f3-4500-ac62-7991c04d24d5");
-		final Bill bill1 = createBill(user, "123123ASD", 1l);
-		final Bill bill2 = createBill(user, "123123ASD", 1l);
+		final Utility u = createUtility();
+		final Bill b1 = createBill(user, "123123ASD", u);
+		final Bill b2 = createBill(user, "123123ASD", u);
 
-		final String body = "{\"bills\": [\""+bill1.getId()+"\", \""+bill2.getId()+"\"]}";
+		final String body = "{\"bills\": [\""+b1.getId()+"\", \""+b2.getId()+"\"]}";
 		mockMvc.perform(
 			post("/v1/utility-payments/transactions")
 			.header("x-mine-user-id", user.toString())
@@ -130,12 +149,14 @@ public class TransactionControllerTests
 	public void create_shouldReturnOk_withTwoBillsDifferentUtility() throws Exception
 	{
 		final UUID user = UUID.fromString("470e40c5-89f3-4500-ac62-7991c04d24d5");
-		final Bill bill1 = createBill(user, "123123ASD1", 1l);
-		final Bill bill2 = createBill(user, "123123ASD2", 2l);
+		final Utility u1 = createUtility();
+		final Utility u2 = createUtility();
+		final Bill b1 = createBill(user, "123123ASD1", u1);
+		final Bill b2 = createBill(user, "123123ASD2", u2);
 
 		when(prepaidClient.balance(any())).thenReturn(mockBalance(99999l));
 
-		final String body = "{\"bills\": [\""+bill1.getId()+"\", \""+bill2.getId()+"\"]}";
+		final String body = "{\"bills\": [\""+b1.getId()+"\", \""+b2.getId()+"\"]}";
 		mockMvc.perform(
 			post("/v1/utility-payments/transactions")
 			.header("x-mine-user-id", user.toString())
@@ -150,12 +171,13 @@ public class TransactionControllerTests
 	public void create_shouldReturnOk_withTwoBillsSameUtility() throws Exception
 	{
 		final UUID user = UUID.fromString("470e40c5-89f3-4500-ac62-7991c04d24d5");
-		final Bill bill1 = createBill(user, "123123ASD1", 1l);
-		final Bill bill2 = createBill(user, "123123ASD2", 1l);
+		final Utility u = createUtility();
+		final Bill b1 = createBill(user, "123123ASD1", u);
+		final Bill b2 = createBill(user, "123123ASD2", u);
 
 		when(prepaidClient.balance(any())).thenReturn(mockBalance(99999l));
 
-		final String body = "{\"bills\": [\""+bill1.getId()+"\", \""+bill2.getId()+"\"]}";
+		final String body = "{\"bills\": [\""+b1.getId()+"\", \""+b2.getId()+"\"]}";
 		mockMvc.perform(
 			post("/v1/utility-payments/transactions")
 			.header("x-mine-user-id", user.toString())
@@ -170,11 +192,12 @@ public class TransactionControllerTests
 	public void create_shouldReturnServerError_withErrorBalance() throws Exception
 	{
 		final UUID user = UUID.fromString("470e40c5-89f3-4500-ac62-7991c04d24d5");
-		final Bill bill1 = createBill(user, "123123ASD", 1l);
+		final Utility u = createUtility();
+		final Bill b1 = createBill(user, "123123ASD", u);
 
 		when(prepaidClient.balance(any())).thenReturn(new BalanceResponse());
 
-		final String body = "{\"bills\": [\""+bill1.getId()+"\"]}";
+		final String body = "{\"bills\": [\""+b1.getId()+"\"]}";
 		mockMvc.perform(
 			post("/v1/utility-payments/transactions")
 			.header("x-mine-user-id", user.toString())
@@ -189,11 +212,12 @@ public class TransactionControllerTests
 	public void create_shouldReturnConflict_withNotEnoughBalance() throws Exception
 	{
 		final UUID user = UUID.fromString("470e40c5-89f3-4500-ac62-7991c04d24d5");
-		final Bill bill1 = createBill(user, "123123ASD", 1l);
+		final Utility u = createUtility();
+		final Bill b1 = createBill(user, "123123ASD", u);
 
 		when(prepaidClient.balance(any())).thenReturn(mockBalance(0l));
 
-		final String body = "{\"bills\": [\""+bill1.getId()+"\"]}";
+		final String body = "{\"bills\": [\""+b1.getId()+"\"]}";
 		mockMvc.perform(
 			post("/v1/utility-payments/transactions")
 			.header("x-mine-user-id", user.toString())
@@ -204,18 +228,11 @@ public class TransactionControllerTests
 		.andExpect(status().isConflict());
 	}
 
-	private Bill createBill(final UUID user, final String identifier, final Long utilityId) throws Exception
+	private Utility createUtility() throws Exception
 	{
-		transactionTemplate.execute(status -> {
-			entityManager.createNativeQuery("CREATE SEQUENCE IF NOT EXISTS public.transactions_seq MAXVALUE 999 CYCLE;").executeUpdate();
-			status.flush();
-			return null;
-		});
-
 		final Utility utility = new Utility();
-		utility.setId(utilityId);
 		utility.setStatus("ENABLED");
-		utility.setCategoryId(utilityId);
+		utility.setCategoryId(1l);
 		utility.setName("Aguas Andinas");
 		utility.setCode("AGUAS ANDINAS");
 		utility.setCollectorId("3");
@@ -223,6 +240,16 @@ public class TransactionControllerTests
 		utility.setGlossIds("G021, G002");
 		utility.setGlossNames("NRO CUENTA, CON DIGITO VERIFICADOR");
 		utilityRepository.save(utility);
+		return utility;
+	}
+
+	private Bill createBill(final UUID user, final String identifier, final Utility utility) throws Exception
+	{
+		transactionTemplate.execute(status -> {
+			entityManager.createNativeQuery("CREATE SEQUENCE IF NOT EXISTS public.transactions_seq MAXVALUE 999 CYCLE;").executeUpdate();
+			status.flush();
+			return null;
+		});
 
 		final Bill bill = new Bill();
 		bill.setStatus(Bill.CREATED);
@@ -244,5 +271,16 @@ public class TransactionControllerTests
 		final BalanceResponse br = new BalanceResponse();
 		br.setBalance(Optional.of(new Balance(156, amount, true)));
 		return br;
+	}
+
+	@After
+	public void clean()
+	{
+		paymentRepository.deleteAll();
+		billRepository.deleteAll();
+		jobRepository.deleteAll();
+		transactionRepository.deleteAll();
+		utilityRepository.deleteAll();
+		entityManager.close();
 	}
 }
