@@ -24,7 +24,7 @@ build:
   variables:
     GRADLE_USER_HOME: ~/.gradle
   script:
-    - ./gradlew build
+    - ./gradlew build -x test
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
