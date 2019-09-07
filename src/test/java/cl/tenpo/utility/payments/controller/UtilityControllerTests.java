@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class UtilityControllerTests
 {
 	@Autowired
 	private MockMvc mockMvc;
+
+	@MockBean
+	private CloseableHttpClient client;
 
 	@MockBean
 	private StreamingConnection streamingConnection;
@@ -167,7 +171,6 @@ public class UtilityControllerTests
 	private Utility createUtility(final Category category) throws Exception
 	{
 		final Utility utility = new Utility();
-		utility.setId(1l);
 		utility.setStatus("ENABLED");
 		utility.setCategoryId(category.getId());
 		utility.setName("Aguas Andinas");

@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class FavoriteControllerTests
 {
 	@Autowired
 	private MockMvc mockMvc;
+
+	@MockBean
+	private CloseableHttpClient client;
 
 	@MockBean
 	private StreamingConnection streamingConnection;
