@@ -59,6 +59,22 @@ public class BillService
 		return Optional.empty();
 	}
 
+	public Optional<Bill> findById(final UUID id, final UUID user)
+	{
+		try {
+			final Optional<Bill> opt = billRepository.findByIdAndUser(id, user);
+			if (opt.isPresent()) {
+				final Bill bill = opt.get();
+				final Utility utility = utilityService.findUtilityById(bill.getUtilityId()).orElseThrow(Http::NotFound);
+				bill.setUtility(utility);
+				return Optional.of(bill);
+			}
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Optional.empty();
+	}
+
 //	public List<Bill> findByTransactionId(final UUID user, final UUID transactionId)
 //	{
 //		try {
