@@ -2,6 +2,7 @@ package cl.tenpo.utility.payments.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -91,6 +92,18 @@ public class UtilityController
 			result.add(bill);
 		}
 		return result;
+	}
+
+	@GetMapping("/v1/utility-payments/bills/{id}")
+	public Bill bill(
+		@RequestHeader(value="x-mine-user-id") final UUID userId,
+		@PathVariable("id") final UUID billId
+	){
+		final Optional<Bill> optional = billService.findById(billId, userId);
+		if (optional.isPresent()) {
+			return billService.findById(billId, userId).get();
+		}
+		throw Http.NotFound();
 	}
 
 	@GetMapping("/v1/utility-payments/utilities")
