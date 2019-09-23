@@ -219,22 +219,22 @@ git tag --delete oti-v1.0.0
 - -- llamar a api balance
 - -- hacer mock de api balance
 - -- apuntar engine a api prepago - dev
-- api prepago ip interna cluster a cluster
+- -- api prepago ip interna cluster a cluster
+- -- proceso de sync de convenios de pago de cuenta
+- -- probar nodeport para exponer api en rke
+- -- probar contra api bill_payment dev/qa mc
+- -- subir a uat
+- -- api prepaid - payment description - movements event
+- -- api utility - movements event ?
 - We need an endpoint from multicaja to check the transaction status (retry engine)
 - payment external_id to report
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
-- proceso de sync de convenios de pago de cuenta
-- probar nodeport para exponer api en rke
-- probar contra api bill_payment dev/qa mc
 - agregar tabla payment_method a bo
 - agregar user_id tabla bills en bo
 - dejar expuesto solo el path management en virtual hosts
 - fix comments bo
-- subir a uat
 - subir a prod
 - modificar azure apis y poner url internas de ambientes
-- api prepaid - payment description - movements event
-- api utility - movements event ?
 - reports conciliacion
 - reports table
 - report trxs daily and monthly

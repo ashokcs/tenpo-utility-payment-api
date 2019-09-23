@@ -30,7 +30,7 @@ public class NatsService
 	private void onAck(final String nuid, final Exception ex)
 	{
 		if (ex != null) {
-			logger.info("Error publishing msg id {}: {}", nuid, ex.getMessage());
+			logger.error("Error publishing msg id {}: {}", nuid, ex.getMessage());
         }
 	}
 }
