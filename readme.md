@@ -226,8 +226,8 @@ git tag --delete oti-v1.0.0
 - -- subir a uat
 - -- api prepaid - payment description - movements event
 - -- api utility - movements event ?
+- -- payment external_id to report
 - We need an endpoint from multicaja to check the transaction status (retry engine)
-- payment external_id to report
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
 - agregar tabla payment_method a bo
 - agregar user_id tabla bills en bo
