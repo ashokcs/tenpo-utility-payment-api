@@ -26,7 +26,7 @@ public class Payment
 	private UUID externalId;
 	private Long paymentMethodId;
 	private Long amount;
-	private Long paymentId;
+	private UUID paymentId;
 	private UUID paymentAccountId;
 	private OffsetDateTime created;
 	private OffsetDateTime updated;
@@ -94,11 +94,11 @@ public class Payment
 		this.amount = amount;
 	}
 
-	public Long getPaymentId() {
+	public UUID getPaymentId() {
 		return paymentId;
 	}
 
-	public void setPaymentId(final Long paymentId) {
+	public void setPaymentId(final UUID paymentId) {
 		this.paymentId = paymentId;
 	}
 
