@@ -1,22 +1,8 @@
 stages:
-# - test
-- build
-- docker
-- consul
-- deploy
-
-# test:
-#   stage: test
-#   image: openjdk:8-alpine
-#   variables:
-#     GRADLE_USER_HOME: ~/.gradle
-#   script:
-#     - ./gradlew check
-#   cache:
-#     key: ${CI_COMMIT_REF_SLUG}
-#     paths:
-#       - .gradle
-#       - build
+  - build
+  - docker
+  - consul
+  - deploy
 
 build:
   stage: build
