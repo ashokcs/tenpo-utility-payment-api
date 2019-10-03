@@ -36,7 +36,7 @@ public class PrepaidClient
 	{
 		final BalanceResponse res = new BalanceResponse();
 		try {
-			final String url = properties.prepaidBalanceUrl.replaceAll("\\{user_id\\}", userId.toString().replaceAll("\\{account_id\\}", accountId.toString()));
+			final String url = properties.prepaidBalanceUrl.replaceAll("\\{user_id\\}", userId.toString()).replaceAll("\\{account_id\\}", accountId.toString());
 			final HttpGet request = new HttpGet(url);
 
 			logger.trace("=> {}", request.getRequestLine());
