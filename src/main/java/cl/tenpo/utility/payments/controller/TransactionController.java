@@ -66,7 +66,8 @@ public class TransactionController
 	@PostMapping(path = "/v1/utility-payments/transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Transaction create(
 		@RequestBody @Valid final TransactionRequest request,
-		@RequestHeader(value="x-mine-user-id") final UUID userId
+		@RequestHeader(value="x-mine-user-id") final UUID userId,
+		@RequestHeader(value="x-mine-user-account") final UUID userAccount
 	){
 		// check duplicates ids
 		final Optional<UUID> duplicated = getDuplicatedBillId(request.getBills());
@@ -89,7 +90,7 @@ public class TransactionController
 		});
 
 		// check user balance
-		final Balance balance = prepaidClient.balance(userId).getBalance().orElseThrow(Http::ServerError);
+		final Balance balance = prepaidClient.balance(userId, userAccount).getBalance().orElseThrow(Http::ServerError);
 		final Long totalAmount = bills.stream().mapToLong(b -> b.getAmount()).sum();
 		if (balance.isUpdated() && balance.getBalance().getValue().compareTo(totalAmount) < 0) {
 			throw Http.ConfictNotEnoughBalance();

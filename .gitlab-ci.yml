@@ -1,22 +1,8 @@
 stages:
-# - test
-- build
-- docker
-- consul
-- deploy
-
-# test:
-#   stage: test
-#   image: openjdk:8-alpine
-#   variables:
-#     GRADLE_USER_HOME: ~/.gradle
-#   script:
-#     - ./gradlew check
-#   cache:
-#     key: ${CI_COMMIT_REF_SLUG}
-#     paths:
-#       - .gradle
-#       - build
+  - build
+  - docker
+  - consul
+  - deploy
 
 build:
   stage: build
@@ -31,7 +17,7 @@ build:
       - .gradle
       - build
 
-docker:
+dev_docker:
   stage: docker
   image: docker:19
   services:
@@ -39,15 +25,18 @@ docker:
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
-  script: 
+  before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA .
+  script: 
+    - docker build -f ./docker/Dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .gradle
       - build
+  only:
+    - develop
 
 dev_consul:
   stage: consul
@@ -107,6 +96,11 @@ dev_deployment:
     - kubectl apply -f .kube.yml
   only:
     - develop
+
+uat_docker:
+  extends: dev_docker
+  only:
+    - uat
 
 uat_consul:
   extends: dev_consul

@@ -83,7 +83,7 @@ public class TransactionControllerTests
 		final Utility u = createUtility();
 		final Bill b = createBill(user, "123123ASD", u);
 
-		when(prepaidClient.balance(any())).thenReturn(mockBalance(99999l));
+		when(prepaidClient.balance(any(), any())).thenReturn(mockBalance(99999l));
 
 		final String body = "{\"bills\": [\""+b.getId().toString()+"\"]}";
 		mockMvc.perform(
@@ -154,7 +154,7 @@ public class TransactionControllerTests
 		final Bill b1 = createBill(user, "123123ASD1", u1);
 		final Bill b2 = createBill(user, "123123ASD2", u2);
 
-		when(prepaidClient.balance(any())).thenReturn(mockBalance(99999l));
+		when(prepaidClient.balance(any(),any())).thenReturn(mockBalance(99999l));
 
 		final String body = "{\"bills\": [\""+b1.getId()+"\", \""+b2.getId()+"\"]}";
 		mockMvc.perform(
@@ -175,7 +175,7 @@ public class TransactionControllerTests
 		final Bill b1 = createBill(user, "123123ASD1", u);
 		final Bill b2 = createBill(user, "123123ASD2", u);
 
-		when(prepaidClient.balance(any())).thenReturn(mockBalance(99999l));
+		when(prepaidClient.balance(any(),any())).thenReturn(mockBalance(99999l));
 
 		final String body = "{\"bills\": [\""+b1.getId()+"\", \""+b2.getId()+"\"]}";
 		mockMvc.perform(
@@ -195,7 +195,7 @@ public class TransactionControllerTests
 		final Utility u = createUtility();
 		final Bill b1 = createBill(user, "123123ASD", u);
 
-		when(prepaidClient.balance(any())).thenReturn(new BalanceResponse());
+		when(prepaidClient.balance(any(),any())).thenReturn(new BalanceResponse());
 
 		final String body = "{\"bills\": [\""+b1.getId()+"\"]}";
 		mockMvc.perform(
@@ -215,7 +215,7 @@ public class TransactionControllerTests
 		final Utility u = createUtility();
 		final Bill b1 = createBill(user, "123123ASD", u);
 
-		when(prepaidClient.balance(any())).thenReturn(mockBalance(0l));
+		when(prepaidClient.balance(any(),any())).thenReturn(mockBalance(0l));
 
 		final String body = "{\"bills\": [\""+b1.getId()+"\"]}";
 		mockMvc.perform(

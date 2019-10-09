@@ -42,7 +42,7 @@ public class PrepaidClientTests
 	{
 		final String payload = "{\"balance\": {\"currency_code\":\"CLP\",\"value\":1234},\"updated\":false}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(payload, HttpStatus.OK));
-		final BalanceResponse balance = prepaidClient.balance(UUID.randomUUID());
+		final BalanceResponse balance = prepaidClient.balance(UUID.randomUUID(), UUID.randomUUID());
 		assertThat(balance).isNotNull();
 		assertThat(balance.getBalance()).isNotEmpty();
 		assertThat(balance.getBalance().get().getBalance().getValue()).isEqualTo(1234);
@@ -53,7 +53,7 @@ public class PrepaidClientTests
 	{
 		final String payload = "{\"balance\": {\"currency_code\":\"CLP\",\"value\":1234},\"updated\":false}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(payload, HttpStatus.BAD_REQUEST));
-		final BalanceResponse balance = prepaidClient.balance(UUID.randomUUID());
+		final BalanceResponse balance = prepaidClient.balance(UUID.randomUUID(), UUID.randomUUID());
 		assertThat(balance).isNotNull();
 		assertThat(balance.getBalance()).isEmpty();
 	}
@@ -62,7 +62,7 @@ public class PrepaidClientTests
 	public void balance_shouldBeEmpty_whenException() throws Exception
 	{
 		when(client.execute(any())).thenThrow(new IOException());
-		final BalanceResponse balance = prepaidClient.balance(UUID.randomUUID());
+		final BalanceResponse balance = prepaidClient.balance(UUID.randomUUID(), UUID.randomUUID());
 		assertThat(balance).isNotNull();
 		assertThat(balance.getBalance()).isEmpty();
 	}
