@@ -38,7 +38,7 @@ public class PrepaidClient
 		try {
 			final String url = properties.prepaidBalanceUrl.replaceAll("\\{user_id\\}", userId.toString()).replaceAll("\\{account_id\\}", accountId.toString());
 			final HttpGet request = new HttpGet(url);
-			request.setHeader("Keep-Alive", "180");
+			request.setHeader("Keep-Alive", "60");
 
 			logger.trace("=> {}", request.getRequestLine());
 
