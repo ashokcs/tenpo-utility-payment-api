@@ -20,6 +20,7 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultClientConnectionReuseStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
@@ -61,6 +62,7 @@ public class HttpClientConfig
 		builder.disableConnectionState();
 		builder.setConnectionManager(poolingHttpClientConnectionManager);
 		builder.setDefaultRequestConfig(defaultRequestConfig);
+		builder.setConnectionReuseStrategy(DefaultClientConnectionReuseStrategy.INSTANCE);
 
 		if ((properties.httpClientProxy != null) && !properties.httpClientProxy.isEmpty()) {
 			try {
