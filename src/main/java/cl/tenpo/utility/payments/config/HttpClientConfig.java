@@ -111,6 +111,7 @@ public class HttpClientConfig
 
 		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry.build());
         cm.setMaxTotal(100);
+        cm.setValidateAfterInactivity(1000 * 60);
         return cm;
 	}
 }
