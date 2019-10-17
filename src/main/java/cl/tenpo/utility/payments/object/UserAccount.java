@@ -8,7 +8,7 @@ public class UserAccount
 	private UUID id;
 	private UUID userId;
 	private BigDecimal balanceAmount;
-	private BigDecimal balanceCurrency;
+	private String balanceCurrency;
 	private UUID accountNumber;
 	private UUID accountType;
 	private String state;
@@ -38,11 +38,11 @@ public class UserAccount
 		this.balanceAmount = balanceAmount;
 	}
 
-	public BigDecimal getBalanceCurrency() {
+	public String getBalanceCurrency() {
 		return balanceCurrency;
 	}
 
-	public void setBalanceCurrency(final BigDecimal balanceCurrency) {
+	public void setBalanceCurrency(final String balanceCurrency) {
 		this.balanceCurrency = balanceCurrency;
 	}
 
