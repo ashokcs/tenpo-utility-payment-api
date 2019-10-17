@@ -23,11 +23,13 @@ import cl.tenpo.utility.payments.entity.PaymentMethod;
 import cl.tenpo.utility.payments.entity.Transaction;
 import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.TransactionRequest;
+import cl.tenpo.utility.payments.object.UserAccount;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
 import cl.tenpo.utility.payments.service.NatsService;
 import cl.tenpo.utility.payments.service.PaymentService;
 import cl.tenpo.utility.payments.service.TransactionService;
+import cl.tenpo.utility.payments.util.AccountMsClient;
 import cl.tenpo.utility.payments.util.Http;
 import cl.tenpo.utility.payments.util.PrepaidClient;
 import cl.tenpo.utility.payments.util.Properties;
@@ -42,6 +44,7 @@ public class TransactionController
 	private final PaymentService paymentService;
 	private final PrepaidClient prepaidClient;
 	private final Properties properties;
+	private final AccountMsClient accountMsClient;
 	private final TransactionService transactionService;
 
 	public TransactionController(
@@ -51,6 +54,7 @@ public class TransactionController
 		final PaymentService paymentService,
 		final PrepaidClient prepaidClient,
 		final Properties properties,
+		final AccountMsClient accountMsClient,
 		final TransactionService transactionService
 	){
 		this.billService = billService;
@@ -59,6 +63,7 @@ public class TransactionController
 		this.paymentService = paymentService;
 		this.prepaidClient = prepaidClient;
 		this.properties = properties;
+		this.accountMsClient = accountMsClient;
 		this.transactionService = transactionService;
 	}
 
@@ -66,8 +71,7 @@ public class TransactionController
 	@PostMapping(path = "/v1/utility-payments/transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Transaction create(
 		@RequestBody @Valid final TransactionRequest request,
-		@RequestHeader(value="x-mine-user-id") final UUID userId,
-		@RequestHeader(value="x-mine-user-account") final UUID userAccount
+		@RequestHeader(value="x-mine-user-id") final UUID userId
 	){
 		// check duplicates ids
 		final Optional<UUID> duplicated = getDuplicatedBillId(request.getBills());
@@ -89,8 +93,14 @@ public class TransactionController
 				throw Http.ConficDuplicatedIdentifier(r.getId());
 		});
 
+		// get account id from account-ms
+		final Optional<UserAccount> aopt = accountMsClient.getAccount(userId);
+		if (!aopt.isPresent()) {
+			throw Http.NotFound();
+		}
+
 		// check user balance
-		final Balance balance = prepaidClient.balance(userId, userAccount).getBalance().orElseThrow(Http::ServerError);
+		final Balance balance = prepaidClient.balance(userId, aopt.get().getAccountNumber()).getBalance().orElseThrow(Http::ServerError);
 		final Long totalAmount = bills.stream().mapToLong(b -> b.getAmount()).sum();
 		if (balance.isUpdated() && balance.getBalance().getValue().compareTo(totalAmount) < 0) {
 			throw Http.ConfictNotEnoughBalance();

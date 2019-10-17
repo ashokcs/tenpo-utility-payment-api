@@ -26,4 +26,7 @@ public class Properties
 
 	/* prepaid */
 	@Value("${prepaid.balance.url}") public String prepaidBalanceUrl;
+
+	/* account-ms */
+	@Value("${account-ms.account.url}") public String accountMsUrl;
 }
