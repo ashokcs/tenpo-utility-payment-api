@@ -10,7 +10,7 @@ public class UserAccount
 	private BigDecimal balanceAmount;
 	private String balanceCurrency;
 	private UUID accountNumber;
-	private UUID accountType;
+	private String accountType;
 	private String state;
 	private UUID productId;
 
@@ -54,11 +54,11 @@ public class UserAccount
 		this.accountNumber = accountNumber;
 	}
 
-	public UUID getAccountType() {
+	public String getAccountType() {
 		return accountType;
 	}
 
-	public void setAccountType(final UUID accountType) {
+	public void setAccountType(final String accountType) {
 		this.accountType = accountType;
 	}
 
