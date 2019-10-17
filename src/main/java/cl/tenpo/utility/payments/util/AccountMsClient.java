@@ -29,7 +29,6 @@ public class AccountMsClient
 			final RestTemplate restTemplate = new RestTemplate();
 			final String url = properties.accountMsUrl.replaceAll("\\{user_id\\}", userId.toString());
 			final UserAccount account = restTemplate.getForObject(url, UserAccount.class);
-			logger.info("{}", account);
 			return Optional.of(account);
 		} catch (final HttpClientErrorException e) {
 			logger.error("{} - {}", e.getMessage(), e.getStatusCode());
