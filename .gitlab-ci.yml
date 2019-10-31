@@ -17,6 +17,14 @@ build:
       - .gradle
       - build
 
+dev-kiuwan:
+  stage: build
+  image: registry.gitlab.com/krealomine/deploy_docker_kiuwan:lastest
+  script:
+    - ${HOME}/KiuwanLocalAnalyzer/bin/agent.sh -n ${CI_PROJECT_NAME} -s ${CI_PROJECT_DIR} -l "GitLab build ${CI_JOB_ID}" -c --user ${KIUWAN_USER} --pass ${KIUWAN_PASSWD}
+  only:
+    - develop
+
 dev_docker:
   stage: docker
   image: docker:19
