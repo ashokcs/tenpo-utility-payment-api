@@ -17,7 +17,7 @@ build:
       - .gradle
       - build
 
-dev-kiuwan:
+kiuwan:
   stage: build
   image: registry.gitlab.com/krealomine/deploy_docker_kiuwan:lastest
   script:
