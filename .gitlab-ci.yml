@@ -143,6 +143,9 @@ uat_deployment:
 
 prod_docker:
   extends: dev_docker
+  script: 
+    - docker build -f ./docker/prod/Dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
   only:
     - master
 
