@@ -13,11 +13,6 @@ public class Properties
 	@Value("${multicaja.utilities.url}") public String multicajaUtilitiesUrl;
 	@Value("${multicaja.utilities.debt.url}") public String multicajaUtlitiesDebtUrl;
 
-	/* proxy */
-	@Value("${httpclient.proxy}") public String httpClientProxy;
-	@Value("${httpclient.proxy.exclude}") public String httpClientProxyExclude;
-	@Value("${httpclient.trust.all}") public boolean httpClientTrustAll;
-
 	/* job */
 	@Value("${job.max.attempts}") public Integer jobMaxAttempts;
 

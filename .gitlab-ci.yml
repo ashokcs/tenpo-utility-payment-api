@@ -17,6 +17,14 @@ build:
       - .gradle
       - build
 
+kiuwan:
+  stage: build
+  image: registry.gitlab.com/krealomine/deploy_docker_kiuwan:lastest
+  script:
+    - ${HOME}/KiuwanLocalAnalyzer/bin/agent.sh -n ${CI_PROJECT_NAME} -s ${CI_PROJECT_DIR} -l "GitLab build ${CI_JOB_ID}" -c --user ${KIUWAN_USER} --pass ${KIUWAN_PASSWD}
+  only:
+    - develop
+
 dev_docker:
   stage: docker
   image: docker:19
@@ -132,3 +140,43 @@ uat_deployment:
     INTERNAL_BALANCER: "true"
   only:
     - uat
+
+prod_docker:
+  extends: dev_docker
+  only:
+    - master
+
+prod_consul:
+  extends: dev_consul
+  environment:
+    name: prod
+  variables:
+    ENVIRONMENT: prod
+  script:
+    - export CONSUL_HTTP_ADDR=$CONSUL_HTTP_ADDR_PROD
+    - export CONSUL_HTTP_TOKEN=$CONSUL_HTTP_TOKEN_PROD
+    - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
+  only:
+    - master
+
+prod_secrets:
+  extends: dev_secrets
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure_prod:latest
+  environment:
+    name: prod
+  only:
+    - master
+
+prod_deployment:
+  extends: dev_deployment
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure_prod:latest
+  environment:
+    name: prod
+  variables:
+    ENVIRONMENT: prod
+    REGISTRY: tenpo-utility-payments-core-registry
+    NAMESPACE: tenpo-utility-payments
+    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+    INTERNAL_BALANCER: "true"
+  only:
+    - master
