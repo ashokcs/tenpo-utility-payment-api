@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.apache.httpcomponents:httpclient:4.5.7'
 	implementation 'io.nats:jnats:2.4.6'
 	implementation 'io.nats:java-nats-streaming:2.1.6'
+	implementation 'com.newrelic.agent.java:newrelic-api:5.8.0'
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

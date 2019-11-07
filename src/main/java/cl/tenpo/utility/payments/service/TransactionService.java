@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.entity.Transaction;
 import cl.tenpo.utility.payments.repository.TransactionRepository;
 import cl.tenpo.utility.payments.util.Utils;
@@ -35,6 +37,7 @@ public class TransactionService
 		try {
 			return Optional.of(transactionRepository.save(transaction));
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -49,6 +52,7 @@ public class TransactionService
 			final String order = "U" + now + String.format("%03d", seq);
 			return Optional.of(order);
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
