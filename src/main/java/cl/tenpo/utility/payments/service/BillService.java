@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.repository.BillRepository;
@@ -33,6 +35,7 @@ public class BillService
 		try {
 			return Optional.of(billRepository.save(bill));
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -54,6 +57,7 @@ public class BillService
 				return Optional.of(bill);
 			}
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -70,6 +74,7 @@ public class BillService
 				return Optional.of(bill);
 			}
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();

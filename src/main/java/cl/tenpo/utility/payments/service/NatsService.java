@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.newrelic.api.agent.NewRelic;
+
 import io.nats.streaming.StreamingConnection;
 
 @Service
@@ -23,6 +25,7 @@ public class NatsService
 		try {
 			streamingConnection.publish(subject, data, this::onAck);
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 	}

@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.entity.Payment;
 import cl.tenpo.utility.payments.repository.PaymentRepository;
 
@@ -26,6 +28,7 @@ public class PaymentService
 		try {
 			return Optional.of(paymentRepository.save(payment));
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
