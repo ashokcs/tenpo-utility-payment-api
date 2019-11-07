@@ -1,0 +1,495 @@
+openapi: 3.0.1
+info:
+  title: Utility Payments
+  version: 1.0.0
+servers:
+  - url: https://tenpo.dev.multicajadigital.cloud
+    description: Development Environment
+tags:
+  - name: Utilities
+    description: Operaciones de los convenios de pago de cuenta
+  - name: Transactions
+    description: Operaciones de transacciones de pago de cuenta
+  - name: Favorites
+    description: Operaciones de cuentas favoritas
+paths:
+
+  /v1/utility-payments/categories:
+    get:
+      tags: 
+        - Utilities
+      summary: Lista las categorías de los convenios de pagos de cuenta
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+              example: 
+                - "id": 1
+                  "name": "Agua"
+                  "quantity": 14
+                - "id": 2
+                  "name": "Luz"
+                  "quantity": 17
+                - "id": 3
+                  "name": "Telecomunicaciones"
+                  "quantity": 30
+
+  /v1/utility-payments/categories/{id}/utilities:
+    get:
+      tags: 
+        - Utilities
+      summary: Lista los convenios de pago de cuenta de una categoría
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id de la categoría
+          schema:
+            type : integer
+            format: int64
+            example: 1
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utility'
+              example:
+                - "id": 1
+                  "name": "Aguas Andinas"
+                  "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+                - "id": 2
+                  "name": "ESSBIO"
+                  "identifier": "NRO SERVICIO, SIN DIGITO VERIFICADOR"
+                - "id": 15
+                  "name": "ENEL DISTRIBUCION"
+                  "identifier": "NRO CLIENTE, CON DIGITO VERIFICADOR"
+                - "id": 33
+                  "name": "Movistar Hogar"
+                  "identifier": "NRO TELEFONO, CON CODIGO DE AREA"
+        404:
+          description: category not found
+        500:
+          description: internal server error
+
+  /v1/utility-payments/utilities/{id}/bills:
+    post:
+      tags:
+        - Utilities
+      summary: Obtiene las deudas de un convenio para un determinado identificador
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id del convenio
+          schema:
+            type : integer
+            format: int64
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilityBillRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UtilityBillResponse'
+              example:
+                - "id": "dd10d4fc-e25e-41be-bde9-e740c7696658"
+                  "status": "WAITING"
+                  "identifier": "12312312"
+                  "amount": 5233
+                  "due_date": "No disponible"
+                  "description": "Deuda total"
+                  "created": "2019-06-14T12:48:24.039-04:00"
+                  "updated": "2019-06-14T12:48:24.039-04:00"
+                  "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category": 
+                          "id": 1,
+                          "name": "Agua"
+                - "id": "56f31b96-1da2-4372-923d-07b8782f2207"
+                  "status": "WAITING"
+                  "identifier": "12312312"
+                  "amount": 4177
+                  "due_date": "No disponible"
+                  "description": "Deuda vencida"
+                  "created": "2019-06-14T12:48:24.039-04:00"
+                  "updated": "2019-06-14T12:48:24.039-04:00"
+                  "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                      "category": 
+                          "id": 1,
+                          "name": "Agua"
+        400:
+          description: invalid parameters
+        404:
+          description: utility not found
+        500:
+          description: internal server error
+
+  /v1/utility-payments/bills/{id}:
+    get:
+      tags: 
+        - Utilities
+      summary: Muestra los detalles de una cuenta
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id de la cuenta
+          schema:
+            type : string
+            example: 48d33a66-6b12-4f28-99ab-60e3975f90b5
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilityBillResponse'
+        400:
+          description: invalid parameters
+
+  /v1/utility-payments/transactions:
+    post:
+      tags: 
+        - Transactions
+      summary: Crea una transacción de pago de cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+              example:
+                "id": "5d615847-3f00-434b-9d2d-fdb329c7da5f"
+                "status": "PROCESSING"
+                "order": "T20190509224702005"
+                "user": "bdb7cd6d-dfca-4aee-82b0-4588e871ec79"
+                "amount": 16962
+                "bills":
+                  - "id": "0f052b43-1456-445a-9d24-8e71f7e0cdbe"
+                    "status": "PROCESSING"
+                    "identifier": "1231231"
+                    "amount": 9324
+                    "due_date": "No disponible"
+                    "description": "Deuda total"
+                    "created": "2019-07-22T03:44:00.814Z"
+                    "updated": "2019-07-22T03:53:06.246Z"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                  - "id": "e41564e9-9ea8-4aac-8b2e-969e45631d35"
+                    "status": "PROCESSING"
+                    "identifier": "1231233"
+                    "amount": 7638
+                    "due_date": "No disponible"
+                    "description": "Deuda vencida"
+                    "created": "2019-07-22T03:44:00.814Z"
+                    "updated": "2019-07-22T03:53:06.246Z"
+                    "utility":
+                      "id": 71
+                      "name": "Vespucio Sur"
+                      "identifier": "RUT, CON DIGITO VERIFICADOR"
+                "created": "2019-05-09T24:47:02.642887-03:00"
+                "updated": "2019-05-09T24:47:02.642887-03:00"
+        400:
+          description: invalid parameters
+        404:
+          description: resource not found
+        409:
+          description: conflict error
+        500:
+          description: internal server error
+
+  /v1/utility-payments/transactions/{id}:
+    get:
+      tags: 
+        - Transactions
+      summary: Obtiene los detalles de una transacción de pago de cuenta
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: Id de la transacción de pago de cuenta
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        404:
+          description: resource not found
+        500:
+          description: internal server error
+
+  /v1/utility-payments/favorites:
+    get:
+      tags: 
+        - Favorites
+      summary: Lista las cuentas favoritas de un usuario
+      parameters:
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Favorite'
+              example: 
+                - "id": 10,
+                  "identifier": "1123121"
+                  "utility":
+                    "id": 1
+                    "name": "Aguas Andinas"
+                    "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+                - "id": 11,
+                  "identifier": "123939393"
+                  "utility":
+                    "id": 2
+                    "name": "Entel"
+                    "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+    post:
+      tags: 
+        - Favorites
+      summary: Crea una cuenta favorita
+      parameters:
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteRequest'
+      responses:
+        200:
+          description: successful operation (already created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+              example:
+                "id": 10,
+                "identifier": "1123121"
+                "utility":
+                  "id": 1
+                  "name": "Aguas Andinas"
+                  "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+              example:
+                "id": 10,
+                "identifier": "1123121"
+                "utility":
+                  "id": 1
+                  "name": "Aguas Andinas"
+                  "identifier": "NRO CUENTA, CON DIGITO VERIFICADOR"
+        404:
+          description: utility not found
+        409:
+          description: favorites limit reached
+
+  /v1/utility-payments/favorites/{id}:
+    delete:
+      tags: 
+        - Favorites
+      summary: Elimina una cuenta favorita
+      parameters: 
+        - in: header
+          name: x-mine-user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: path
+          name: id
+          required: true
+          description: Id de la cuenta favorita
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: resource not found
+        500:
+          description: internal server error
+
+components:
+  schemas:
+
+    Utility:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Mundo Pacífico
+        identifier:
+          type: string
+          example: "RUT, CON DIGITO VERIFICADOR"
+        category:
+          $ref: '#/components/schemas/Category'
+    
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Agua
+        quantity:
+          type: integer
+          example: 14
+
+    Favorite:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        identifier:
+          type: string
+          example: 12345678
+        utility:
+          $ref: '#/components/schemas/Utility'
+    
+    UtilityBillRequest:
+      type: object
+      properties:
+        identifier:
+          type: string
+          example: 66823334
+
+    UtilityBillResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "fb7c3a5f-1db0-4ba0-ab72-a58db5f55f10"
+        status:
+          type: string
+          example: WAITING
+        identifier:
+          type: string
+          example: 66823334
+        amount: 
+          type: integer
+          example: 5467
+        due_date:
+          type: string
+          example: No disponible
+        description:
+          type: string
+          example: Deuda Total
+        created:
+          type: string
+          example: "2019-06-14T12:48:24.039-04:00"
+        updated:
+          type: string
+          example: "2019-06-14T12:48:24.039-04:00"
+        utility:
+          $ref: '#/components/schemas/Utility'
+
+    FavoriteRequest:
+      type: object
+      properties:
+        utility_id:
+          type: integer
+          example: 1
+        identifier:
+          type: string
+          example: "123123"
+    
+    TransactionRequest:
+      type: object
+      properties:
+        bills:
+          type: array
+          items:
+            type: string
+          example: 
+            - 0f052b43-1456-445a-9d24-8e71f7e0cdbe
+            - e41564e9-9ea8-4aac-8b2e-969e45631d35
+    
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 51d95fc6-58e9-4bb0-a622-031cf08edc9c
+        status:
+          type: string
+          example: WAITING
+        order:
+          type: string
+          example: 120190424105826006
+        user:
+          type: string
+          example: bdb7cd6d-dfca-4aee-82b0-4588e871ec79
+        amount:
+          type: integer
+          example: 7639
+        bills:
+          type: array
+          items:
+            $ref: '#/components/schemas/UtilityBillResponse'
+        created:
+          type: string
+          example: "2019-04-24T10:58:26.140605-04:00"
+        updated:
+          type: string
+          example: "2019-04-24T10:58:26.140605-04:00"

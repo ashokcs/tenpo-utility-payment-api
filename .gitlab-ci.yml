@@ -1,0 +1,182 @@
+stages:
+  - build
+  - docker
+  - consul
+  - deploy
+
+build:
+  stage: build
+  image: openjdk:8-alpine
+  variables:
+    GRADLE_USER_HOME: ~/.gradle
+  script:
+    - ./gradlew build -x test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .gradle
+      - build
+
+kiuwan:
+  stage: build
+  image: registry.gitlab.com/krealomine/deploy_docker_kiuwan:lastest
+  script:
+    - ${HOME}/KiuwanLocalAnalyzer/bin/agent.sh -n ${CI_PROJECT_NAME} -s ${CI_PROJECT_DIR} -l "GitLab build ${CI_JOB_ID}" -c --user ${KIUWAN_USER} --pass ${KIUWAN_PASSWD}
+  only:
+    - develop
+
+dev_docker:
+  stage: docker
+  image: docker:19
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script: 
+    - docker build -f ./docker/Dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .gradle
+      - build
+  only:
+    - develop
+
+dev_consul:
+  stage: consul
+  image: hashicorp/consul-template:alpine
+  environment:
+    name: dev
+  variables:
+    ENVIRONMENT: dev
+  script:
+    - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .gradle
+      - build
+      - .kube.secrets.yml
+  only:
+    - develop
+
+dev_secrets:
+  stage: deploy
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
+  environment:
+    name: dev
+  script:
+    - kubectl apply -f .kube.secrets.yml
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .kube.secrets.yml
+  only:
+    - develop
+
+dev_deployment:
+  stage: deploy
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure:latest
+  environment:
+    name: dev
+  variables:
+    ENVIRONMENT: dev
+    REGISTRY: tenpo-utility-payments-core-registry
+    NAMESPACE: tenpo-utility-payments
+    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+    INTERNAL_BALANCER: "false"
+  script:
+    - sed -i "s|_IMAGE_|$IMAGE|g" .kube.yml
+    - sed -i "s|_ENVIRONMENT_|$ENVIRONMENT|g" .kube.yml
+    - sed -i "s|_INTERNAL_BALANCER_|$INTERNAL_BALANCER|g" .kube.yml
+    - > 
+        kubectl create secret docker-registry $REGISTRY \
+          --namespace=$NAMESPACE \
+          --dry-run=true \
+          --docker-server=$CI_REGISTRY \
+          --docker-username=$CI_DEPLOY_USER \
+          --docker-password=$CI_DEPLOY_PASSWORD \
+          --docker-email=$GITLAB_USER_EMAIL -o yaml | kubectl apply -f -
+    - kubectl apply -f .kube.yml
+  only:
+    - develop
+
+uat_docker:
+  extends: dev_docker
+  only:
+    - uat
+
+uat_consul:
+  extends: dev_consul
+  environment:
+    name: uat
+  variables:
+    ENVIRONMENT: uat
+  only:
+    - uat
+
+uat_secrets:
+  extends: dev_secrets
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure_uat:latest
+  environment:
+    name: uat
+  only:
+    - uat
+
+uat_deployment:
+  extends: dev_deployment
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure_uat:latest
+  environment:
+    name: uat
+  variables:
+    ENVIRONMENT: uat
+    REGISTRY: tenpo-utility-payments-core-registry
+    NAMESPACE: tenpo-utility-payments
+    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+    INTERNAL_BALANCER: "true"
+  only:
+    - uat
+
+prod_docker:
+  extends: dev_docker
+  only:
+    - master
+
+prod_consul:
+  extends: dev_consul
+  environment:
+    name: prod
+  variables:
+    ENVIRONMENT: prod
+  script:
+    - export CONSUL_HTTP_ADDR=$CONSUL_HTTP_ADDR_PROD
+    - export CONSUL_HTTP_TOKEN=$CONSUL_HTTP_TOKEN_PROD
+    - /bin/consul-template -template ".kube.secrets.yml.tmpl:.kube.secrets.yml" -once
+  only:
+    - master
+
+prod_secrets:
+  extends: dev_secrets
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure_prod:latest
+  environment:
+    name: prod
+  only:
+    - master
+
+prod_deployment:
+  extends: dev_deployment
+  image: registry.gitlab.com/krealomine/deploy_k8s_azure_prod:latest
+  environment:
+    name: prod
+  variables:
+    ENVIRONMENT: prod
+    REGISTRY: tenpo-utility-payments-core-registry
+    NAMESPACE: tenpo-utility-payments
+    IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+    INTERNAL_BALANCER: "true"
+  only:
+    - master

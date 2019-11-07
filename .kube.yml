@@ -1,0 +1,123 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenpo-utility-payments
+  labels:
+    istio-injection: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenpo-utility-payments-core
+  namespace: tenpo-utility-payments
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: tenpo-utility-payments-core
+  template:
+    metadata:
+      namespace: tenpo-utility-payments
+      labels:
+        app: tenpo-utility-payments-core
+        version: v1
+    spec:
+      containers:
+        - name: tenpo-utility-payments-core
+          image: _IMAGE_
+          ports:
+            - containerPort: 80
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: _ENVIRONMENT_
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-core-secrets
+                  key: pg_host
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-core-secrets
+                  key: pg_user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-core-secrets
+                  key: pg_pass
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: tenpo-utility-payments-core-secrets
+                  key: pg_db
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: tenpo-utility-payments-core-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenpo-utility-payments-core-svc
+  namespace: tenpo-utility-payments
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "_INTERNAL_BALANCER_"
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: tenpo-utility-payments-core
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: tenpo-utility-payments-core-svc
+#   namespace: tenpo-utility-payments
+#   labels:
+#     app: tenpo-utility-payments-core
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#       protocol: TCP
+#       name: http
+#   selector:
+#     app: tenpo-utility-payments-core
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: ServiceEntry
+# metadata:
+#   name: tenpo-utility-payments-core-se-db
+#   namespace: tenpo-utility-payments
+# spec:
+#   hosts:
+#     - "*.database.azure.com"
+#   location: MESH_EXTERNAL
+#   ports:
+#     - number: 5432
+#       name: tcp-db
+#       protocol: TCP
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: ServiceEntry
+# metadata:
+#   name: tenpo-utility-payments-core-pdc
+#   namespace: tenpo-utility-payments
+# spec:
+#   hosts:
+#     - "*.multicaja.cl"
+#     - "*.mcdesaqa.cl"
+#     - "*.multicajadigital.cloud"
+#   location: MESH_EXTERNAL
+#   ports:
+#     - number: 443
+#       name: tcp-pdc
+#       protocol: TCP
