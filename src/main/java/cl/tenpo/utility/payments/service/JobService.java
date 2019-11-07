@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.entity.Job;
 import cl.tenpo.utility.payments.repository.JobRepository;
 
@@ -26,6 +28,7 @@ public class JobService
 		try {
 			return Optional.of(jobRepository.save(job));
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();

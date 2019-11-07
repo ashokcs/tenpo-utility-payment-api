@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.object.UserAccount;
 
 @Service
@@ -31,6 +33,7 @@ public class AccountMsClient
 			final UserAccount account = restTemplate.getForObject(url, UserAccount.class);
 			return Optional.of(account);
 		} catch (final HttpClientErrorException e) {
+			NewRelic.noticeError(e);
 			logger.error("{} - {}", e.getMessage(), e.getStatusCode());
 		}
 		return Optional.empty();

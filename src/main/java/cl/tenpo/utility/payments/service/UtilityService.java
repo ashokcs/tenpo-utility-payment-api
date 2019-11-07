@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.repository.CategoryRepository;
@@ -43,6 +45,7 @@ public class UtilityService
 					.filter(c -> !c.getName().equals("Efectivo"))
 					.collect(Collectors.toList());
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return new ArrayList<>();
@@ -57,6 +60,7 @@ public class UtilityService
 					.filter(c -> !c.getName().equals("Efectivo"))
 					.collect(Collectors.toList());
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return new ArrayList<>();
@@ -95,6 +99,7 @@ public class UtilityService
 //			});
 //			return utilities;
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return new ArrayList<>();
@@ -105,6 +110,7 @@ public class UtilityService
 		try {
 			return utilityRepository.findById(id);
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();
@@ -115,6 +121,7 @@ public class UtilityService
 		try {
 			return categoryRepository.findById(id);
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return Optional.empty();

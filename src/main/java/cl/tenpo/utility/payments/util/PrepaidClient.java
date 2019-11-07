@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.newrelic.api.agent.NewRelic;
 
 import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.BalanceResponse;
@@ -61,6 +62,7 @@ public class PrepaidClient
 				}
 			}
 		} catch (final Exception e) {
+			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
 		return res;
