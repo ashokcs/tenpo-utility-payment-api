@@ -139,7 +139,7 @@ public class UtilityService
 		if (category != null) {
 			if ("Cosmética".equals(category.getName())) category.setName("Venta por catálogo");
 			if ("Financiera".equals(category.getName())) category.setName("Créditos y tarjetas");
-			if ("Financiera".equals(category.getName())) category.setName("Telefonía y televisión");
+			if ("Telecomunicaciones".equals(category.getName())) category.setName("Telefonía y televisión");
 		}
 		return category;
 	}
