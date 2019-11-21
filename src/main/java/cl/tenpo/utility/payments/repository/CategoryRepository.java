@@ -8,5 +8,5 @@ import cl.tenpo.utility.payments.entity.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long>
 {
-	List<Category> findAllByStatusOrderByNameAsc(final String status);
+	List<Category> findAllByStatusOrderByOrderAsc(final String status);
 }

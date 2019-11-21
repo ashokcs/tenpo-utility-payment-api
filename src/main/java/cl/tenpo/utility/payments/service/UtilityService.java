@@ -39,7 +39,7 @@ public class UtilityService
 	public List<Category> findAllCategoriesWithCounter()
 	{
 		try {
-			return categoryRepository.findAllByStatusOrderByNameAsc(Category.ENABLED)
+			return categoryRepository.findAllByStatusOrderByOrderAsc(Category.ENABLED)
 					.stream()
 					.map(c -> c.setQuantity(utilityRepository.countByCategoryId(c.getId())))
 					.map(c -> replaceCategoryName(c))
@@ -56,7 +56,7 @@ public class UtilityService
 	public List<Category> findAllCategories()
 	{
 		try {
-			return categoryRepository.findAllByStatusOrderByNameAsc(Category.ENABLED)
+			return categoryRepository.findAllByStatusOrderByOrderAsc(Category.ENABLED)
 					.stream()
 					.filter(c -> !c.getName().equals("Efectivo"))
 					.collect(Collectors.toList());
@@ -139,6 +139,7 @@ public class UtilityService
 		if (category != null) {
 			if ("Cosmética".equals(category.getName())) category.setName("Venta por catálogo");
 			if ("Financiera".equals(category.getName())) category.setName("Créditos y tarjetas");
+			if ("Financiera".equals(category.getName())) category.setName("Telefonía y televisión");
 		}
 		return category;
 	}
