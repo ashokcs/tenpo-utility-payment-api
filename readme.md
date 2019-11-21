@@ -229,22 +229,22 @@ git tag --delete oti-v1.0.0
 - -- payment external_id to report
 - We need an endpoint from multicaja to check the transaction status (retry engine)
 - manejar reversa en timeout prepaid charge / endpoing charge prepaid debe ser idenpotente 
-- agregar tabla payment_method a bo
-- agregar user_id tabla bills en bo
+- -- agregar tabla payment_method a bo
+- -- agregar user_id tabla bills en bo
 - dejar expuesto solo el path management en virtual hosts
 - fix comments bo
 - subir a prod
 - modificar azure apis y poner url internas de ambientes
-- reports conciliacion
-- reports table
-- report trxs daily and monthly
+- -- reports conciliacion
+- -- reports table
+- -- report trxs daily and monthly
 - 
-- BO Roles
-- payment method prepaid
-- use domain tenpodigital
-- receipt endpoint (Receipt email look and feel)
-- Proceso clean transactions table (created, no childs)
-- Proceso expire waiting transactions
+- -- BO Roles
+- -- payment method prepaid
+- -- use domain tenpodigital
+- -- receipt endpoint (Receipt email look and feel)
+- -- Proceso clean transactions table (created, no childs)
+- -- Proceso expire waiting transactions
 - Testing
 - We need an endpoint from multicaja to check the transaction status
 - revisar TODOS
