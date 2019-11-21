@@ -42,6 +42,7 @@ public class UtilityService
 			return categoryRepository.findAllByStatusOrderByNameAsc(Category.ENABLED)
 					.stream()
 					.map(c -> c.setQuantity(utilityRepository.countByCategoryId(c.getId())))
+					.map(c -> replaceCategoryName(c))
 					.filter(c -> !c.getName().equals("Efectivo"))
 					.collect(Collectors.toList());
 		} catch (final Exception e) {
@@ -131,5 +132,14 @@ public class UtilityService
 	{
 		return Stream.of("CUPON_PAGO", "EMPRESA DE PRUEBAS", "FONASA", "RECAUDA_REDFACIL")
 				.collect(Collectors.toSet());
+	}
+
+	private Category replaceCategoryName(final Category category)
+	{
+		if (category != null) {
+			if ("Cosmética".equals(category.getName())) category.setName("Venta por catálogo");
+			if ("Financiera".equals(category.getName())) category.setName("Créditos y tarjetas");
+		}
+		return category;
 	}
 }
