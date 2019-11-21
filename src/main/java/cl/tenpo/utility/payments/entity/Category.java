@@ -1,5 +1,6 @@
 package cl.tenpo.utility.payments.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +29,8 @@ public class Category
 	@JsonIgnore
 	private String status;
 	private String name;
+	@Column(name = "order")
+	private Integer order;
 	private transient Long quantity;
 
 	public Long getId()
