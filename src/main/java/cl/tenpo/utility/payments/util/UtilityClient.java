@@ -123,6 +123,15 @@ public class UtilityClient
 							bills.add(tmp);
 							number++;
 						}
+						if (bills.size() == 2) {
+							if (bills.get(0).getDesc().equals(bills.get(1).getDesc())) {
+								if (bills.get(0).getAmount().compareTo(bills.get(1).getAmount()) >= 0) {
+									bills.get(0).setDesc("Deuda total");
+								} else {
+									bills.get(1).setDesc("Deuda total");
+								}
+							}
+						}
 					}
 				}
 			}
