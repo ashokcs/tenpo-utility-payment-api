@@ -23,6 +23,9 @@ import cl.tenpo.utility.payments.util.Utils;
 })
 public class Utility
 {
+	public static final String ENABLED  = "ENABLED";
+	public static final String DISABLED = "DISABLED";
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("id")
