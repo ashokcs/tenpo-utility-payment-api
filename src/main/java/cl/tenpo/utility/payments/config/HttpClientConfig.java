@@ -23,9 +23,9 @@ public class HttpClientConfig
         final Builder configBuilder = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
                 .setExpectContinueEnabled(true)
-                .setSocketTimeout(15000)
-                .setConnectTimeout(15000)
-                .setConnectionRequestTimeout(15000);
+                .setSocketTimeout(25000)
+                .setConnectTimeout(25000)
+                .setConnectionRequestTimeout(25000);
         final RequestConfig defaultRequestConfig = configBuilder.build();
 
 		final HttpClientBuilder builder = HttpClients.custom();
