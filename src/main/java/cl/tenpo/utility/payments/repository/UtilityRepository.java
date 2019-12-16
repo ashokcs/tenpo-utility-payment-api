@@ -8,7 +8,6 @@ import cl.tenpo.utility.payments.entity.Utility;
 
 public interface UtilityRepository extends JpaRepository<Utility, Long>
 {
-	List<Utility> findAllByOrderByIdAsc();
-	List<Utility> findAllByCategoryIdOrderByIdAsc(final Long categoryId);
+	List<Utility> findAllByCategoryIdAndStatusOrderByIdAsc(final Long categoryId, final String status);
 	long countByCategoryId(final Long categoryId);
 }

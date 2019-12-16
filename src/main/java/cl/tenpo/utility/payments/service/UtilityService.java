@@ -82,7 +82,7 @@ public class UtilityService
 	public List<Utility> findAllUtilitiesByCategoryId(final Long categoryId)
 	{
 		try {
-			return utilityRepository.findAllByCategoryIdOrderByIdAsc(categoryId).stream()
+			return utilityRepository.findAllByCategoryIdAndStatusOrderByIdAsc(categoryId, Utility.ENABLED).stream()
 					.filter(utility -> !filtered().contains(utility.getCode()))
 					.collect(Collectors.toList());
 //			final List<UtilitiesResponse> utilities = new ArrayList<>();
