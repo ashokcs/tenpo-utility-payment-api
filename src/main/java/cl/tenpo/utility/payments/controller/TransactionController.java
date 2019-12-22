@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newrelic.api.agent.NewRelic;
+
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Job;
 import cl.tenpo.utility.payments.entity.Payment;
@@ -73,6 +75,12 @@ public class TransactionController
 		@RequestBody @Valid final TransactionRequest request,
 		@RequestHeader(value="x-mine-user-id") final UUID userId
 	){
+		// check nats status
+		if (natsService.isNatsDisconnected()) {
+			NewRelic.noticeError("Nats Unavailable");
+			throw Http.ServiceUnavailable();
+		}
+		
 		// check duplicates ids
 		final Optional<UUID> duplicated = getDuplicatedBillId(request.getBills());
 		if (duplicated.isPresent()) {
