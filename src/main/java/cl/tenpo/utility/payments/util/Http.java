@@ -128,4 +128,9 @@ public class Http
 	{
 		return ex(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	public static ResponseStatusException ServiceUnavailable()
+	{
+		return ex(HttpStatus.SERVICE_UNAVAILABLE);
+	}
 }
