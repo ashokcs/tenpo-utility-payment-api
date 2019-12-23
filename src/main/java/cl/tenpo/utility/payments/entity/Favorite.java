@@ -26,6 +26,7 @@ public class Favorite
 	@JsonIgnore
 	@Column(name = "\"user\"")
 	private UUID user;
+	private String name;
 	private String identifier;
 	@JsonIgnore
 	private OffsetDateTime created;
@@ -53,6 +54,14 @@ public class Favorite
 
 	public void setUser(final UUID user) {
 		this.user = user;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getIdentifier() {
