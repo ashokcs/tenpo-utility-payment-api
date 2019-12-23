@@ -77,6 +77,12 @@ public class FavoriteController
 			favorite.setUser(user);
 			favorite.setUtility(utility);
 			favorite.setIdentifier(request.getIdentifier());
+			if (request.getName() != null) {
+				final String name = request.getName().trim().replaceAll(" +", " ");
+				if (name.matches("[A-Za-z0-9\\sáéíóúñüÁÉÍÓÚÑÜ]{3,20}")) {
+					favorite.setName(name);
+				}
+			}
 			favoriteRepository.save(favorite);
 			return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
 		}
