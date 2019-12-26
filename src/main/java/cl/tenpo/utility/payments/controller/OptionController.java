@@ -34,4 +34,31 @@ public class OptionController
 			return ResponseEntity.notFound().build();
 		}
 	}
+
+	/*
+	@PutMapping("/v1/utility-payments/options")
+	public ResponseEntity<?> optionsUpdate(
+		@RequestHeader(value="x-mine-user-id") final UUID userId
+		@RequestBody)
+	{
+		final Optional<Option> optional = optionRepository.findByUser(userId);
+		if (optional.isPresent()) {
+			final Option tmp = optional.get();
+			tmp.setRemind(true);
+			tmp.setSuggest(true);
+			tmp.setRemindFrequency(0);
+			optionRepository.save(tmp);
+			return ResponseEntity.ok(tmp);
+		} else {
+			final Option tmp = new Option();
+			tmp.setUser(userId);
+			tmp.setRemind(true);
+			tmp.setSuggest(true);
+			tmp.setRemindFrequency(0);
+			tmp.setCreated(OffsetDateTime.now());
+			optionRepository.save(tmp);
+			return ResponseEntity.ok(tmp);
+		}
+	}
+	*/
 }
