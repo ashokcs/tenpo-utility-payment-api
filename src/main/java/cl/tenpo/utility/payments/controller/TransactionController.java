@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.newrelic.api.agent.NewRelic;
 
 import cl.tenpo.utility.payments.entity.Bill;
+import cl.tenpo.utility.payments.entity.Favorite;
 import cl.tenpo.utility.payments.entity.Job;
 import cl.tenpo.utility.payments.entity.Payment;
 import cl.tenpo.utility.payments.entity.PaymentMethod;
@@ -26,6 +27,7 @@ import cl.tenpo.utility.payments.entity.Transaction;
 import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.TransactionRequest;
 import cl.tenpo.utility.payments.object.UserAccount;
+import cl.tenpo.utility.payments.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
 import cl.tenpo.utility.payments.service.NatsService;
@@ -41,6 +43,7 @@ import cl.tenpo.utility.payments.util.Properties;
 public class TransactionController
 {
 	private final BillService billService;
+	private final FavoriteRepository favoriteRepository;
 	private final JobService jobService;
 	private final NatsService natsService;
 	private final PaymentService paymentService;
@@ -51,6 +54,7 @@ public class TransactionController
 
 	public TransactionController(
 		final BillService billService,
+		final FavoriteRepository favoriteRepository,
 		final JobService jobService,
 		final NatsService natsService,
 		final PaymentService paymentService,
@@ -60,6 +64,7 @@ public class TransactionController
 		final TransactionService transactionService
 	){
 		this.billService = billService;
+		this.favoriteRepository = favoriteRepository;
 		this.jobService = jobService;
 		this.natsService = natsService;
 		this.paymentService = paymentService;
@@ -80,7 +85,7 @@ public class TransactionController
 			NewRelic.noticeError("Nats Unavailable");
 			throw Http.ServiceUnavailable();
 		}
-		
+
 		// check duplicates ids
 		final Optional<UUID> duplicated = getDuplicatedBillId(request.getBills());
 		if (duplicated.isPresent()) {
@@ -146,6 +151,14 @@ public class TransactionController
 
 		// fire event
 		natsService.publish(properties.natsTransactionCreated, transaction.getId().toString().getBytes());
+
+		// find favorite names
+		transaction.getBills().forEach(b -> {
+			final Optional<Favorite> fav = favoriteRepository.findByUserAndUtilityIdAndIdentifier(userId, b.getUtilityId(), b.getIdentifier());
+			if (fav.isPresent()) {
+				b.setName(fav.get().getName());
+			}
+		});
 
 		// return transaction
 		return transaction;
