@@ -27,7 +27,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "authorization_code",
     "created",
     "updated",
-    "utility"
+    "utility",
+    "name"
 })
 public class Bill
 {
@@ -73,6 +74,9 @@ public class Bill
 
 	@Transient
 	private Utility utility;
+
+	@Transient
+	private String name;
 
 	@PrePersist
 	private void prePersist()
@@ -265,5 +269,13 @@ public class Bill
 
 	public void setUtility(final Utility utility) {
 		this.utility = utility;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
 	}
 }
