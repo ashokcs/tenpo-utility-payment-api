@@ -1,9 +1,9 @@
 package cl.tenpo.utility.payments.controller;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +28,17 @@ public class WelcomeController
 	@PostMapping("/v1/utility-payments/welcome")
 	public ResponseEntity<?> welcome(@RequestHeader(value="x-mine-user-id") final UUID userId)
 	{
-		if (welcomeRepository.findByUser(userId).isPresent() == false) {
+		final Optional<Welcome> opt = welcomeRepository.findByUser(userId);
+		if (opt.isPresent()) {
+			final Welcome welcome = opt.get();
+			welcome.setVisits(welcome.getVisits()+1);
+			return ResponseEntity.ok(welcomeRepository.save(welcome));
+		} else {
 			final Welcome welcome = new Welcome();
 			welcome.setUser(userId);
 			welcome.setCreated(OffsetDateTime.now());
-			welcomeRepository.save(welcome);
-			return ResponseEntity.status(HttpStatus.CREATED).build();
-		} else {
-			return ResponseEntity.ok().build();
+			welcome.setVisits(1);
+			return ResponseEntity.ok(welcomeRepository.save(welcome));
 		}
 	}
 }
