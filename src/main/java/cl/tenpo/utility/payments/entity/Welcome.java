@@ -10,14 +10,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "welcome")
 public class Welcome
 {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
+	@JsonIgnore
 	@Column(name = "\"user\"") private UUID user;
+	private Integer visits;
+	@JsonIgnore
 	private OffsetDateTime created;
 
 	public Long getId() {
@@ -42,5 +48,13 @@ public class Welcome
 
 	public void setCreated(final OffsetDateTime created) {
 		this.created = created;
+	}
+
+	public Integer getVisits() {
+		return visits;
+	}
+
+	public void setVisits(final Integer visits) {
+		this.visits = visits;
 	}
 }
