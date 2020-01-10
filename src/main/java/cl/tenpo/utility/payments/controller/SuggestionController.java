@@ -32,7 +32,7 @@ public class SuggestionController
 	@GetMapping("/v1/utility-payments/suggestions")
 	public List<Suggestion> suggestions(@RequestHeader(value="x-mine-user-id") final UUID userId)
 	{
-		final List<Suggestion> suggestions = suggestionRepository.findAllByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(
+		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(
 				userId, Suggestion.ENABLED, OffsetDateTime.now());
 		suggestions.forEach(s -> {
 			s.setUtility(utilityRepository.findById(s.getUtilityId()).get());
