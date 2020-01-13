@@ -2,6 +2,7 @@ package cl.tenpo.utility.payments.repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,5 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, Long>
 {
 	public List<Suggestion> findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(final UUID user, final String status, final OffsetDateTime expired);
 	public List<Suggestion> findAllByUserAndUtilityIdAndIdentifier(final UUID user, final Long utilityId, final String identifier);
+	public Optional<Suggestion> findByUserAndId(final UUID user, final Long id);
 }
