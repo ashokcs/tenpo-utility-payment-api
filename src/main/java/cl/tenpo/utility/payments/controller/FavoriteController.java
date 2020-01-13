@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Favorite;
+import cl.tenpo.utility.payments.entity.Suggestion;
 import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.object.FavoriteRequest;
 import cl.tenpo.utility.payments.repository.FavoriteRepository;
+import cl.tenpo.utility.payments.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
 
@@ -30,13 +32,16 @@ import cl.tenpo.utility.payments.util.Http;
 public class FavoriteController
 {
 	private final FavoriteRepository favoriteRepository;
+	private final SuggestionRepository suggestionRepository;
 	private final UtilityService utilityService;
 
 	public FavoriteController(
 		final FavoriteRepository favoriteRepository,
+		final SuggestionRepository suggestionRepository,
 		final UtilityService utilityService
 	){
 		this.favoriteRepository = favoriteRepository;
+		this.suggestionRepository = suggestionRepository;
 		this.utilityService = utilityService;
 	}
 
@@ -73,6 +78,7 @@ public class FavoriteController
 		if (fav.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(fav.get());
 		} else {
+			// save favorite
 			final Favorite favorite = new Favorite();
 			favorite.setUser(user);
 			favorite.setUtility(utility);
@@ -84,6 +90,19 @@ public class FavoriteController
 				}
 			}
 			favoriteRepository.save(favorite);
+
+			// remove suggestions
+			final List<Suggestion> suggestions = suggestionRepository.findAllByUserAndUtilityIdAndIdentifier(user, request.getUtilityId(), request.getIdentifier());
+			if (suggestions != null && !suggestions.isEmpty()) {
+				suggestions.forEach(s -> {
+					if (Suggestion.ENABLED.equals(s.getStatus())) {
+						s.setStatus(Suggestion.DISABLED);
+						suggestionRepository.save(s);
+					}
+				});
+			}
+
+			// return created
 			return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
 		}
 	}
