@@ -145,7 +145,7 @@ public class UtilityController
 		}).collect(Collectors.toList());
 
 		// get suggestions
-		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(
+		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(
 				user, Suggestion.ENABLED, OffsetDateTime.now());
 		suggestions.forEach(s -> {
 			s.setUtility(utilityRepository.findById(s.getUtilityId()).get());
