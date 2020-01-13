@@ -1,9 +1,12 @@
 package cl.tenpo.utility.payments.controller;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -19,9 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.tenpo.utility.payments.entity.Bill;
 import cl.tenpo.utility.payments.entity.Category;
+import cl.tenpo.utility.payments.entity.Favorite;
+import cl.tenpo.utility.payments.entity.Suggestion;
 import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.object.HomeResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
+import cl.tenpo.utility.payments.repository.FavoriteRepository;
+import cl.tenpo.utility.payments.repository.SuggestionRepository;
+import cl.tenpo.utility.payments.repository.UtilityRepository;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
@@ -34,15 +43,24 @@ public class UtilityController
 	private final BillService billService;
 	private final UtilityClient utilityClient;
 	private final UtilityService utilityService;
+	private final SuggestionRepository suggestionRepository;
+	private final UtilityRepository utilityRepository;
+	private final FavoriteRepository favoriteRepository;
 
 	public UtilityController(
 		final BillService billService,
 		final UtilityClient utilityClient,
-		final UtilityService utilityService
+		final UtilityService utilityService,
+		final FavoriteRepository favoriteRepository,
+		final SuggestionRepository suggestionRepository,
+		final UtilityRepository utilityRepository
 	) {
 		this.billService = billService;
 		this.utilityClient = utilityClient;
 		this.utilityService = utilityService;
+		this.favoriteRepository = favoriteRepository;
+		this.suggestionRepository = suggestionRepository;
+		this.utilityRepository = utilityRepository;
 	}
 
 	@GetMapping("/v1/utility-payments/categories")
@@ -110,5 +128,29 @@ public class UtilityController
 	public String utilities()
 	{
 		return utilityClient.getUtilities().orElseThrow(Http::ServerError);
+	}
+
+	@GetMapping("/v1/utility-payments/home")
+	public HomeResponse home(@RequestHeader("x-mine-user-id") final UUID user)
+	{
+		// get categories and generate map
+		final Map<Long, Category> categories = utilityService
+				.findAllCategories().stream()
+				.collect(Collectors.toMap(c -> c.getId(), c -> c));
+
+		// get favorites and add category
+		final List<Favorite> favorites = favoriteRepository.findFirst20ByUserOrderById(user).stream().map(f -> {
+			f.getUtility().setCategory(categories.get(f.getUtility().getCategoryId()));
+			return f;
+		}).collect(Collectors.toList());
+
+		// get suggestions
+		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(
+				user, Suggestion.ENABLED, OffsetDateTime.now());
+		suggestions.forEach(s -> {
+			s.setUtility(utilityRepository.findById(s.getUtilityId()).get());
+		});
+
+		return new HomeResponse(favorites, suggestions);
 	}
 }
