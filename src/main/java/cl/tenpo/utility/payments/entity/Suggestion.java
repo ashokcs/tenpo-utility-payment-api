@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -21,7 +23,6 @@ public class Suggestion
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@JsonIgnore
 	private String status;
@@ -35,6 +36,7 @@ public class Suggestion
 	@JsonIgnore
 	private OffsetDateTime created;
 	@JsonIgnore
+	@UpdateTimestamp
 	private OffsetDateTime updated;
 	@JsonIgnore
 	private OffsetDateTime expired;
