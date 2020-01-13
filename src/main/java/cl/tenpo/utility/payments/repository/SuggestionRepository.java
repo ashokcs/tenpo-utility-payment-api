@@ -10,5 +10,6 @@ import cl.tenpo.utility.payments.entity.Suggestion;
 
 public interface SuggestionRepository extends JpaRepository<Suggestion, Long>
 {
-	List<Suggestion> findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(final UUID user, final String status, final OffsetDateTime expired);
+	public List<Suggestion> findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedDesc(final UUID user, final String status, final OffsetDateTime expired);
+	public List<Suggestion> findAllByUserAndUtilityIdAndIdentifier(final UUID user, final Long utilityId, final String identifier);
 }
