@@ -120,7 +120,7 @@ public class FavoriteController
 		return ResponseEntity.of(Optional.empty());
 	}
 
-	@DeleteMapping("/v1/utility-payments/favorites")
+	@PostMapping("/v1/utility-payments/favorites/delete")
 	public ResponseEntity<Favorite> deleteMultiple(
 		@RequestHeader("x-mine-user-id") final UUID user,
 		@RequestBody final DeleteFavoriteRequest deleteFavoriteRequest
