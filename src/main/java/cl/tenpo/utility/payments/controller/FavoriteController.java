@@ -22,6 +22,7 @@ import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Favorite;
 import cl.tenpo.utility.payments.entity.Suggestion;
 import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.object.DeleteFavoriteRequest;
 import cl.tenpo.utility.payments.object.FavoriteRequest;
 import cl.tenpo.utility.payments.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.repository.SuggestionRepository;
@@ -117,5 +118,19 @@ public class FavoriteController
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.of(Optional.empty());
+	}
+
+	@DeleteMapping("/v1/utility-payments/favorites")
+	public ResponseEntity<Favorite> deleteMultiple(
+		@RequestHeader("x-mine-user-id") final UUID user,
+		@RequestBody final DeleteFavoriteRequest deleteFavoriteRequest
+	){
+		for (final Long favorite : deleteFavoriteRequest.getFavorites()) {
+			final Optional<Favorite> fav = favoriteRepository.findByUserAndId(user, favorite);
+			if (fav.isPresent()) {
+				favoriteRepository.delete(fav.get());
+			}
+		}
+		return ResponseEntity.ok().build();
 	}
 }
