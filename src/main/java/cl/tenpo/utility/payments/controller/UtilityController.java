@@ -28,12 +28,14 @@ import cl.tenpo.utility.payments.entity.Utility;
 import cl.tenpo.utility.payments.object.HomeResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
+import cl.tenpo.utility.payments.repository.BillRepository;
 import cl.tenpo.utility.payments.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.repository.UtilityRepository;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
+import cl.tenpo.utility.payments.util.Properties;
 import cl.tenpo.utility.payments.util.UtilityClient;
 
 @RestController
@@ -41,26 +43,32 @@ import cl.tenpo.utility.payments.util.UtilityClient;
 public class UtilityController
 {
 	private final BillService billService;
+	private final BillRepository billRepository;
 	private final UtilityClient utilityClient;
 	private final UtilityService utilityService;
 	private final SuggestionRepository suggestionRepository;
 	private final UtilityRepository utilityRepository;
 	private final FavoriteRepository favoriteRepository;
+	private final Properties properties;
 
 	public UtilityController(
 		final BillService billService,
+		final BillRepository billRepository,
 		final UtilityClient utilityClient,
 		final UtilityService utilityService,
 		final FavoriteRepository favoriteRepository,
 		final SuggestionRepository suggestionRepository,
-		final UtilityRepository utilityRepository
+		final UtilityRepository utilityRepository,
+		final Properties properties
 	) {
 		this.billService = billService;
+		this.billRepository = billRepository;
 		this.utilityClient = utilityClient;
 		this.utilityService = utilityService;
 		this.favoriteRepository = favoriteRepository;
 		this.suggestionRepository = suggestionRepository;
 		this.utilityRepository = utilityRepository;
+		this.properties = properties;
 	}
 
 	@GetMapping("/v1/utility-payments/categories")
@@ -83,6 +91,8 @@ public class UtilityController
 		@PathVariable("id") final long utilityId,
 		@RequestBody @Valid final UtilityBillsRequest request
 	){
+		final List<Bill> result = new ArrayList<>();
+
 		// get request parameters
 		final Utility utility = utilityService.findUtilityById(utilityId).orElseThrow(Http::NotFound);
 		final Category category = utilityService.findCategoryById(utility.getCategoryId()).orElseThrow(Http::NotFound);
@@ -91,8 +101,13 @@ public class UtilityController
 		final String utilityCollector = utility.getCollectorId();
 		final String utilityIdentifier = request.getIdentifier();
 
+		// if recently paid return no debts
+		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(properties.billsRecentlyPaidMinusMinutes);
+		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndStatusAndCreatedGreaterThanOrderByCreatedDesc(
+				utilityIdentifier, utility.getId(), userId, Bill.SUCCEEDED, created);
+		if (opt.isPresent()) return result;
+
 		// get bills and save
-		final List<Bill> result = new ArrayList<>();
 		for (final UtilityBillItem mcb : utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier)) {
 			final Bill bill = new Bill();
 			bill.setStatus(Bill.CREATED);
