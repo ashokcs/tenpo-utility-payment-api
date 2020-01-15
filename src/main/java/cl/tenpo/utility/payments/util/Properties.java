@@ -24,4 +24,7 @@ public class Properties
 
 	/* account-ms */
 	@Value("${account-ms.account.url}") public String accountMsUrl;
+
+	/* bills */
+	@Value("${bills.recently-paid.minus-minutes}") public Long billsRecentlyPaidMinusMinutes;
 }
