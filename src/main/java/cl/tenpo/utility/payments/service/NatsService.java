@@ -20,10 +20,10 @@ public class NatsService
 	{
 		this.streamingConnection = streamingConnection;
 	}
-	
+
 	public boolean isNatsConnected()
 	{
-		if ((streamingConnection != null) && (streamingConnection.getNatsConnection() != null) 
+		if ((streamingConnection != null) && (streamingConnection.getNatsConnection() != null)
 				&& Connection.Status.CONNECTED.equals(streamingConnection.getNatsConnection().getStatus())) {
 			return true;
 		}
