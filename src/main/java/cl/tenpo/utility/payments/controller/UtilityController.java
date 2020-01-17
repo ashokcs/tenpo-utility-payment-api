@@ -107,22 +107,32 @@ public class UtilityController
 				utilityIdentifier, utility.getId(), userId, Bill.SUCCEEDED, created);
 		if (opt.isPresent()) return result;
 
-		// get bills and save
-		for (final UtilityBillItem mcb : utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier)) {
-			final Bill bill = new Bill();
-			bill.setStatus(Bill.CREATED);
-			bill.setUser(userId);
-			bill.setUtilityId(utility.getId());
-			bill.setIdentifier(utilityIdentifier);
-			bill.setDueDate(mcb.getDueDate());
-			bill.setDescription(mcb.getDesc());
-			bill.setAmount(mcb.getAmount());
-			bill.setQueryId(mcb.getDebtDataId());
-			bill.setQueryOrder(mcb.getOrder());
-			bill.setQueryTransactionId(mcb.getMcCode());
-			billService.save(bill).orElseThrow(Http::ServerError);
-			bill.setUtility(utility);
-			result.add(bill);
+		// get bills
+		final List<UtilityBillItem> bills = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
+
+		// check if same amount
+		if (!bills.isEmpty() && bills.size() == 2) {
+			if (bills.get(0).getAmount().equals(bills.get(1).getAmount())) {
+				bills.remove(1);
+			}
+		}
+
+		// save bills
+		for (final UtilityBillItem bill : bills) {
+			final Bill tmp = new Bill();
+			tmp.setStatus(Bill.CREATED);
+			tmp.setUser(userId);
+			tmp.setUtilityId(utility.getId());
+			tmp.setIdentifier(utilityIdentifier);
+			tmp.setDueDate(bill.getDueDate());
+			tmp.setDescription(bill.getDesc());
+			tmp.setAmount(bill.getAmount());
+			tmp.setQueryId(bill.getDebtDataId());
+			tmp.setQueryOrder(bill.getOrder());
+			tmp.setQueryTransactionId(bill.getMcCode());
+			billService.save(tmp).orElseThrow(Http::ServerError);
+			tmp.setUtility(utility);
+			result.add(tmp);
 		}
 		return result;
 	}
