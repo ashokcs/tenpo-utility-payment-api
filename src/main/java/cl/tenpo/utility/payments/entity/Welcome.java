@@ -23,6 +23,7 @@ public class Welcome
 	@JsonIgnore
 	@Column(name = "\"user\"") private UUID user;
 	private Integer visits;
+	private Integer tos;
 	@JsonIgnore
 	private OffsetDateTime created;
 
@@ -56,5 +57,13 @@ public class Welcome
 
 	public void setVisits(final Integer visits) {
 		this.visits = visits;
+	}
+
+	public Integer getTos() {
+		return tos;
+	}
+
+	public void setTos(final Integer tos) {
+		this.tos = tos;
 	}
 }
