@@ -38,7 +38,21 @@ public class WelcomeController
 			welcome.setUser(userId);
 			welcome.setCreated(OffsetDateTime.now());
 			welcome.setVisits(1);
+			welcome.setTos(0);
 			return ResponseEntity.ok(welcomeRepository.save(welcome));
 		}
+	}
+
+	@PostMapping("/v1/utility-payments/welcome/tos")
+	public ResponseEntity<?> tos(@RequestHeader(value="x-mine-user-id") final UUID userId)
+	{
+		final Optional<Welcome> opt = welcomeRepository.findByUser(userId);
+		if (opt.isPresent()) {
+			final Welcome welcome = opt.get();
+			welcome.setTos(1);
+			welcomeRepository.save(welcome);
+			return ResponseEntity.ok(welcome);
+		}
+		return ResponseEntity.notFound().build();
 	}
 }
