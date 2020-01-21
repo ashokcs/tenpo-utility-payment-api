@@ -41,4 +41,17 @@ public class WelcomeController
 			return ResponseEntity.ok(welcomeRepository.save(welcome));
 		}
 	}
+
+	@PostMapping("/v1/utility-payments/welcome/tos")
+	public ResponseEntity<?> tos(@RequestHeader(value="x-mine-user-id") final UUID userId)
+	{
+		final Optional<Welcome> opt = welcomeRepository.findByUser(userId);
+		if (opt.isPresent()) {
+			final Welcome welcome = opt.get();
+			welcome.setTos(1);
+			welcomeRepository.save(welcome);
+			return ResponseEntity.ok(welcome);
+		}
+		return ResponseEntity.notFound().build();
+	}
 }
