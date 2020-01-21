@@ -38,6 +38,7 @@ public class WelcomeController
 			welcome.setUser(userId);
 			welcome.setCreated(OffsetDateTime.now());
 			welcome.setVisits(1);
+			welcome.setTos(0);
 			return ResponseEntity.ok(welcomeRepository.save(welcome));
 		}
 	}
