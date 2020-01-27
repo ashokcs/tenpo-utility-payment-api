@@ -25,6 +25,7 @@ import cl.tenpo.utility.payments.entity.Category;
 import cl.tenpo.utility.payments.entity.Favorite;
 import cl.tenpo.utility.payments.entity.Suggestion;
 import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.entity.Welcome;
 import cl.tenpo.utility.payments.object.HomeResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
@@ -32,6 +33,7 @@ import cl.tenpo.utility.payments.repository.BillRepository;
 import cl.tenpo.utility.payments.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.repository.UtilityRepository;
+import cl.tenpo.utility.payments.repository.WelcomeRepository;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
@@ -50,6 +52,7 @@ public class UtilityController
 	private final UtilityRepository utilityRepository;
 	private final FavoriteRepository favoriteRepository;
 	private final Properties properties;
+	private final WelcomeRepository welcomeRepository;
 
 	public UtilityController(
 		final BillService billService,
@@ -59,7 +62,8 @@ public class UtilityController
 		final FavoriteRepository favoriteRepository,
 		final SuggestionRepository suggestionRepository,
 		final UtilityRepository utilityRepository,
-		final Properties properties
+		final Properties properties,
+		final WelcomeRepository welcomeRepository
 	) {
 		this.billService = billService;
 		this.billRepository = billRepository;
@@ -69,6 +73,7 @@ public class UtilityController
 		this.suggestionRepository = suggestionRepository;
 		this.utilityRepository = utilityRepository;
 		this.properties = properties;
+		this.welcomeRepository = welcomeRepository;
 	}
 
 	@GetMapping("/v1/utility-payments/categories")
@@ -170,12 +175,25 @@ public class UtilityController
 		}).collect(Collectors.toList());
 
 		// get suggestions
-		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(
-				user, Suggestion.ENABLED, OffsetDateTime.now());
-		suggestions.forEach(s -> {
-			s.setUtility(utilityRepository.findById(s.getUtilityId()).get());
-		});
+		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(user, Suggestion.ENABLED, OffsetDateTime.now());
+		suggestions.forEach(s -> {s.setUtility(utilityRepository.findById(s.getUtilityId()).get());});
 
-		return new HomeResponse(favorites, suggestions);
+		// get tos/welcome
+		final Optional<Welcome> opt = welcomeRepository.findByUser(user);
+		final Welcome welcome;
+		if (opt.isPresent()) {
+			welcome = opt.get();
+			welcome.setVisits(welcome.getVisits()+1);
+			welcomeRepository.save(welcome);
+		} else {
+			welcome = new Welcome();
+			welcome.setUser(user);
+			welcome.setCreated(OffsetDateTime.now());
+			welcome.setVisits(1);
+			welcome.setTos(0);
+			welcomeRepository.save(welcome);
+		}
+
+		return new HomeResponse(favorites, suggestions, welcome);
 	}
 }
