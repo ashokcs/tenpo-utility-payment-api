@@ -25,6 +25,7 @@ public class WelcomeController
 		this.welcomeRepository = welcomeRepository;
 	}
 
+	@Deprecated
 	@PostMapping("/v1/utility-payments/welcome")
 	public ResponseEntity<?> welcome(@RequestHeader(value="x-mine-user-id") final UUID userId)
 	{
