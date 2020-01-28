@@ -133,6 +133,8 @@ public class UtilityClient
 							}
 						}
 					}
+				} else {
+					NewRelic.noticeError("MULTICAJA PDC API: " + response.getStatusLine());
 				}
 			}
 		} catch (final Exception e) {
