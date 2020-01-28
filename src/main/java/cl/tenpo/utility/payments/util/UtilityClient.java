@@ -132,6 +132,9 @@ public class UtilityClient
 								}
 							}
 						}
+						if (bills.size() == 1) {
+							bills.get(0).setDesc("Deuda por pagar");
+						}
 					}
 				} else {
 					NewRelic.noticeError("MULTICAJA PDC API: " + response.getStatusLine());
