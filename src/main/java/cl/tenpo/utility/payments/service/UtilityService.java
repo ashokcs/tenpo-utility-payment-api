@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.newrelic.api.agent.NewRelic;
 
-import cl.tenpo.utility.payments.entity.Category;
-import cl.tenpo.utility.payments.entity.Utility;
-import cl.tenpo.utility.payments.repository.CategoryRepository;
-import cl.tenpo.utility.payments.repository.UtilityRepository;
+import cl.tenpo.utility.payments.jpa.entity.Category;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.repository.CategoryRepository;
+import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 
 @Service
 public class UtilityService

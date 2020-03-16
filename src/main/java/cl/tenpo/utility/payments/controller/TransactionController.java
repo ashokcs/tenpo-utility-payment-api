@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.newrelic.api.agent.NewRelic;
 
-import cl.tenpo.utility.payments.entity.Bill;
-import cl.tenpo.utility.payments.entity.Favorite;
-import cl.tenpo.utility.payments.entity.Job;
-import cl.tenpo.utility.payments.entity.Payment;
-import cl.tenpo.utility.payments.entity.PaymentMethod;
-import cl.tenpo.utility.payments.entity.Transaction;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Job;
+import cl.tenpo.utility.payments.jpa.entity.Payment;
+import cl.tenpo.utility.payments.jpa.entity.PaymentMethod;
+import cl.tenpo.utility.payments.jpa.entity.Transaction;
+import cl.tenpo.utility.payments.jpa.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.TransactionRequest;
 import cl.tenpo.utility.payments.object.UserAccount;
-import cl.tenpo.utility.payments.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.JobService;
 import cl.tenpo.utility.payments.service.NatsService;

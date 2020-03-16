@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.repository;
+package cl.tenpo.utility.payments.jpa.repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import cl.tenpo.utility.payments.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
 
 public interface BillRepository extends JpaRepository<Bill, UUID>
 {

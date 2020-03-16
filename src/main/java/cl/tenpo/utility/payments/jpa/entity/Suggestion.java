@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.entity;
+package cl.tenpo.utility.payments.jpa.entity;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -8,37 +8,40 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "favorites")
-@NamedEntityGraph(name = "joined", includeAllAttributes = true)
-public class Favorite
+@Table(name = "suggestions")
+public class Suggestion
 {
+	public static final String ENABLED  = "ENABLED";
+	public static final String DISABLED = "DISABLED";
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@JsonIgnore
+	private String status;
+	@JsonIgnore
 	@Column(name = "\"user\"")
 	private UUID user;
-	private String name;
+	@JsonIgnore
+	private Long utilityId;
 	private String identifier;
+	private Long amount;
 	@JsonIgnore
 	private OffsetDateTime created;
+	@JsonIgnore
+	@UpdateTimestamp
+	private OffsetDateTime updated;
+	@JsonIgnore
+	private OffsetDateTime expired;
 
-	@OneToOne
-	private Utility utility;
-
-	@PrePersist
-	private void prePersist()
-	{
-		created = OffsetDateTime.now();
-	}
+	private transient Utility utility;
 
 	public Long getId() {
 		return id;
@@ -46,6 +49,14 @@ public class Favorite
 
 	public void setId(final Long id) {
 		this.id = id;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(final String status) {
+		this.status = status;
 	}
 
 	public UUID getUser() {
@@ -56,12 +67,12 @@ public class Favorite
 		this.user = user;
 	}
 
-	public String getName() {
-		return name;
+	public Long getUtilityId() {
+		return utilityId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUtilityId(final Long utilityId) {
+		this.utilityId = utilityId;
 	}
 
 	public String getIdentifier() {
@@ -72,12 +83,36 @@ public class Favorite
 		this.identifier = identifier;
 	}
 
+	public Long getAmount() {
+		return amount;
+	}
+
+	public void setAmount(final Long amount) {
+		this.amount = amount;
+	}
+
 	public OffsetDateTime getCreated() {
 		return created;
 	}
 
 	public void setCreated(final OffsetDateTime created) {
 		this.created = created;
+	}
+
+	public OffsetDateTime getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(final OffsetDateTime updated) {
+		this.updated = updated;
+	}
+
+	public OffsetDateTime getExpired() {
+		return expired;
+	}
+
+	public void setExpired(final OffsetDateTime expired) {
+		this.expired = expired;
 	}
 
 	public Utility getUtility() {

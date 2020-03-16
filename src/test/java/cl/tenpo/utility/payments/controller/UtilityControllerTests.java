@@ -24,11 +24,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cl.tenpo.utility.payments.entity.Category;
-import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.jpa.entity.Category;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.repository.CategoryRepository;
+import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
-import cl.tenpo.utility.payments.repository.CategoryRepository;
-import cl.tenpo.utility.payments.repository.UtilityRepository;
 import cl.tenpo.utility.payments.util.UtilityClient;
 import io.nats.streaming.StreamingConnection;
 

@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.entity;
+package cl.tenpo.utility.payments.jpa.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
