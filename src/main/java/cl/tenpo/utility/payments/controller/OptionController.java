@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.entity.Option;
+import cl.tenpo.utility.payments.jpa.entity.Option;
+import cl.tenpo.utility.payments.jpa.repository.OptionRepository;
 import cl.tenpo.utility.payments.object.OptionsRequest;
-import cl.tenpo.utility.payments.repository.OptionRepository;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,4 +1,4 @@
-package cl.tenpo.utility.payments.repository;
+package cl.tenpo.utility.payments.jpa.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import cl.tenpo.utility.payments.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Favorite;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long>
 {

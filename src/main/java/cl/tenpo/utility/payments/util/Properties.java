@@ -26,5 +26,5 @@ public class Properties
 	@Value("${account-ms.account.url}") public String accountMsUrl;
 
 	/* bills */
-	@Value("${bills.recently-paid.minus-minutes}") public Long billsRecentlyPaidMinusMinutes;
+	@Value("${bills.recently-paid.minus-minutes}") public Integer billsRecentlyPaidMinusMinutes;
 }

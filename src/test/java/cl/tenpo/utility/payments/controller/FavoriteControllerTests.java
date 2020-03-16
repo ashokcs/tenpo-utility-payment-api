@@ -20,10 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cl.tenpo.utility.payments.entity.Favorite;
-import cl.tenpo.utility.payments.entity.Utility;
-import cl.tenpo.utility.payments.repository.FavoriteRepository;
-import cl.tenpo.utility.payments.repository.UtilityRepository;
+import cl.tenpo.utility.payments.jpa.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.repository.FavoriteRepository;
+import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 import io.nats.streaming.StreamingConnection;
 
 @RunWith(SpringRunner.class)

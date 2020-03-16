@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.newrelic.api.agent.NewRelic;
 
-import cl.tenpo.utility.payments.entity.Bill;
-import cl.tenpo.utility.payments.entity.Utility;
-import cl.tenpo.utility.payments.repository.BillRepository;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.repository.BillRepository;
 import cl.tenpo.utility.payments.util.Http;
 
 @Service

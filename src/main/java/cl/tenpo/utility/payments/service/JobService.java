@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.newrelic.api.agent.NewRelic;
 
-import cl.tenpo.utility.payments.entity.Job;
-import cl.tenpo.utility.payments.repository.JobRepository;
+import cl.tenpo.utility.payments.jpa.entity.Job;
+import cl.tenpo.utility.payments.jpa.repository.JobRepository;
 
 @Service
 public class JobService

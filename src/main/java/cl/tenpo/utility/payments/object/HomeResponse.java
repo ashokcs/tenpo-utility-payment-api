@@ -2,9 +2,9 @@ package cl.tenpo.utility.payments.object;
 
 import java.util.List;
 
-import cl.tenpo.utility.payments.entity.Favorite;
-import cl.tenpo.utility.payments.entity.Suggestion;
-import cl.tenpo.utility.payments.entity.Welcome;
+import cl.tenpo.utility.payments.jpa.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Suggestion;
+import cl.tenpo.utility.payments.jpa.entity.Welcome;
 
 public class HomeResponse
 {
