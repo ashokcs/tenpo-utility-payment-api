@@ -25,15 +25,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import cl.tenpo.utility.payments.entity.Bill;
-import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.repository.BillRepository;
+import cl.tenpo.utility.payments.jpa.repository.JobRepository;
+import cl.tenpo.utility.payments.jpa.repository.PaymentRepository;
+import cl.tenpo.utility.payments.jpa.repository.TransactionRepository;
+import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 import cl.tenpo.utility.payments.object.Balance;
 import cl.tenpo.utility.payments.object.BalanceResponse;
-import cl.tenpo.utility.payments.repository.BillRepository;
-import cl.tenpo.utility.payments.repository.JobRepository;
-import cl.tenpo.utility.payments.repository.PaymentRepository;
-import cl.tenpo.utility.payments.repository.TransactionRepository;
-import cl.tenpo.utility.payments.repository.UtilityRepository;
 import cl.tenpo.utility.payments.util.PrepaidClient;
 import io.nats.streaming.StreamingConnection;
 

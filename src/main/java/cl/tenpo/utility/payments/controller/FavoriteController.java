@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.entity.Category;
-import cl.tenpo.utility.payments.entity.Favorite;
-import cl.tenpo.utility.payments.entity.Suggestion;
-import cl.tenpo.utility.payments.entity.Utility;
+import cl.tenpo.utility.payments.jpa.entity.Category;
+import cl.tenpo.utility.payments.jpa.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Suggestion;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.repository.FavoriteRepository;
+import cl.tenpo.utility.payments.jpa.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.object.DeleteFavoriteRequest;
 import cl.tenpo.utility.payments.object.FavoriteRequest;
-import cl.tenpo.utility.payments.repository.FavoriteRepository;
-import cl.tenpo.utility.payments.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
 

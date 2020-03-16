@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.entity.Welcome;
-import cl.tenpo.utility.payments.repository.WelcomeRepository;
+import cl.tenpo.utility.payments.jpa.entity.Welcome;
+import cl.tenpo.utility.payments.jpa.repository.WelcomeRepository;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)

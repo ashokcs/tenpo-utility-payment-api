@@ -20,20 +20,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.tenpo.utility.payments.entity.Bill;
-import cl.tenpo.utility.payments.entity.Category;
-import cl.tenpo.utility.payments.entity.Favorite;
-import cl.tenpo.utility.payments.entity.Suggestion;
-import cl.tenpo.utility.payments.entity.Utility;
-import cl.tenpo.utility.payments.entity.Welcome;
+import cl.tenpo.utility.payments.jpa.entity.Bill;
+import cl.tenpo.utility.payments.jpa.entity.Category;
+import cl.tenpo.utility.payments.jpa.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Suggestion;
+import cl.tenpo.utility.payments.jpa.entity.Utility;
+import cl.tenpo.utility.payments.jpa.entity.UtilityTimeout;
+import cl.tenpo.utility.payments.jpa.entity.Welcome;
+import cl.tenpo.utility.payments.jpa.repository.BillRepository;
+import cl.tenpo.utility.payments.jpa.repository.FavoriteRepository;
+import cl.tenpo.utility.payments.jpa.repository.SuggestionRepository;
+import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
+import cl.tenpo.utility.payments.jpa.repository.UtilityTimeoutRepository;
+import cl.tenpo.utility.payments.jpa.repository.WelcomeRepository;
 import cl.tenpo.utility.payments.object.HomeResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
-import cl.tenpo.utility.payments.repository.BillRepository;
-import cl.tenpo.utility.payments.repository.FavoriteRepository;
-import cl.tenpo.utility.payments.repository.SuggestionRepository;
-import cl.tenpo.utility.payments.repository.UtilityRepository;
-import cl.tenpo.utility.payments.repository.WelcomeRepository;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
 import cl.tenpo.utility.payments.util.Http;
@@ -52,6 +54,7 @@ public class UtilityController
 	private final UtilityRepository utilityRepository;
 	private final FavoriteRepository favoriteRepository;
 	private final Properties properties;
+	private final UtilityTimeoutRepository utilityTimeoutRepository;
 	private final WelcomeRepository welcomeRepository;
 
 	public UtilityController(
@@ -63,6 +66,7 @@ public class UtilityController
 		final SuggestionRepository suggestionRepository,
 		final UtilityRepository utilityRepository,
 		final Properties properties,
+		final UtilityTimeoutRepository utilityTimeoutRepository,
 		final WelcomeRepository welcomeRepository
 	) {
 		this.billService = billService;
@@ -73,6 +77,7 @@ public class UtilityController
 		this.suggestionRepository = suggestionRepository;
 		this.utilityRepository = utilityRepository;
 		this.properties = properties;
+		this.utilityTimeoutRepository = utilityTimeoutRepository;
 		this.welcomeRepository = welcomeRepository;
 	}
 
@@ -106,8 +111,12 @@ public class UtilityController
 		final String utilityCollector = utility.getCollectorId();
 		final String utilityIdentifier = request.getIdentifier();
 
-		// if recently paid return no debts
-		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(properties.billsRecentlyPaidMinusMinutes);
+		// check if timeout
+		final Optional<UtilityTimeout> utilityTimeout = utilityTimeoutRepository.findByUtilityId(utility.getId());
+
+		// check if recently paid
+		final Integer timeout = utilityTimeout.isPresent() ? utilityTimeout.get().getTimeout() : properties.billsRecentlyPaidMinusMinutes;
+		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(timeout);
 		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndStatusAndCreatedGreaterThanOrderByCreatedDesc(
 				utilityIdentifier, utility.getId(), userId, Bill.SUCCEEDED, created);
 		if (opt.isPresent()) return result;

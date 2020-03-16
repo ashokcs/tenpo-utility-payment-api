@@ -1,11 +1,11 @@
-package cl.tenpo.utility.payments.repository;
+package cl.tenpo.utility.payments.jpa.repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import cl.tenpo.utility.payments.entity.Payment;
+import cl.tenpo.utility.payments.jpa.entity.Payment;
 
 public interface PaymentRepository extends JpaRepository<Payment, UUID>
 {
