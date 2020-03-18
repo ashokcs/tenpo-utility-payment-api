@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.newrelic.api.agent.NewRelic;
 
 import cl.tenpo.utility.payments.object.UtilityBillItem;
+import cl.tenpo.utility.payments.object.UtilityBillResponse;
 
 @Component
 public class UtilityClient
@@ -64,9 +65,14 @@ public class UtilityClient
 		return Optional.empty();
 	}
 
-	public List<UtilityBillItem> getBills(final String utility, final String collector, final String identifier)
+	public UtilityBillResponse getBills(final String utility, final String collector, final String identifier)
 	{
+		// set default response
 		final List<UtilityBillItem> bills = new ArrayList<>();
+		final UtilityBillResponse response = new UtilityBillResponse();
+		response.setBills(bills);
+		response.setUnavailable(false);
+
 		try {
 			final String url = properties.multicajaUtlitiesDebtUrl;
 
@@ -84,14 +90,14 @@ public class UtilityClient
 			request.setHeader("apikey", properties.multicajaUtilitiesApiKey);
 			request.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-			try (final CloseableHttpResponse response = client.execute(request)) {
-				final HttpEntity entity = response.getEntity();
+			try (final CloseableHttpResponse res = client.execute(request)) {
+				final HttpEntity entity = res.getEntity();
 				final String body = EntityUtils.toString(entity);
 
 				logger.info("=> {} {}", request.getRequestLine(), json);
-				logger.info("<= {} {}", response.getStatusLine(), body);
+				logger.info("<= {} {}", res.getStatusLine(), body);
 
-				if (response.getStatusLine().getStatusCode() == 200) {
+				if (res.getStatusLine().getStatusCode() == 200) {
 					final JsonNode billJsonNode = mapper.readTree(body);
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
 					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
@@ -135,15 +141,25 @@ public class UtilityClient
 						if (bills.size() == 1) {
 							bills.get(0).setDesc("Deuda por pagar");
 						}
+					} else if (!responseCode.equals(1) && (responseMessage.contains("RESPUESTA NO VALIDA"))) {
+						response.setUnavailable(true);
+					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR ACCESO TABLA"))) {
+						response.setUnavailable(true);
+					} else if (!responseCode.equals(1) && (responseMessage.contains("Error al intentar conectar con autorizador"))) {
+						response.setUnavailable(true);
+					} else if (!responseCode.equals(1) && (responseMessage.contains("Error General"))) {
+						response.setUnavailable(true);
 					}
 				} else {
-					NewRelic.noticeError("MULTICAJA PDC API: " + response.getStatusLine());
+					response.setUnavailable(true);
+					NewRelic.noticeError("MULTICAJA PDC API: " + res.getStatusLine());
 				}
 			}
 		} catch (final Exception e) {
+			response.setUnavailable(true);
 			NewRelic.noticeError(e);
 			logger.error(e.getMessage(), e);
 		}
-		return bills;
+		return response;
 	}
 }

@@ -29,6 +29,7 @@ import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.repository.CategoryRepository;
 import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
+import cl.tenpo.utility.payments.object.UtilityBillResponse;
 import cl.tenpo.utility.payments.util.UtilityClient;
 import io.nats.streaming.StreamingConnection;
 
@@ -183,9 +184,11 @@ public class UtilityControllerTests
 		return utility;
 	}
 
-	private final List<UtilityBillItem> bills()
+	private final UtilityBillResponse bills()
 	{
 		final List<UtilityBillItem> bills = new ArrayList<>();
+		final UtilityBillResponse response = new UtilityBillResponse();
+		response.setBills(bills);
 		final UtilityBillItem tmp = new UtilityBillItem();
 		tmp.setOrder(1);
 		tmp.setMcCode("1231231231");
@@ -196,6 +199,6 @@ public class UtilityControllerTests
 		tmp.setDesc("Deuda total");
 		tmp.setDueDate("No disponible");
 		bills.add(tmp);
-		return bills;
+		return response;
 	}
 }
