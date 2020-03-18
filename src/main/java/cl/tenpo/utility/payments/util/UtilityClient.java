@@ -142,12 +142,16 @@ public class UtilityClient
 							bills.get(0).setDesc("Deuda por pagar");
 						}
 					} else if (!responseCode.equals(1) && (responseMessage.contains("RESPUESTA NO VALIDA"))) {
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR ACCESO TABLA"))) {
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("Error al intentar conectar con autorizador"))) {
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("Error General"))) {
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
 						response.setUnavailable(true);
 					}
 				} else {
