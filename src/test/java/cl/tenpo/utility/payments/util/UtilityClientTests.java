@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import cl.tenpo.utility.payments.mock.CloseableHttpResponseMock;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
+import cl.tenpo.utility.payments.object.UtilityBillResponse;
 import io.nats.streaming.StreamingConnection;
 
 @RunWith(SpringRunner.class)
@@ -96,7 +97,8 @@ public class UtilityClientTests
 				"  }" +
 				"}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(payload, HttpStatus.OK));
-		final List<UtilityBillItem> bills = utilityClient.getBills("utility", "collector", "ASD123");
+		final UtilityBillResponse response = utilityClient.getBills("utility", "collector", "ASD123");
+		final List<UtilityBillItem> bills = response.getBills();
 
 		assertThat(bills).isNotNull();
 		assertThat(bills).isNotEmpty();
@@ -108,7 +110,8 @@ public class UtilityClientTests
 	{
 		final String payload = "{}";
 		when(client.execute(any())).thenReturn(new CloseableHttpResponseMock(payload, HttpStatus.INTERNAL_SERVER_ERROR));
-		final List<UtilityBillItem> bills = utilityClient.getBills("utility", "collector", "ASD123");
+		final UtilityBillResponse response = utilityClient.getBills("utility", "collector", "ASD123");
+		final List<UtilityBillItem> bills = response.getBills();
 		assertThat(bills).isNotNull();
 		assertThat(bills).isEmpty();
 	}

@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +37,7 @@ import cl.tenpo.utility.payments.jpa.repository.UtilityTimeoutRepository;
 import cl.tenpo.utility.payments.jpa.repository.WelcomeRepository;
 import cl.tenpo.utility.payments.object.HomeResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
+import cl.tenpo.utility.payments.object.UtilityBillResponse;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
 import cl.tenpo.utility.payments.service.BillService;
 import cl.tenpo.utility.payments.service.UtilityService;
@@ -96,7 +99,7 @@ public class UtilityController
 
 	@Transactional
 	@PostMapping(path = "/v1/utility-payments/utilities/{id:\\d+}/bills", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public List<Bill> bills(
+	public ResponseEntity<List<Bill>> bills(
 		@RequestHeader(value="x-mine-user-id") final UUID userId,
 		@PathVariable("id") final long utilityId,
 		@RequestBody @Valid final UtilityBillsRequest request
@@ -119,10 +122,16 @@ public class UtilityController
 		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(timeout);
 		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndStatusAndCreatedGreaterThanOrderByCreatedDesc(
 				utilityIdentifier, utility.getId(), userId, Bill.SUCCEEDED, created);
-		if (opt.isPresent()) return result;
+		if (opt.isPresent()) return ResponseEntity.ok(result);
 
 		// get bills
-		final List<UtilityBillItem> bills = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
+		final UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
+		final List<UtilityBillItem> bills = response.getBills();
+
+		// check if service is unavailable
+		if (response.isUnavailable()) {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(result);
+		}
 
 		// check if same amount
 		if (!bills.isEmpty() && bills.size() == 2) {
@@ -148,7 +157,7 @@ public class UtilityController
 			tmp.setUtility(utility);
 			result.add(tmp);
 		}
-		return result;
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/v1/utility-payments/bills/{id}")
