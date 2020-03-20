@@ -147,6 +147,9 @@ public class UtilityClient
 					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR ACCESO TABLA"))) {
 						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
 						response.setUnavailable(true);
+					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR EJECUTAR SERVICIO INTERNO"))) {
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
+						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("Error al intentar conectar con autorizador"))) {
 						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage);
 						response.setUnavailable(true);
