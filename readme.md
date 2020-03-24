@@ -248,3 +248,4 @@ git tag --delete oti-v1.0.0
 - Testing
 - We need an endpoint from multicaja to check the transaction status
 - revisar TODOS
+
