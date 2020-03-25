@@ -25,12 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Category;
 import cl.tenpo.utility.payments.jpa.entity.Favorite;
+import cl.tenpo.utility.payments.jpa.entity.Option;
 import cl.tenpo.utility.payments.jpa.entity.Suggestion;
 import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.entity.UtilityTimeout;
 import cl.tenpo.utility.payments.jpa.entity.Welcome;
 import cl.tenpo.utility.payments.jpa.repository.BillRepository;
 import cl.tenpo.utility.payments.jpa.repository.FavoriteRepository;
+import cl.tenpo.utility.payments.jpa.repository.OptionRepository;
 import cl.tenpo.utility.payments.jpa.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 import cl.tenpo.utility.payments.jpa.repository.UtilityTimeoutRepository;
@@ -56,6 +58,7 @@ public class UtilityController
 	private final SuggestionRepository suggestionRepository;
 	private final UtilityRepository utilityRepository;
 	private final FavoriteRepository favoriteRepository;
+	private final OptionRepository optionRepository;
 	private final Properties properties;
 	private final UtilityTimeoutRepository utilityTimeoutRepository;
 	private final WelcomeRepository welcomeRepository;
@@ -66,6 +69,7 @@ public class UtilityController
 		final UtilityClient utilityClient,
 		final UtilityService utilityService,
 		final FavoriteRepository favoriteRepository,
+		final OptionRepository optionRepository,
 		final SuggestionRepository suggestionRepository,
 		final UtilityRepository utilityRepository,
 		final Properties properties,
@@ -77,6 +81,7 @@ public class UtilityController
 		this.utilityClient = utilityClient;
 		this.utilityService = utilityService;
 		this.favoriteRepository = favoriteRepository;
+		this.optionRepository = optionRepository;
 		this.suggestionRepository = suggestionRepository;
 		this.utilityRepository = utilityRepository;
 		this.properties = properties;
@@ -195,6 +200,10 @@ public class UtilityController
 		// get suggestions
 		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(user, Suggestion.ENABLED, OffsetDateTime.now());
 		suggestions.forEach(s -> {s.setUtility(utilityRepository.findById(s.getUtilityId()).get());});
+
+		// get user options
+		final Optional<Option> options = optionRepository.findByUser(user);
+		if (options.isPresent() && options.get().isSuggest() == false) suggestions.clear();
 
 		// get tos/welcome
 		final Optional<Welcome> opt = welcomeRepository.findByUser(user);
