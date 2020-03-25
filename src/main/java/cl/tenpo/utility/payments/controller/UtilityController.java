@@ -201,13 +201,13 @@ public class UtilityController
 		final Welcome welcome;
 		if (opt.isPresent()) {
 			welcome = opt.get();
-			welcome.setVisits(welcome.getVisits()+1);
+			if (welcome.getTos().equals(1)) welcome.setVisits(welcome.getVisits()+1);
 			welcomeRepository.save(welcome);
 		} else {
 			welcome = new Welcome();
 			welcome.setUser(user);
 			welcome.setCreated(OffsetDateTime.now());
-			welcome.setVisits(1);
+			welcome.setVisits(0);
 			welcome.setTos(0);
 			welcomeRepository.save(welcome);
 		}
