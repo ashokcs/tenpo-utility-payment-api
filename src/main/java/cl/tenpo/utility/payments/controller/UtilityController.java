@@ -203,7 +203,7 @@ public class UtilityController
 
 		// get user options
 		final Optional<Option> options = optionRepository.findByUser(user);
-		if (options.isPresent() && options.get().isSuggest() == false) suggestions.clear();
+		if (!options.isPresent() || (options.isPresent() && options.get().isSuggest() == false)) suggestions.clear();
 
 		// get tos/welcome
 		final Optional<Welcome> opt = welcomeRepository.findByUser(user);
