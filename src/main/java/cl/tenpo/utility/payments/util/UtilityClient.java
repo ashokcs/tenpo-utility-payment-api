@@ -142,24 +142,24 @@ public class UtilityClient
 							bills.get(0).setDesc("Deuda por pagar");
 						}
 					} else if (!responseCode.equals(1) && (responseMessage.contains("RESPUESTA NO VALIDA"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + "(" + utility + ")");
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR ACCESO TABLA"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + "(" + utility + ")");
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR EJECUTAR SERVICIO INTERNO"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + "(" + utility + ")");
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("Error al intentar conectar con autorizador"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + "(" + utility + ")");
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					} else if (!responseCode.equals(1) && (responseMessage.contains("Error General"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + "(" + utility + ")");
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					}
 				} else {
 					response.setUnavailable(true);
-					NewRelic.noticeError("MULTICAJA PDC API: " + res.getStatusLine() + "(" + utility + ")");
+					NewRelic.noticeError("MULTICAJA PDC API: " + res.getStatusLine() + " (" + utility + ")");
 				}
 			}
 		} catch (final Exception e) {
