@@ -200,6 +200,10 @@ public class UtilityController
 		// get suggestions
 		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(user, Suggestion.ENABLED, OffsetDateTime.now());
 		suggestions.forEach(s -> {s.setUtility(utilityRepository.findById(s.getUtilityId()).get());});
+		suggestions.stream().map(s -> {
+			s.getUtility().setCategory(categories.get(s.getUtility().getCategoryId()));
+			return s;
+		}).collect(Collectors.toList());
 
 		// get user options
 		final Optional<Option> options = optionRepository.findByUser(user);
