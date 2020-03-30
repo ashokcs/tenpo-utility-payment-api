@@ -13,6 +13,11 @@ metadata:
   namespace: tenpo-utility-payments
 spec:
   replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       app: tenpo-utility-payments-core
@@ -74,50 +79,3 @@ spec:
       targetPort: 80
   selector:
     app: tenpo-utility-payments-core
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: tenpo-utility-payments-core-svc
-#   namespace: tenpo-utility-payments
-#   labels:
-#     app: tenpo-utility-payments-core
-# spec:
-#   type: ClusterIP
-#   ports:
-#     - port: 80
-#       targetPort: 80
-#       protocol: TCP
-#       name: http
-#   selector:
-#     app: tenpo-utility-payments-core
-# ---
-# apiVersion: networking.istio.io/v1alpha3
-# kind: ServiceEntry
-# metadata:
-#   name: tenpo-utility-payments-core-se-db
-#   namespace: tenpo-utility-payments
-# spec:
-#   hosts:
-#     - "*.database.azure.com"
-#   location: MESH_EXTERNAL
-#   ports:
-#     - number: 5432
-#       name: tcp-db
-#       protocol: TCP
-# ---
-# apiVersion: networking.istio.io/v1alpha3
-# kind: ServiceEntry
-# metadata:
-#   name: tenpo-utility-payments-core-pdc
-#   namespace: tenpo-utility-payments
-# spec:
-#   hosts:
-#     - "*.multicaja.cl"
-#     - "*.mcdesaqa.cl"
-#     - "*.multicajadigital.cloud"
-#   location: MESH_EXTERNAL
-#   ports:
-#     - number: 443
-#       name: tcp-pdc
-#       protocol: TCP
