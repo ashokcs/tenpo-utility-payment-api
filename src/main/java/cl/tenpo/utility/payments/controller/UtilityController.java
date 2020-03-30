@@ -26,6 +26,7 @@ import cl.tenpo.utility.payments.jpa.entity.Bill;
 import cl.tenpo.utility.payments.jpa.entity.Category;
 import cl.tenpo.utility.payments.jpa.entity.Favorite;
 import cl.tenpo.utility.payments.jpa.entity.Option;
+import cl.tenpo.utility.payments.jpa.entity.Reminder;
 import cl.tenpo.utility.payments.jpa.entity.Suggestion;
 import cl.tenpo.utility.payments.jpa.entity.Utility;
 import cl.tenpo.utility.payments.jpa.entity.UtilityTimeout;
@@ -33,11 +34,13 @@ import cl.tenpo.utility.payments.jpa.entity.Welcome;
 import cl.tenpo.utility.payments.jpa.repository.BillRepository;
 import cl.tenpo.utility.payments.jpa.repository.FavoriteRepository;
 import cl.tenpo.utility.payments.jpa.repository.OptionRepository;
+import cl.tenpo.utility.payments.jpa.repository.ReminderRepository;
 import cl.tenpo.utility.payments.jpa.repository.SuggestionRepository;
 import cl.tenpo.utility.payments.jpa.repository.UtilityRepository;
 import cl.tenpo.utility.payments.jpa.repository.UtilityTimeoutRepository;
 import cl.tenpo.utility.payments.jpa.repository.WelcomeRepository;
 import cl.tenpo.utility.payments.object.HomeResponse;
+import cl.tenpo.utility.payments.object.MainScreenResponse;
 import cl.tenpo.utility.payments.object.UtilityBillItem;
 import cl.tenpo.utility.payments.object.UtilityBillResponse;
 import cl.tenpo.utility.payments.object.UtilityBillsRequest;
@@ -60,6 +63,7 @@ public class UtilityController
 	private final FavoriteRepository favoriteRepository;
 	private final OptionRepository optionRepository;
 	private final Properties properties;
+	private final ReminderRepository reminderRepository;
 	private final UtilityTimeoutRepository utilityTimeoutRepository;
 	private final WelcomeRepository welcomeRepository;
 
@@ -73,6 +77,7 @@ public class UtilityController
 		final SuggestionRepository suggestionRepository,
 		final UtilityRepository utilityRepository,
 		final Properties properties,
+		final ReminderRepository reminderRepository,
 		final UtilityTimeoutRepository utilityTimeoutRepository,
 		final WelcomeRepository welcomeRepository
 	) {
@@ -85,6 +90,7 @@ public class UtilityController
 		this.suggestionRepository = suggestionRepository;
 		this.utilityRepository = utilityRepository;
 		this.properties = properties;
+		this.reminderRepository = reminderRepository;
 		this.utilityTimeoutRepository = utilityTimeoutRepository;
 		this.welcomeRepository = welcomeRepository;
 	}
@@ -226,5 +232,24 @@ public class UtilityController
 		}
 
 		return new HomeResponse(favorites, suggestions, welcome);
+	}
+
+	@GetMapping("/v1/utility-payments/main-screen")
+	public MainScreenResponse mainscreen(@RequestHeader("x-mine-user-id") final UUID user)
+	{
+		// create default response
+		final MainScreenResponse response = new MainScreenResponse();
+		response.setReminders(0);
+		response.setSuggestions(0);
+
+		// get reminders
+		final List<Reminder> reminders = reminderRepository.findAllByUserAndExpiredGreaterThanOrderByCreatedAsc(user, OffsetDateTime.now());
+		response.setReminders(reminders.size());
+
+		// get suggestions
+		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(user, Suggestion.ENABLED, OffsetDateTime.now());
+		response.setSuggestions(suggestions.size());
+
+		return response;
 	}
 }
