@@ -60,6 +60,23 @@ spec:
                 secretKeyRef:
                   name: tenpo-utility-payments-core-secrets
                   key: pg_db
+          readinessProbe:
+            httpGet:
+              path: /management/health
+              port: 80
+            initialDelaySeconds: 20
+            timeoutSeconds: 5
+            periodSeconds: 30
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /management/health
+              port: 80
+            initialDelaySeconds: 20
+            timeoutSeconds: 5
+            periodSeconds: 30
+            failureThreshold: 3  
+
           imagePullPolicy: Always
       imagePullSecrets:
         - name: tenpo-utility-payments-core-registry
