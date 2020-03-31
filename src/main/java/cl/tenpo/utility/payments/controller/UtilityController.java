@@ -2,6 +2,7 @@ package cl.tenpo.utility.payments.controller;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -131,8 +132,9 @@ public class UtilityController
 		// check if recently paid
 		final Integer timeout = utilityTimeout.isPresent() ? utilityTimeout.get().getTimeout() : properties.billsRecentlyPaidMinusMinutes;
 		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(timeout);
-		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndCreatedGreaterThanOrderByCreatedDesc(utilityIdentifier, utility.getId(), userId, created);
-		if (opt.isPresent() && (opt.get().getStatus().equals(Bill.SUCCEEDED) || opt.get().getStatus().equals(Bill.PROCESSING))) return ResponseEntity.ok(result);
+		final List<String> statuses = Arrays.asList(Bill.SUCCEEDED, Bill.PROCESSING);
+		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndStatusInAndCreatedGreaterThanOrderByCreatedDesc(utilityIdentifier, utility.getId(), userId, statuses, created);
+		if (opt.isPresent()) return ResponseEntity.ok(result);
 
 		// get bills
 		final UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
