@@ -131,9 +131,8 @@ public class UtilityController
 		// check if recently paid
 		final Integer timeout = utilityTimeout.isPresent() ? utilityTimeout.get().getTimeout() : properties.billsRecentlyPaidMinusMinutes;
 		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(timeout);
-		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndStatusAndCreatedGreaterThanOrderByCreatedDesc(
-				utilityIdentifier, utility.getId(), userId, Bill.SUCCEEDED, created);
-		if (opt.isPresent()) return ResponseEntity.ok(result);
+		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndCreatedGreaterThanOrderByCreatedDesc(utilityIdentifier, utility.getId(), userId, created);
+		if (opt.isPresent() && (opt.get().getStatus().equals(Bill.SUCCEEDED) || opt.get().getStatus().equals(Bill.PROCESSING))) return ResponseEntity.ok(result);
 
 		// get bills
 		final UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
