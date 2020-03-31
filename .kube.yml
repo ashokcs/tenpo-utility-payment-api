@@ -16,8 +16,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 50%
-      maxUnavailable: 50%
+      maxSurge: 25%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       app: tenpo-utility-payments-core
