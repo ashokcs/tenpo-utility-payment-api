@@ -129,21 +129,24 @@ public class UtilityController
 		// check if timeout
 		final Optional<UtilityTimeout> utilityTimeout = utilityTimeoutRepository.findByUtilityId(utility.getId());
 
-		// check if recently paid
+		// check if succeeded or processing
 		final Integer timeout = utilityTimeout.isPresent() ? utilityTimeout.get().getTimeout() : properties.billsRecentlyPaidMinusMinutes;
 		final OffsetDateTime created = OffsetDateTime.now().minusMinutes(timeout);
 		final List<String> statuses = Arrays.asList(Bill.SUCCEEDED, Bill.PROCESSING);
 		final Optional<Bill> opt = billRepository.findFirstByIdentifierAndUtilityIdAndUserAndStatusInAndCreatedGreaterThanOrderByCreatedDesc(utilityIdentifier, utility.getId(), userId, statuses, created);
-		if (opt.isPresent()) return ResponseEntity.ok(result);
+
+		// if succeeded
+		if (opt.isPresent() && opt.get().getStatus().equals(Bill.SUCCEEDED)) return ResponseEntity.ok(result);
+
+		// if processing
+		if (opt.isPresent() && opt.get().getStatus().equals(Bill.PROCESSING)) return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
 
 		// get bills
 		final UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
 		final List<UtilityBillItem> bills = response.getBills();
 
 		// check if service is unavailable
-		if (response.isUnavailable()) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(result);
-		}
+		if (response.isUnavailable()) return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(result);
 
 		// check if same amount
 		if (!bills.isEmpty() && bills.size() == 2) {
