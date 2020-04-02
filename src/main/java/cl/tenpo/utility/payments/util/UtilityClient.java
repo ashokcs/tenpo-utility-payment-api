@@ -141,22 +141,7 @@ public class UtilityClient
 						if (bills.size() == 1) {
 							bills.get(0).setDesc("Deuda por pagar");
 						}
-					} else if (!responseCode.equals(1) && (responseMessage.contains("RESPUESTA NO VALIDA"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
-						response.setUnavailable(true);
-					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR ACCESO TABLA"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
-						response.setUnavailable(true);
-					} else if (!responseCode.equals(1) && (responseMessage.contains("ERROR EJECUTAR SERVICIO INTERNO"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
-						response.setUnavailable(true);
-					} else if (!responseCode.equals(1) && (responseMessage.contains("Error al intentar conectar con autorizador"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
-						response.setUnavailable(true);
-					} else if (!responseCode.equals(1) && (responseMessage.contains("Error General"))) {
-						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
-						response.setUnavailable(true);
-					} else if (!responseCode.equals(1) && (responseMessage.contains("REINTENTO"))) {
+					} else if (containsKnownErrorMessage(responseCode, responseMessage)) {
 						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					}
@@ -171,5 +156,17 @@ public class UtilityClient
 			logger.error(e.getMessage(), e);
 		}
 		return response;
+	}
+
+	private boolean containsKnownErrorMessage(final Integer responseCode, final String responseMessage)
+	{
+		return !responseCode.equals(1) && (
+				responseMessage.contains("RESPUESTA NO VALIDA") ||
+				responseMessage.contains("ERROR ACCESO TABLA") ||
+				responseMessage.contains("ERROR EJECUTAR SERVICIO INTERNO") ||
+				responseMessage.contains("Error al intentar conectar con autorizador") ||
+				responseMessage.contains("Error General") ||
+				responseMessage.contains("REINTENTO")
+			   );
 	}
 }
