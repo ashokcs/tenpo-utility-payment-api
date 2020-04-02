@@ -156,6 +156,9 @@ public class UtilityClient
 					} else if (!responseCode.equals(1) && (responseMessage.contains("Error General"))) {
 						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
+					} else if (!responseCode.equals(1) && (responseMessage.contains("REINTENTO"))) {
+						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
+						response.setUnavailable(true);
 					}
 				} else {
 					response.setUnavailable(true);
