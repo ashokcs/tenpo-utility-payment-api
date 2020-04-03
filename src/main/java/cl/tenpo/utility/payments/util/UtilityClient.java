@@ -72,6 +72,7 @@ public class UtilityClient
 		final UtilityBillResponse response = new UtilityBillResponse();
 		response.setBills(bills);
 		response.setUnavailable(false);
+		response.setRetry(false);
 
 		try {
 			final String url = properties.multicajaUtlitiesDebtUrl;
@@ -101,6 +102,7 @@ public class UtilityClient
 					final JsonNode billJsonNode = mapper.readTree(body);
 					final Integer responseCode = billJsonNode.get("response_code").asInt(99);
 					final String responseMessage = billJsonNode.get("response_message").asText("ERROR");
+
 					if (responseCode.equals(1) && (responseMessage.equals("Datos de deuda obtenidos exitosamente"))) {
 						final JsonNode dataJsonNode = billJsonNode.get("data");
 						final JsonNode debtsJsonNode = dataJsonNode.get("debts");
@@ -141,6 +143,11 @@ public class UtilityClient
 						if (bills.size() == 1) {
 							bills.get(0).setDesc("Deuda por pagar");
 						}
+					} else if (responseCode.equals(79) && (responseMessage.equals("REINTENTO..."))) {
+						final JsonNode dataJsonNode = billJsonNode.get("data");
+						final String retryCollector = dataJsonNode.get("retry_").asText();
+						response.setRetry(true);
+						response.setRetryCollector(retryCollector);
 					} else if (containsKnownErrorMessage(responseCode, responseMessage)) {
 						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);

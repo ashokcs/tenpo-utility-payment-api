@@ -142,7 +142,8 @@ public class UtilityController
 		if (opt.isPresent() && opt.get().getStatus().equals(Bill.PROCESSING)) return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
 
 		// get bills
-		final UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
+		UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
+		if (response.isRetry()) response = utilityClient.getBills(utilityCode, response.getRetryCollector(), utilityIdentifier);
 		final List<UtilityBillItem> bills = response.getBills();
 
 		// check if service is unavailable
