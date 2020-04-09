@@ -173,6 +173,7 @@ public class UtilityClient
 				responseMessage.contains("ERROR EJECUTAR SERVICIO INTERNO") ||
 				responseMessage.contains("Error al intentar conectar con autorizador") ||
 				responseMessage.contains("Error General") ||
+				responseMessage.contains("El interlocutor") ||
 				responseMessage.contains("REINTENTO")
 			   );
 	}
