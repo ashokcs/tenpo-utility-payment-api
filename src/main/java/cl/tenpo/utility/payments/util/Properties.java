@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class Properties
 {
-	@Value("${time-zone.offset}") public String timezoneOffset;
-
 	/* multicaja */
 	@Value("${multicaja.utilities.apikey}") public String multicajaUtilitiesApiKey;
 	@Value("${multicaja.utilities.url}") public String multicajaUtilitiesUrl;
