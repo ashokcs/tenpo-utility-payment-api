@@ -128,8 +128,10 @@ public class UtilityClient
 								tmp.setDesc("Deuda vencida");
 								tmp.setDueDate("No disponible");
 							}
-							bills.add(tmp);
-							number++;
+							if (tmp.getAmount().compareTo(0L) > 0) {
+								bills.add(tmp);
+								number++;
+							}
 						}
 						if (bills.size() == 2) {
 							if (bills.get(0).getDesc().equals(bills.get(1).getDesc())) {
