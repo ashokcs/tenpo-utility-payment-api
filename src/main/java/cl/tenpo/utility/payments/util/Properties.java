@@ -26,4 +26,5 @@ public class Properties
 
 	/* bills */
 	@Value("${bills.recently-paid.minus-minutes}") public Integer billsRecentlyPaidMinusMinutes;
+	@Value("${bills.max-amount}") public Long billsMaxAmount;
 }
