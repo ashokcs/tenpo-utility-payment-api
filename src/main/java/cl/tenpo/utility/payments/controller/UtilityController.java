@@ -206,7 +206,7 @@ public class UtilityController
 		final List<Favorite> favorites = favoriteRepository.findFirst20ByUserOrderById(user).stream().map(f -> {
 			f.getUtility().setCategory(categories.get(f.getUtility().getCategoryId()));
 			return f;
-		}).collect(Collectors.toList());
+		}).filter(f -> f.getUtility().getStatus().equals(Utility.ENABLED)).collect(Collectors.toList());
 
 		// get suggestions
 		final List<Suggestion> suggestions = suggestionRepository.findFirst20ByUserAndStatusAndExpiredGreaterThanOrderByCreatedAsc(user, Suggestion.ENABLED, OffsetDateTime.now());
