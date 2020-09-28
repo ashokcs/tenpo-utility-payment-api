@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +57,8 @@ import cl.tenpo.utility.payments.util.UtilityClient;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class UtilityController
 {
+	private static final Logger logger = LoggerFactory.getLogger(UtilityController.class);
+
 	private final BillService billService;
 	private final BillRepository billRepository;
 	private final UtilityClient utilityClient;
@@ -116,6 +120,8 @@ public class UtilityController
 		@PathVariable("id") final long utilityId,
 		@RequestBody @Valid final UtilityBillsRequest request
 	){
+		logger.info(String.format("userId: %s | utilityId: %s | identifier: %s",
+				userId, String.valueOf(utilityId), request.getIdentifier()));
 		final List<Bill> result = new ArrayList<>();
 
 		// get request parameters
@@ -143,7 +149,13 @@ public class UtilityController
 
 		// get bills
 		UtilityBillResponse response = utilityClient.getBills(utilityCode, utilityCollector, utilityIdentifier);
-		if (response.isRetry()) response = utilityClient.getBills(utilityCode, response.getRetryCollector(), utilityIdentifier);
+		logger.info(String.format("bills: %d | isUnavailable: %s | isRetry: %s",
+				response.getBills().size(), response.isUnavailable(), response.isRetry()));
+		if (response.isRetry()){
+			response = utilityClient.getBills(utilityCode, response.getRetryCollector(), utilityIdentifier);
+			logger.info(String.format("bills: %d | isUnavailable: %s | isRetry: %s",
+					response.getBills().size(), response.isUnavailable(), response.isRetry()));
+		}
 		final List<UtilityBillItem> bills = response.getBills();
 
 		// check if service is unavailable
