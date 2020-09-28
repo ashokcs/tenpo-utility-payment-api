@@ -151,10 +151,14 @@ public class UtilityClient
 						response.setRetry(true);
 						response.setRetryCollector(retryCollector);
 					} else if (containsKnownErrorMessage(responseCode, responseMessage)) {
+						logger.error("Unavailable: true " +
+								"MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						NewRelic.noticeError("MULTICAJA PDC API: " + responseMessage + " (" + utility + ")");
 						response.setUnavailable(true);
 					}
 				} else {
+					logger.error("Unavailable: true " +
+							"MULTICAJA PDC API: " + res.getStatusLine() + " (" + utility + ")");
 					response.setUnavailable(true);
 					NewRelic.noticeError("MULTICAJA PDC API: " + res.getStatusLine() + " (" + utility + ")");
 				}
@@ -162,6 +166,7 @@ public class UtilityClient
 		} catch (final Exception e) {
 			response.setUnavailable(true);
 			NewRelic.noticeError(e);
+			logger.error("Unavailable: true ");
 			logger.error(e.getMessage(), e);
 		}
 		return response;
