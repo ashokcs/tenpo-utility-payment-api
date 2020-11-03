@@ -83,10 +83,12 @@ dev_deployment:
     NAMESPACE: tenpo-utility-payments
     IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
     INTERNAL_BALANCER: "false"
+    HOST: "dev.tenpodigital.cloud"
   script:
     - sed -i "s|_IMAGE_|$IMAGE|g" .kube.yml
     - sed -i "s|_ENVIRONMENT_|$ENVIRONMENT|g" .kube.yml
     - sed -i "s|_INTERNAL_BALANCER_|$INTERNAL_BALANCER|g" .kube.yml
+    - sed -i "s|_HOST_|$HOST|g" .kube.yml
     - > 
         kubectl create secret docker-registry $REGISTRY \
           --namespace=$NAMESPACE \
@@ -132,6 +134,7 @@ uat_deployment:
     NAMESPACE: tenpo-utility-payments
     IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
     INTERNAL_BALANCER: "true"
+    HOST: "uat.tenpodigital.cloud"
   only:
     - uat
 
@@ -175,5 +178,6 @@ prod_deployment:
     NAMESPACE: tenpo-utility-payments
     IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
     INTERNAL_BALANCER: "true"
+    HOST: "api.prod.tenpo.cl"
   only:
     - master

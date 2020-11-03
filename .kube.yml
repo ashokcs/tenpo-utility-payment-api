@@ -79,18 +79,73 @@ spec:
       imagePullSecrets:
         - name: tenpo-utility-payments-core-registry
 ---
-apiVersion: v1
-kind: Service
+apiVersion: crds.tenpo.cl/v1alpha1
+kind: TenpoService
 metadata:
-  name: tenpo-utility-payments-core-svc
+  name: tenpo-utility-payments-ts
   namespace: tenpo-utility-payments
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "_INTERNAL_BALANCER_"
 spec:
-  type: LoadBalancer
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
   selector:
-    app: tenpo-utility-payments-core
+    app: tenpo-utility-payments-core #Selector must match with deployment's app label
+  networking:
+    host: _HOST_
+    port: 80
+    protocol: TCP
+    endpoints:
+      - name: welcome
+        path: /v1/utility-payments/welcome(.*)
+        profile: private
+        methods:
+          - POST
+      - name: categories
+        path: /v1/utility-payments/categories(.*)
+        profile: private
+        methods:
+          - GET
+      - name: utilities
+        path: /v1/utility-payments/utilities(.*)
+        profile: private
+        methods:
+          - POST
+      - name: bills
+        path: /v1/utility-payments/bills(.*)
+        profile: private
+        methods:
+            - GET
+      - name: transactions
+        path: /v1/utility-payments/transactions(.*)
+        profile: private
+        methods:
+            - POST
+      - name: favorites
+        path: /v1/utility-payments/favorites(.*)
+        profile: private
+        methods:
+            - POST  
+            - GET
+            - DELETE
+      - name: options
+        path: /v1/utility-payments/options(.*)
+        profile: private
+        methods: 
+            - GET
+            - PUT
+      - name: suggestions
+        path: /v1/utility-payments/suggestions(.*)
+        profile: private
+        methods: 
+            - GET
+            - DELETE
+      - name: home
+        path: /v1/utility-payments/home
+        profile: private
+        methods: 
+            - GET
+      - name: main-screen
+        path: /v1/utility-payments/main-screen
+        profile: private
+        methods: 
+            - GET                                                                      
+  teamInfo:
+    name: Sheldon
+    slackChannel: "#sheldon"
